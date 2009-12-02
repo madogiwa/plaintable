@@ -40,7 +40,7 @@ public interface SchemaManager {
 	 * @param clazz
 	 * @throws PlainTableException
 	 */
-	public void manage(Class<? extends Serializable> clazz) throws PlainTableException;
+	public void manage(Class<?> clazz) throws PlainTableException;
 
 	/**
 	 * @param schema
