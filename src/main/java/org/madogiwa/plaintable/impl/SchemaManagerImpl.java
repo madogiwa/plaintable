@@ -66,7 +66,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	/* (non-Javadoc)
 	 * @see org.madogiwa.plaintable.TableManager#addTable(java.lang.Class)
 	 */
-	public void manage(Class<?> clazz) {
+	public void manage(Class<? extends Serializable> clazz) {
 		Schema schema = extractSchemaFromClass(clazz);
 		updateClassFields(clazz, schema);
 		manage(schema);
@@ -76,7 +76,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * @param clazz
 	 * @return
 	 */
-	private Schema extractSchemaFromClass(Class<?> clazz) {
+	private Schema extractSchemaFromClass(Class<? extends Serializable> clazz) {
 		Table annot = (Table) clazz.getAnnotation(Table.class);
 		if (annot == null) {
 			throw new RuntimeException(String.format("%s is not a table schema", clazz));
@@ -90,7 +90,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * @param clazz
 	 * @return
 	 */
-	private long calculateSerialUUID(Class<?> clazz) {
+	private long calculateSerialUUID(Class<? extends Serializable> clazz) {
 		ObjectStreamClass objStream = ObjectStreamClass.lookup(clazz);
 		if (objStream == null) {
 			throw new RuntimeException(String.format("%s hasn't serialVersionUID"));
@@ -103,7 +103,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * @param name
 	 * @param serial
 	 */
-	private Schema extractSchemaFromClass(Class<?> clazz, String name, long serial) {
+	private Schema extractSchemaFromClass(Class<? extends Serializable> clazz, String name, long serial) {
 		Schema schema = new Schema(name, serial);
 
 		Field[] fields = clazz.getFields();
@@ -159,7 +159,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * @param clazz
 	 * @param schema
 	 */
-	private void updateClassFields(Class<?> clazz, Schema schema) {
+	private void updateClassFields(Class<? extends Serializable> clazz, Schema schema) {
 		Field[] fields = clazz.getFields();
 		for(Field field : fields) {
 			if (Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers())) {
