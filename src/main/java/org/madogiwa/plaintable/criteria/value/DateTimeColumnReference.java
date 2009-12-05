@@ -20,7 +20,8 @@
 package org.madogiwa.plaintable.criteria.value;
 
 import org.madogiwa.plaintable.criteria.Context;
-import org.madogiwa.plaintable.criteria.ISource;
+import org.madogiwa.plaintable.criteria.Source;
+import org.madogiwa.plaintable.criteria.TableSource;
 import org.madogiwa.plaintable.schema.DateTimeAttribute;
 
 /**
@@ -29,7 +30,7 @@ import org.madogiwa.plaintable.schema.DateTimeAttribute;
  */
 public class DateTimeColumnReference implements DateTimeExpression {
 
-	private ISource source;
+	private Source source;
 
 	private String column;
 
@@ -37,14 +38,14 @@ public class DateTimeColumnReference implements DateTimeExpression {
 	 * @param column
 	 */
 	public DateTimeColumnReference(DateTimeAttribute column) {
-		this(column.getSchema(), column.getName());
+		this(new TableSource(column.getSchema()), column.getName());
 	}
 
 	/**
 	 * @param source
 	 * @param column
 	 */
-	public DateTimeColumnReference(ISource source, String column) {
+	public DateTimeColumnReference(Source source, String column) {
 		this.source = source;
 		this.column = column;
 	}

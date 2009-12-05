@@ -17,35 +17,48 @@
 /**
  * 
  */
-package org.madogiwa.plaintable.criteria.value;
+package org.madogiwa.plaintable.criteria;
 
-import org.madogiwa.plaintable.criteria.Context;
-import org.madogiwa.plaintable.criteria.Source;
+import org.madogiwa.plaintable.schema.Schema;
 
 /**
  * @author Hidenori Sugiyama
  *
  */
-public class BinaryColumnReference implements BinaryExpression {
+public class TableSource extends Source {
 
-	private Source source;
+	private Schema schema;
 
-	private String column;
+	private String alias;
 
 	/**
-	 * @param source
+	 * @param schema
+	 */
+	public TableSource(Schema schema) {
+		this(schema, schema.getName());
+	}
+
+	/**
+	 * @param schema
 	 * @param alias
 	 */
-	public BinaryColumnReference(Source source, String column) {
-		this.source = source;
-		this.column = column;
+	public TableSource(Schema schema, String alias) {
+		this.schema = schema;
+		this.alias = alias;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	 * @see org.madogiwa.plaintable.criteria.ISource#getAlias()
+	 */
+	public String getAlias() {
+		return alias;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa.plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("(%s.%s)", source.getAlias(), column);
+		return String.format("%s AS %s", schema.getName(), getAlias());
 	}
 
 }

@@ -67,7 +67,7 @@ public class Projection implements Cloneable {
 	}
 
 	public Projection add(BinaryAttribute column) {
-		add(new BinaryColumnReference(column.getSchema(), column.getName()), new Path(column).getPathString());
+		add(new BinaryColumnReference(new TableSource(column.getSchema()), column.getName()), new Path(column).getPathString());
 		return this;
 	}
 

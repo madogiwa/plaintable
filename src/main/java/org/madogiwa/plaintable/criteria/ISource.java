@@ -26,9 +26,4 @@ package org.madogiwa.plaintable.criteria;
  */
 public interface ISource extends IExpression {
 
-	/**
-	 * @return
-	 */
-	public String getAlias();
-
 }

@@ -17,35 +17,18 @@
 /**
  * 
  */
-package org.madogiwa.plaintable.criteria.value;
+package org.madogiwa.plaintable.criteria;
 
-import org.madogiwa.plaintable.criteria.Context;
-import org.madogiwa.plaintable.criteria.Source;
 
 /**
  * @author Hidenori Sugiyama
  *
  */
-public class BinaryColumnReference implements BinaryExpression {
-
-	private Source source;
-
-	private String column;
+public abstract class Source implements ISource {
 
 	/**
-	 * @param source
-	 * @param alias
+	 * @return
 	 */
-	public BinaryColumnReference(Source source, String column) {
-		this.source = source;
-		this.column = column;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
-	 */
-	public String getSQLString(Context context) {
-		return String.format("(%s.%s)", source.getAlias(), column);
-	}
+	public abstract String getAlias();
 
 }

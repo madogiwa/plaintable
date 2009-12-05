@@ -23,7 +23,7 @@ package org.madogiwa.plaintable.criteria;
  * @author Hidenori Sugiyama
  *
  */
-public class QuerySource implements ISource {
+public class QuerySource extends Source {
 
 	private IQuery query;
 
@@ -39,7 +39,7 @@ public class QuerySource implements ISource {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.ISource#getAlias()
+	 * @see org.madogiwa.plaintable.criteria.Source#getAlias()
 	 */
 	public String getAlias() {
 		return alias;

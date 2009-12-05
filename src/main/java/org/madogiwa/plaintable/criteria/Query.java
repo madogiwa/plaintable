@@ -24,6 +24,7 @@ import java.io.Serializable;
 import org.madogiwa.plaintable.criteria.bool.BooleanExpression;
 import org.madogiwa.plaintable.criteria.value.ValueExpression;
 import org.madogiwa.plaintable.schema.Column;
+import org.madogiwa.plaintable.schema.Schema;
 
 
 /**
@@ -40,6 +41,13 @@ public class Query implements IQuery, Cloneable, Serializable {
 	private Order order;
 
 	private Projection projection;
+
+	/**
+	 * @param schema
+	 */
+	public Query(Schema schema) {
+		this(new TableSource(schema));
+	}
 
 	/**
 	 * @param source

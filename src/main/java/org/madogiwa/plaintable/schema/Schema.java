@@ -24,13 +24,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.madogiwa.plaintable.criteria.Context;
-import org.madogiwa.plaintable.criteria.ISource;
 
 /**
  * @author Hidenori Sugiyama
  *
  */
-public class Schema implements Serializable, ISource {
+public class Schema implements Serializable {
 
 	/**
 	 * 

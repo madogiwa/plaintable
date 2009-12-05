@@ -20,7 +20,8 @@
 package org.madogiwa.plaintable.criteria.value;
 
 import org.madogiwa.plaintable.criteria.Context;
-import org.madogiwa.plaintable.criteria.ISource;
+import org.madogiwa.plaintable.criteria.Source;
+import org.madogiwa.plaintable.criteria.TableSource;
 import org.madogiwa.plaintable.schema.NumericAttribute;
 
 /**
@@ -29,7 +30,7 @@ import org.madogiwa.plaintable.schema.NumericAttribute;
  */
 public class NumericColumnReference implements NumericExpression {
 
-	private ISource source;
+	private Source source;
 
 	private String column;
 
@@ -37,14 +38,14 @@ public class NumericColumnReference implements NumericExpression {
 	 * @param column
 	 */
 	public NumericColumnReference(NumericAttribute column) {
-		this(column.getSchema(), column.getName());
+		this(new TableSource(column.getSchema()), column.getName());
 	}
 
 	/**
 	 * @param source
 	 * @param column
 	 */
-	public NumericColumnReference(ISource source, String column) {
+	public NumericColumnReference(Source source, String column) {
 		this.source = source;
 		this.column = column;
 	}

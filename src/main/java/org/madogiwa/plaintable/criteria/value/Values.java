@@ -21,6 +21,7 @@ package org.madogiwa.plaintable.criteria.value;
 
 import java.util.Date;
 
+import org.madogiwa.plaintable.criteria.TableSource;
 import org.madogiwa.plaintable.schema.BinaryAttribute;
 import org.madogiwa.plaintable.schema.DateTimeAttribute;
 import org.madogiwa.plaintable.schema.KeyColumn;
@@ -34,7 +35,7 @@ import org.madogiwa.plaintable.schema.TextAttribute;
 public class Values {
 
 	public static BinaryExpression binary(BinaryAttribute column) {
-		return new BinaryColumnReference(column.getSchema(), column.getName());
+		return new BinaryColumnReference(new TableSource(column.getSchema()), column.getName());
 	}
 
 	public static DateTimeExpression date(Date date) {

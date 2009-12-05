@@ -61,7 +61,7 @@ public class Order {
 	 * @return
 	 */
 	public Order add(Column column, boolean ascending) {
-		orderList.add(new OrderItem(column.getSchema(), column, ascending));
+		orderList.add(new OrderItem(new TableSource(column.getSchema()), column, ascending));
 		return this;
 	}
 
@@ -71,8 +71,8 @@ public class Order {
 	 * @param ascending
 	 * @return
 	 */
-	public Order add(ISource source, Column column, boolean ascending) {
-		orderList.add(new OrderItem(column.getSchema(), column, ascending));
+	public Order add(Source source, Column column, boolean ascending) {
+		orderList.add(new OrderItem(source, column, ascending));
 		return this;
 	}
 
@@ -102,13 +102,13 @@ public class Order {
 
 	private class OrderItem {
 
-		private ISource source;
+		private Source source;
 
 		private Column column;
 
 		private boolean ascending;
 
-		public OrderItem(ISource source, Column column, boolean ascending) {
+		public OrderItem(Source source, Column column, boolean ascending) {
 			this.source = source;
 			this.column = column;
 			this.ascending = ascending;

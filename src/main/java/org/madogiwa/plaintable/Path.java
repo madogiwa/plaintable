@@ -19,7 +19,8 @@
  */
 package org.madogiwa.plaintable;
 
-import org.madogiwa.plaintable.criteria.ISource;
+import org.madogiwa.plaintable.criteria.Source;
+import org.madogiwa.plaintable.criteria.TableSource;
 import org.madogiwa.plaintable.schema.Column;
 
 /**
@@ -33,10 +34,10 @@ public class Path {
 	private String columnName;
 
 	public Path(Column column) {
-		this(column.getSchema(), column.getName());
+		this(new TableSource(column.getSchema()), column.getName());
 	}
 
-	public Path(ISource source, String columnName) {
+	public Path(Source source, String columnName) {
 		this(source.getAlias(), columnName);
 	}
 

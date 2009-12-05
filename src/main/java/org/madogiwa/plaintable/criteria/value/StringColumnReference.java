@@ -20,7 +20,8 @@
 package org.madogiwa.plaintable.criteria.value;
 
 import org.madogiwa.plaintable.criteria.Context;
-import org.madogiwa.plaintable.criteria.ISource;
+import org.madogiwa.plaintable.criteria.Source;
+import org.madogiwa.plaintable.criteria.TableSource;
 import org.madogiwa.plaintable.schema.TextAttribute;
 
 /**
@@ -29,7 +30,7 @@ import org.madogiwa.plaintable.schema.TextAttribute;
  */
 public class StringColumnReference implements StringExpression {
 
-	private ISource source;
+	private Source source;
 
 	private String column;
 
@@ -37,14 +38,14 @@ public class StringColumnReference implements StringExpression {
 	 * @param column
 	 */
 	public StringColumnReference(TextAttribute column) {
-		this(column.getSchema(), column.getName());
+		this(new TableSource(column.getSchema()), column.getName());
 	}
 
 	/**
 	 * @param source
 	 * @param column
 	 */
-	public StringColumnReference(ISource source, String column) {
+	public StringColumnReference(Source source, String column) {
 		this.source = source;
 		this.column = column;
 	}
