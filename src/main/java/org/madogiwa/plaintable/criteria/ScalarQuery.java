@@ -51,4 +51,11 @@ public class ScalarQuery implements IQuery {
 		return query.getSQLString(context);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.madogiwa.plaintable.criteria.IQuery#getSource()
+	 */
+	public ISource getSource() {
+		return query.getSource();
+	}
+
 }

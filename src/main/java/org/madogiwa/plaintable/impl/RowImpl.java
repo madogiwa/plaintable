@@ -78,7 +78,7 @@ public class RowImpl implements Row {
 				String tableName = metaData.getTableName(index + 1);
 				alias = (tableName != null) ? tableName + "." + alias : alias;
 			}
-			return alias;
+			return alias.toLowerCase();
 		} catch (SQLException e) {
 			throw new PlainTableException(e);
 		}

@@ -54,7 +54,7 @@ public class Query implements IQuery, Cloneable, Serializable {
 	 */
 	public Query(ISource source) {
 		this.source = source;
-		projection = new Projection();
+		projection = new Projection(source);
 		restriction = new Restriction();
 		order = new Order();
 	}
@@ -143,7 +143,7 @@ public class Query implements IQuery, Cloneable, Serializable {
 	 * 
 	 */
 	public void clearProjection() {
-		projection = new Projection();
+		projection = new Projection(source);
 	}
 
 	/**

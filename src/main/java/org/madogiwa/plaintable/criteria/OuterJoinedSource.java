@@ -19,6 +19,9 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.madogiwa.plaintable.Path;
 import org.madogiwa.plaintable.schema.Column;
 
@@ -81,6 +84,16 @@ public class OuterJoinedSource extends JoinedSource {
 	 */
 	public String getSQLString(Context context) {
 		return String.format("(%s LEFT OUTER JOIN %s ON %s = %s)", left.getSQLString(context), right.getSQLString(context), leftColumn.getPathString(), rightColumn.getPathString());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.madogiwa.plaintable.criteria.ISource#getPathList()
+	 */
+	public List<Path> getPathList() {
+		List<Path> list = new ArrayList<Path>();
+		list.addAll(left.getPathList());
+		list.addAll(right.getPathList());
+		return list;
 	}
 
 }

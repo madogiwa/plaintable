@@ -45,43 +45,67 @@ public class BeanMapper<T> implements RowMapper<T> {
 
 	private Class<T> beanClass;
 
-	private Map<String, String> mapping = new HashMap<String, String>();
+	private Map<String, MappingFunction<T>> funcs = new HashMap<String, MappingFunction<T>>();
 
 	/**
 	 * @param clazz
 	 */
 	public BeanMapper(Class<T> clazz) {
-		Mapped mapping = clazz.getAnnotation(Mapped.class);
-		if (mapping != null) {
-			this.beanClass = clazz;
-			this.sourceAlias = ReflectionUtils.findSchema(mapping.schema()).getAlias();
-		} else {
-			this.beanClass = clazz;
-			this.sourceAlias = null;
+		Mapped mapped = clazz.getAnnotation(Mapped.class);
+		if (mapped == null) {
+			throw new RuntimeException();
 		}
-	}
-
-	public BeanMapper(Class<T> clazz, Schema schema) {
-		this(clazz, schema.getAlias());
-	}
-
-	public BeanMapper(Class<T> clazz, String sourceAlias) {
 		this.beanClass = clazz;
-		this.sourceAlias = sourceAlias;
+		this.sourceAlias = ReflectionUtils.findSchema(mapped.schema()).getAlias().toLowerCase();
+
+		init();
 	}
 
 	/**
 	 * @param clazz
-	 * @param mapping
+	 * @param schema
 	 */
-	public BeanMapper(Class<T> clazz, Map<String, String> mapping) {
-		beanClass = clazz;
-		this.mapping = mapping;
+	public BeanMapper(Class<T> clazz, Schema schema) {
+		this(clazz, schema.getAlias());
 	}
 
-	public BeanMapper<T> add(String path, String property) {
-		mapping.put(path, property);
-		return this;
+	/**
+	 * @param clazz
+	 * @param sourceAlias
+	 */
+	public BeanMapper(Class<T> clazz, String sourceAlias) {
+		this.beanClass = clazz;
+		this.sourceAlias = sourceAlias.toLowerCase();
+
+		init();
+	}
+
+	/**
+	 * 
+	 */
+	private void init() {
+		List<PropertyDescriptor> properties = getProperties(beanClass);
+		for(PropertyDescriptor property : properties) {
+			final Method method = property.getWriteMethod();
+			final String path = (sourceAlias + "." + property.getName()).toLowerCase();
+
+			Mapped mapped = property.getPropertyType().getAnnotation(Mapped.class);
+			if (mapped != null) {
+				final BeanMapper mapper = new BeanMapper(property.getPropertyType(), property.getName() + "_" + ReflectionUtils.findSchema(mapped.schema()).getName());
+				funcs.put(path, new MappingFunction<T>() {
+					public void map(Row row, T bean) throws Exception {
+						Object value = mapper.map(row);
+						method.invoke(bean, value);
+					}
+				});
+			} else {
+				funcs.put(path, new MappingFunction<T>() {
+					public void map(Row row, T bean) throws Exception {
+						method.invoke(bean, row.getObject(path));
+					}
+				});
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -98,43 +122,17 @@ public class BeanMapper<T> implements RowMapper<T> {
 			throw new RuntimeException(e);
 		}
 
-		List<PropertyDescriptor> properties = getProperties(beanClass);
-		for(int i = 0; i < row.size(); i++) {
-			String alias = row.getAlias(i);
-			for(PropertyDescriptor propDesc : properties) {
-				String propName;
-				if (mapping.containsKey(alias)) {
-					propName = mapping.get(alias);
-				} else {
-					propName = (sourceAlias != null) ? sourceAlias + "." + propDesc.getName() : propDesc.getName();
-				}
-				if (propName.equalsIgnoreCase(alias)) {
-					setProperty(bean, propDesc, row, i);
+		for(String path : row.getAliasList()) {
+			if (funcs.containsKey(path)) {
+				try {
+					funcs.get(path).map(row, bean);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
 				}
 			}
 		}
 
 		return bean;
-	}
-
-	/**
-	 * @param propDesc
-	 * @param row
-	 * @param index
-	 * @throws PlainTableException 
-	 */
-	private void setProperty(Object bean, PropertyDescriptor propDesc, Row row, int index) throws PlainTableException {
-		try {
-			Object value = row.getObject(index);
-			Method method = propDesc.getWriteMethod();
-			method.invoke(bean, value);
-		} catch (IllegalArgumentException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
@@ -150,29 +148,10 @@ public class BeanMapper<T> implements RowMapper<T> {
 		}
 	}
 
-	/**
-	 * @param name
-	 * @return
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
-	 */
-	protected Method getSetterMethod(String name, Object arg) {
-		try {
-			return beanClass.getMethod(getSetterMethodName(name), arg.getClass());
-		} catch (SecurityException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchMethodException e) {
-			// nothing todo
-		}
-		return null;
-	}
+	public interface MappingFunction<T> {
 
-	/**
-	 * @param name
-	 * @return
-	 */
-	private String getSetterMethodName(String name) {
-		return "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+		public void map(Row row, T bean) throws Exception;
+
 	}
 
 }

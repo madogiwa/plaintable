@@ -51,6 +51,12 @@ public class Projection implements Cloneable {
 
 	private boolean distinct = false;
 
+	private ISource source;
+
+	public Projection(ISource source) {
+		this.source = source;
+	}
+
 	public Projection add(NumericAttribute column) {
 		add(new NumericColumnReference(column), new Path(column).getPathString());
 		return this;
@@ -138,7 +144,10 @@ public class Projection implements Cloneable {
 			}
 			sql.deleteCharAt(sql.lastIndexOf(","));
 		} else {
-			sql.append(" * ");
+			for(Path path : source.getPathList()) {
+				sql.append(String.format(" %s AS %s,", path.getPathString(), context.getDialect().quote(path.getPathString())));
+			}
+			sql.deleteCharAt(sql.lastIndexOf(","));
 		}
 		return sql.toString();
 	}

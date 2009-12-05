@@ -29,4 +29,6 @@ public interface IQuery {
 
 	public String getSQLString(Context context);
 
+	public ISource getSource();
+
 }

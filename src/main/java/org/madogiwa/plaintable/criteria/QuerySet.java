@@ -19,6 +19,10 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import java.util.List;
+
+import org.madogiwa.plaintable.Path;
+
 /**
  * @author Hidenori Sugiyama
  *
@@ -56,10 +60,17 @@ public class QuerySet implements IQuery, ISource {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.ISource#getAlias()
+	 * @see org.madogiwa.plaintable.criteria.IQuery#getSource()
 	 */
-	public String getAlias() {
-		return null;
+	public ISource getSource() {
+		return c1.getSource();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.madogiwa.plaintable.criteria.ISource#getPathList()
+	 */
+	public List<Path> getPathList() {
+		return getSource().getPathList();
 	}
 
 }

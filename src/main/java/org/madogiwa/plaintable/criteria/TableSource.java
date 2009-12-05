@@ -19,6 +19,11 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.madogiwa.plaintable.Path;
+import org.madogiwa.plaintable.schema.Column;
 import org.madogiwa.plaintable.schema.Schema;
 
 /**
@@ -59,6 +64,17 @@ public class TableSource extends Source {
 	 */
 	public String getSQLString(Context context) {
 		return String.format("%s AS %s", schema.getName(), getAlias());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.madogiwa.plaintable.criteria.ISource#getPathList()
+	 */
+	public List<Path> getPathList() {
+		List<Path> list = new ArrayList<Path>();
+		for(Column column : schema.getColumns()) {
+			list.add(new Path(alias, column.getName()));
+		}
+		return list;
 	}
 
 }

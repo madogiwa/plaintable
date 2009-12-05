@@ -19,11 +19,17 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import java.util.List;
+
+import org.madogiwa.plaintable.Path;
+
 
 /**
  * @author Hidenori Sugiyama
  *
  */
 public interface ISource extends IExpression {
+
+	public List<Path> getPathList();
 
 }
