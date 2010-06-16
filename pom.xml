@@ -82,6 +82,21 @@
     </repository>
   </repositories>
 
+  <distributionManagement>
+    <repository>
+      <id>maven.madogiwa.org.releases</id>
+      <name>maven.madogiwa.org.releases</name>
+      <url>dav:http://maven.madogiwa.org/maven2</url>
+      <uniqueVersion>false</uniqueVersion>
+    </repository>
+    <snapshotRepository>
+      <id>maven.madogiwa.org.snapshots</id>
+      <name>maven2.madogiwa.org.snapshots</name>
+      <url>dav:http://maven.madogiwa.org/maven2</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
+  </distributionManagement>
+
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <testSourceDirectory>src/test/java</testSourceDirectory>
@@ -159,31 +174,6 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.9</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>8.4-701.jdbc3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.derby</groupId>
-      <artifactId>derby</artifactId>
-      <version>10.5.3.0_1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>1.2.124</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
 </project>
-
