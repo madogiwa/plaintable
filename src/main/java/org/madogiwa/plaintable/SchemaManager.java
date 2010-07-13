@@ -25,22 +25,20 @@ import org.madogiwa.plaintable.schema.Schema;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface SchemaManager {
 
 	enum SynchronizeMode {
-		ALL_DROP_AND_CREATE,
-		DROP_AND_CREATE,
-		UPDATE_ONLY,
-		NONE,
+		ALL_DROP_AND_CREATE, DROP_AND_CREATE, UPDATE_ONLY, NONE,
 	}
 
 	/**
 	 * @param clazz
 	 * @throws PlainTableException
 	 */
-	public void manage(Class<? extends Serializable> clazz) throws PlainTableException;
+	public void manage(Class<? extends Serializable> clazz)
+			throws PlainTableException;
 
 	/**
 	 * @param schema
@@ -61,6 +59,7 @@ public interface SchemaManager {
 	 * @return
 	 * @throws PlainTableException
 	 */
-	public boolean sync(SynchronizeMode mode, boolean forced) throws PlainTableException;
-	
+	public boolean sync(SynchronizeMode mode, boolean forced)
+			throws PlainTableException;
+
 }

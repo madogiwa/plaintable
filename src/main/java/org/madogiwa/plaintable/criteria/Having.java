@@ -26,7 +26,7 @@ import org.madogiwa.plaintable.criteria.bool.BooleanExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Having {
 
@@ -57,7 +57,7 @@ public class Having {
 
 		if (exprList.size() != 0) {
 			sql.append(exprList.get(0).getSQLString(context));
-			for(int i = 1; i < exprList.size(); i++) {
+			for (int i = 1; i < exprList.size(); i++) {
 				sql.append(" AND ");
 				sql.append(exprList.get(i).getSQLString(context));
 			}

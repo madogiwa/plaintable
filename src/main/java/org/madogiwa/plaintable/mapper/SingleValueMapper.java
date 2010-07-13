@@ -24,7 +24,7 @@ import org.madogiwa.plaintable.Row;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class SingleValueMapper<T> implements RowMapper<T> {
 
@@ -37,14 +37,17 @@ public class SingleValueMapper<T> implements RowMapper<T> {
 		this.path = path;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.mapper.Mapper#map(org.madogiwa.plaintable.Row)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.mapper.Mapper#map(org.madogiwa.plaintable.Row)
 	 */
 	public T map(Row row) throws PlainTableException {
 		if (path != null) {
-			return (T)row.getObject(path);
+			return (T) row.getObject(path);
 		} else {
-			return (T)row.getObject(1);
+			return (T) row.getObject(1);
 		}
 	}
 

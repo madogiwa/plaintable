@@ -24,16 +24,12 @@ import org.madogiwa.plaintable.schema.Column;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class NumericAggregation implements NumericExpression {
 
 	public enum Function {
-		COUNT("COUNT"),
-		SUM("SUM"),
-		AVG("AVG"),
-		MAX("MAX"),
-		MIN("MIN");
+		COUNT("COUNT"), SUM("SUM"), AVG("AVG"), MAX("MAX"), MIN("MIN");
 
 		private String name;
 
@@ -59,8 +55,12 @@ public class NumericAggregation implements NumericExpression {
 		this.func = func;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		return String.format("%s(%s)", func.toString(), column.getPath());

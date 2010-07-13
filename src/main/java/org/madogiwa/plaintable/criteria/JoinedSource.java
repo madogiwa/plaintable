@@ -19,10 +19,9 @@
  */
 package org.madogiwa.plaintable.criteria;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public abstract class JoinedSource implements ISource {
 

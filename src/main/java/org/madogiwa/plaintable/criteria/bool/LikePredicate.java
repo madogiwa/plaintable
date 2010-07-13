@@ -26,23 +26,18 @@ import org.madogiwa.plaintable.criteria.Context;
 import org.madogiwa.plaintable.criteria.Resolver;
 import org.madogiwa.plaintable.criteria.value.StringExpression;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class LikePredicate implements BooleanExpression, Resolver {
 
 	public enum Type {
-		LIKE,
-		NOT_LIKE
+		LIKE, NOT_LIKE
 	}
 
 	public enum MatchType {
-		START_WITH,
-		END_WITH,
-		EXACT,
-		CONTAIN
+		START_WITH, END_WITH, EXACT, CONTAIN
 	}
 
 	private StringExpression value;
@@ -59,33 +54,44 @@ public class LikePredicate implements BooleanExpression, Resolver {
 	 * @param target
 	 * @param pattern
 	 */
-	public LikePredicate(StringExpression value, String pattern, Type type, MatchType matchType) {
+	public LikePredicate(StringExpression value, String pattern, Type type,
+			MatchType matchType) {
 		this.value = value;
 		this.pattern = pattern;
 		this.type = type;
 		this.matchType = matchType;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa.simpletable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa
+	 * .simpletable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		String marker = context.getResolverMarker(this);
 		escapedPattern = context.getDialect().escape(pattern);
 		if (type.equals(Type.LIKE)) {
-			return String.format("(%s LIKE %s)", value.getSQLString(context), marker);
+			return String.format("(%s LIKE %s)", value.getSQLString(context),
+					marker);
 		} else {
-			return String.format("(%s NOT LIKE %s)", value.getSQLString(context), marker);
+			return String.format("(%s NOT LIKE %s)",
+					value.getSQLString(context), marker);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Resolver#resolve(java.sql.PreparedStatement, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Resolver#resolve(java.sql.PreparedStatement
+	 * , int)
 	 */
 	public void resolve(PreparedStatement statement, int index)
 			throws SQLException {
 
-		switch(matchType) {
+		switch (matchType) {
 		case START_WITH:
 			statement.setString(index, "%" + escapedPattern);
 			break;

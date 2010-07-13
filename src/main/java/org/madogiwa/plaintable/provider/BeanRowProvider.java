@@ -44,10 +44,9 @@ import org.madogiwa.plaintable.schema.attr.StringAttribute;
 import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
 import org.madogiwa.plaintable.util.ReflectionUtils;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class BeanRowProvider<T> implements RowProvider {
 
@@ -110,20 +109,24 @@ public class BeanRowProvider<T> implements RowProvider {
 		return this;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.provider.RowProvider#getSchema()
 	 */
 	public Schema getSchema() {
 		return schema;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.provider.RowProvider#getMap()
 	 */
 	public Map<Column, ValueExpression> getMap() {
 		Map<Column, ValueExpression> map = new HashMap<Column, ValueExpression>();
 
-		for(Column column : schema.getColumns()) {
+		for (Column column : schema.getColumns()) {
 			if (column.getClass().equals(SyntheticKey.class)) {
 				continue;
 			}
@@ -152,15 +155,17 @@ public class BeanRowProvider<T> implements RowProvider {
 
 		Class<?> type = column.getClass();
 		if (type.equals(ReferenceKey.class)) {
-			return new KeyRaw((Long)value);
-		} else if (type.equals(IntegerAttribute.class) || type.equals(LongAttribute.class)) {
-			return new NumericRaw((Number)value);
-		} else if (type.equals(StringAttribute.class) || type.equals(CharAttribute.class)) {
-			return new StringRaw((String)value);
+			return new KeyRaw((Long) value);
+		} else if (type.equals(IntegerAttribute.class)
+				|| type.equals(LongAttribute.class)) {
+			return new NumericRaw((Number) value);
+		} else if (type.equals(StringAttribute.class)
+				|| type.equals(CharAttribute.class)) {
+			return new StringRaw((String) value);
 		} else if (type.equals(SchemaReference.class)) {
-			return new KeyRaw((Long)value);
+			return new KeyRaw((Long) value);
 		} else if (type.equals(TimestampAttribute.class)) {
-			return new DateTimeRaw((Date)value);
+			return new DateTimeRaw((Date) value);
 		} else {
 			throw new RuntimeException("unsupported column type");
 		}
@@ -193,8 +198,8 @@ public class BeanRowProvider<T> implements RowProvider {
 	/**
 	 * @param name
 	 * @return
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
 	 */
 	protected Method getGetterMethod(String name) {
 		try {

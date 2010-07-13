@@ -32,7 +32,7 @@ import org.madogiwa.plaintable.criteria.value.ValueExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class InPredicate implements BooleanExpression {
 
@@ -76,11 +76,16 @@ public class InPredicate implements BooleanExpression {
 		this.list = list;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa.simpletable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa
+	 * .simpletable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("%s IN (%s)", value.getSQLString(context), list.getSQLString(context));
+		return String.format("%s IN (%s)", value.getSQLString(context),
+				list.getSQLString(context));
 	}
 
 }

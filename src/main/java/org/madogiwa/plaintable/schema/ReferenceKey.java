@@ -19,10 +19,9 @@
  */
 package org.madogiwa.plaintable.schema;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class ReferenceKey extends KeyColumn {
 
@@ -56,7 +55,8 @@ public class ReferenceKey extends KeyColumn {
 	 * @param target
 	 * @param cascade
 	 */
-	public ReferenceKey(Schema table, String name, SchemaReference target, boolean cascade) {
+	public ReferenceKey(Schema table, String name, SchemaReference target,
+			boolean cascade) {
 		super(table, name);
 		this.target = target;
 		this.cascade = cascade;
@@ -72,7 +72,7 @@ public class ReferenceKey extends KeyColumn {
 	/**
 	 * @param target
 	 */
-	public void setTarget(SchemaReference  target) {
+	public void setTarget(SchemaReference target) {
 		this.target = target;
 	}
 
@@ -84,7 +84,8 @@ public class ReferenceKey extends KeyColumn {
 	}
 
 	/**
-	 * @param nullable the nullable to set
+	 * @param nullable
+	 *            the nullable to set
 	 */
 	public void setNullable(boolean nullable) {
 		this.nullable = nullable;
@@ -98,7 +99,8 @@ public class ReferenceKey extends KeyColumn {
 	}
 
 	/**
-	 * @param indexed the indexed to set
+	 * @param indexed
+	 *            the indexed to set
 	 */
 	public void setIndexed(boolean indexed) {
 		this.indexed = indexed;
@@ -112,7 +114,8 @@ public class ReferenceKey extends KeyColumn {
 	}
 
 	/**
-	 * @param unique the unique to set
+	 * @param unique
+	 *            the unique to set
 	 */
 	public void setUnique(boolean unique) {
 		this.unique = unique;
@@ -126,7 +129,8 @@ public class ReferenceKey extends KeyColumn {
 	}
 
 	/**
-	 * @param cascade the cascade to set
+	 * @param cascade
+	 *            the cascade to set
 	 */
 	public void setCascade(boolean cascade) {
 		this.cascade = cascade;

@@ -34,7 +34,7 @@ import org.madogiwa.plaintable.criteria.Projection;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class RowImpl implements Row {
 
@@ -48,14 +48,16 @@ public class RowImpl implements Row {
 	}
 
 	public void begin() {
-		
+
 	}
 
 	public void end() {
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#size()
 	 */
 	public int size() throws PlainTableException {
@@ -67,7 +69,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getAlias(int)
 	 */
 	public String getAlias(int index) throws PlainTableException {
@@ -84,20 +88,24 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getAliasList()
 	 */
 	public List<String> getAliasList() throws PlainTableException {
 		List<String> aliasList = new ArrayList<String>();
 
-		for(int i = 0; i < size(); i++) {
+		for (int i = 0; i < size(); i++) {
 			aliasList.add(getAlias(i));
 		}
 
 		return aliasList;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getBigDecimal(int)
 	 */
 	public BigDecimal getBigDecimal(int index) throws PlainTableException {
@@ -108,7 +116,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getBigDecimal(java.lang.String)
 	 */
 	public BigDecimal getBigDecimal(String alias) throws PlainTableException {
@@ -119,7 +129,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getBoolean(int)
 	 */
 	public Boolean getBoolean(int index) throws PlainTableException {
@@ -130,7 +142,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getBoolean(java.lang.String)
 	 */
 	public Boolean getBoolean(String alias) throws PlainTableException {
@@ -141,7 +155,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getBytes(int)
 	 */
 	public byte[] getBytes(int index) throws PlainTableException {
@@ -152,7 +168,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getBytes(java.lang.String)
 	 */
 	public byte[] getBytes(String alias) throws PlainTableException {
@@ -163,7 +181,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getDate(int)
 	 */
 	public Date getDate(int index) throws PlainTableException {
@@ -174,7 +194,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getDate(java.lang.String)
 	 */
 	public Date getDate(String alias) throws PlainTableException {
@@ -185,7 +207,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getDouble(int)
 	 */
 	public Double getDouble(int index) throws PlainTableException {
@@ -196,7 +220,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getDouble(java.lang.String)
 	 */
 	public Double getDouble(String alias) throws PlainTableException {
@@ -207,7 +233,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getFloat(int)
 	 */
 	public Float getFloat(int index) throws PlainTableException {
@@ -218,7 +246,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getFloat(java.lang.String)
 	 */
 	public Float getFloat(String alias) throws PlainTableException {
@@ -229,7 +259,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getInputStream(int)
 	 */
 	public InputStream getInputStream(int index) throws PlainTableException {
@@ -240,7 +272,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getInputStream(java.lang.String)
 	 */
 	public InputStream getInputStream(String alias) throws PlainTableException {
@@ -251,7 +285,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getInteger(int)
 	 */
 	public Integer getInteger(int index) throws PlainTableException {
@@ -262,7 +298,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getInteger(java.lang.String)
 	 */
 	public Integer getInteger(String alias) throws PlainTableException {
@@ -273,7 +311,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getLong(int)
 	 */
 	public Long getLong(int index) throws PlainTableException {
@@ -284,7 +324,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getLong(java.lang.String)
 	 */
 	public Long getLong(String alias) throws PlainTableException {
@@ -295,7 +337,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getObject(int)
 	 */
 	public Object getObject(int index) throws PlainTableException {
@@ -306,7 +350,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getObject(java.lang.String)
 	 */
 	public Object getObject(String alias) throws PlainTableException {
@@ -317,7 +363,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getShort(int)
 	 */
 	public Short getShort(int index) throws PlainTableException {
@@ -328,7 +376,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getShort(java.lang.String)
 	 */
 	public Short getShort(String alias) throws PlainTableException {
@@ -339,7 +389,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getString(int)
 	 */
 	public String getString(int index) throws PlainTableException {
@@ -350,7 +402,9 @@ public class RowImpl implements Row {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Row#getString(java.lang.String)
 	 */
 	public String getString(String alias) throws PlainTableException {

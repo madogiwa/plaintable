@@ -24,24 +24,28 @@ import org.madogiwa.plaintable.criteria.bool.BooleanExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class NumericCase implements NumericExpression {
 
 	public NumericCase() {
-		
+
 	}
 
 	public void add(BooleanExpression expr, NumericExpression value) {
-		
+
 	}
 
 	public void setDefault(NumericExpression value) {
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		// TODO Auto-generated method stub

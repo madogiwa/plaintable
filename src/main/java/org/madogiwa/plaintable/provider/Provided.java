@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

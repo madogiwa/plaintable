@@ -25,7 +25,7 @@ import org.madogiwa.plaintable.util.ReflectionUtils;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class SchemaReference implements Serializable {
 
@@ -44,7 +44,7 @@ public class SchemaReference implements Serializable {
 	 * @param clazz
 	 */
 	public SchemaReference(Class<?> clazz) {
-		schemaName = ReflectionUtils.findSchema(clazz).getName(); 
+		schemaName = ReflectionUtils.findSchema(clazz).getName();
 		className = clazz.getCanonicalName();
 	}
 
@@ -79,7 +79,8 @@ public class SchemaReference implements Serializable {
 	public Schema getSchema() {
 		try {
 			if (schema == null) {
-				Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(className);
+				Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(
+						className);
 				schema = ReflectionUtils.findSchema(clazz);
 			}
 

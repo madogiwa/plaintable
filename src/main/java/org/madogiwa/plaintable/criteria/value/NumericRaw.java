@@ -26,10 +26,9 @@ import java.sql.SQLException;
 import org.madogiwa.plaintable.criteria.Context;
 import org.madogiwa.plaintable.criteria.Resolver;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class NumericRaw implements NumericExpression, Resolver {
 
@@ -42,35 +41,42 @@ public class NumericRaw implements NumericExpression, Resolver {
 		this.value = value;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		String marker = context.getResolverMarker(this);
 		return String.format("(%s)", marker);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Resolver#resolve(java.sql.PreparedStatement, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.madogiwa.plaintable.Resolver#resolve(java.sql.PreparedStatement,
+	 * int)
 	 */
 	public void resolve(PreparedStatement statement, int index)
 			throws SQLException {
 
 		Number val = getValue();
 		if (val instanceof Short) {
-			statement.setShort(index, (Short)val);
+			statement.setShort(index, (Short) val);
 			return;
 		}
 		if (val instanceof Integer) {
-			statement.setInt(index, (Integer)val);
+			statement.setInt(index, (Integer) val);
 			return;
 		}
 		if (val instanceof Long) {
-			statement.setLong(index, (Long)val);
+			statement.setLong(index, (Long) val);
 			return;
 		}
 		if (val instanceof BigDecimal) {
-			statement.setBigDecimal(index, (BigDecimal)val);
+			statement.setBigDecimal(index, (BigDecimal) val);
 			return;
 		}
 

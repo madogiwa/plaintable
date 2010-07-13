@@ -27,7 +27,7 @@ import org.madogiwa.plaintable.Row;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class MapMapper implements RowMapper<Map<String, Object>> {
 
@@ -37,13 +37,16 @@ public class MapMapper implements RowMapper<Map<String, Object>> {
 	public MapMapper() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.mapper.Mapper#map(org.madogiwa.plaintable.Row)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.mapper.Mapper#map(org.madogiwa.plaintable.Row)
 	 */
 	public Map<String, Object> map(Row row) throws PlainTableException {
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		for(int i = 0; i < row.size(); i++) {
+		for (int i = 0; i < row.size(); i++) {
 			map.put(row.getAlias(i), row.getObject(i));
 		}
 

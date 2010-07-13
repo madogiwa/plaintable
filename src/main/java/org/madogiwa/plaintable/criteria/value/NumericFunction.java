@@ -23,13 +23,12 @@ import org.madogiwa.plaintable.criteria.Context;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class NumericFunction implements NumericExpression {
 
 	public enum Function {
-		ABS,
-		SIGN
+		ABS, SIGN
 	}
 
 	private NumericExpression expr;
@@ -44,8 +43,12 @@ public class NumericFunction implements NumericExpression {
 		this.func = func;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		return String.format("%s(%s)", func, expr.getSQLString(context));

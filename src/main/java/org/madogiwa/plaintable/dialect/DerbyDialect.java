@@ -40,11 +40,9 @@ import org.madogiwa.plaintable.schema.attr.StringAttribute;
 import org.madogiwa.plaintable.schema.attr.TimeAttribute;
 import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class DerbyDialect implements Dialect {
 
@@ -72,26 +70,31 @@ public class DerbyDialect implements Dialect {
 	public String getSQLType(Type type, int length) {
 		String sqlType = typeMap.get(type);
 		if (sqlType == null) {
-			throw new RuntimeException(String.format("undefiend type %s", type.toString()));
+			throw new RuntimeException(String.format("undefiend type %s",
+					type.toString()));
 		}
 
 		if (CharAttribute.class.equals(type)) {
 			int charLen = (length == -1) ? MAX_CHAR_LENGTH : length;
 			if (charLen <= 0 || charLen > MAX_CHAR_LENGTH) {
-				throw new RuntimeException(String.format("invalid length %d type %s", length, type));
+				throw new RuntimeException(String.format(
+						"invalid length %d type %s", length, type));
 			}
 			sqlType = String.format("%s(%d)", sqlType, charLen);
 		} else if (BytesAttribute.class.equals(type)) {
 			int bytesLen = (length == -1) ? MAX_BYTES_LENGTH : length;
 			if (bytesLen <= 0 || bytesLen > MAX_BYTES_LENGTH) {
-				throw new RuntimeException(String.format("invalid length %d type %s", length, type));
+				throw new RuntimeException(String.format(
+						"invalid length %d type %s", length, type));
 			}
 			sqlType = String.format(sqlType, bytesLen);
 		}
 		return sqlType;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.dialect.Dialect#isLimitSupported()
 	 */
 	public boolean isLimitSupported() {
@@ -99,14 +102,16 @@ public class DerbyDialect implements Dialect {
 	}
 
 	public String getLimitFragment(long offset, long count) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	public String quote(String identifier) {
 		return "\"" + identifier + "\"";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.dialect.Dialect#escape(java.lang.String)
 	 */
 	public String escape(String literal) {

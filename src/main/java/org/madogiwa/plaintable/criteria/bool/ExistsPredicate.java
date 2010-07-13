@@ -24,16 +24,20 @@ import org.madogiwa.plaintable.criteria.Rows;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class ExistsPredicate implements BooleanExpression {
 
 	public ExistsPredicate(Rows rows) {
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		// TODO Auto-generated method stub

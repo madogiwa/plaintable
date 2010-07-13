@@ -25,7 +25,7 @@ import org.madogiwa.plaintable.Path;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class QuerySource extends Source {
 
@@ -42,21 +42,29 @@ public class QuerySource extends Source {
 		this.alias = alias;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.Source#getAlias()
 	 */
 	public String getAlias() {
 		return alias;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa.plaintable.criteria.Context)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
 		return "(" + query.getSQLString(context) + ")";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.ISource#getPathList()
 	 */
 	public List<Path> getPathList() {

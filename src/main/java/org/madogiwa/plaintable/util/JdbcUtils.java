@@ -30,7 +30,7 @@ import javax.sql.DataSource;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class JdbcUtils {
 
@@ -77,27 +77,31 @@ public class JdbcUtils {
 	 * @param dataSource
 	 * @param tableName
 	 * @return
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
-	public static boolean isTableExist(DataSource dataSource, String tableName) throws SQLException {
+	public static boolean isTableExist(DataSource dataSource, String tableName)
+			throws SQLException {
 		Connection connection = null;
 		ResultSet resultSet = null;
 		try {
 			connection = dataSource.getConnection();
 			DatabaseMetaData metaData = connection.getMetaData();
-			resultSet = metaData.getTables(connection.getCatalog(), null, tableName, new String[] {"TABLE"});
+			resultSet = metaData.getTables(connection.getCatalog(), null,
+					tableName, new String[] { "TABLE" });
 			if (resultSet.next()) {
 				return true;
 			}
 			resultSet.close();
 
-			resultSet = metaData.getTables(connection.getCatalog(), null, tableName.toLowerCase(), new String[] {"TABLE"});
+			resultSet = metaData.getTables(connection.getCatalog(), null,
+					tableName.toLowerCase(), new String[] { "TABLE" });
 			if (resultSet.next()) {
 				return true;
 			}
 			resultSet.close();
 
-			resultSet = metaData.getTables(connection.getCatalog(), null, tableName.toUpperCase(), new String[] {"TABLE"});
+			resultSet = metaData.getTables(connection.getCatalog(), null,
+					tableName.toUpperCase(), new String[] { "TABLE" });
 			if (resultSet.next()) {
 				return true;
 			}
@@ -116,7 +120,8 @@ public class JdbcUtils {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static int executeUpdate(DataSource dataSource, String sql, Object[] params) throws SQLException {
+	public static int executeUpdate(DataSource dataSource, String sql,
+			Object[] params) throws SQLException {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
@@ -133,12 +138,13 @@ public class JdbcUtils {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static int executeUpdate(Connection connection, String sql, Object[] params) throws SQLException {
+	public static int executeUpdate(Connection connection, String sql,
+			Object[] params) throws SQLException {
 		PreparedStatement statement = null;
 		try {
 			statement = connection.prepareStatement(sql);
-			for(int i = 0; i < params.length; i++) {
-				statement.setObject(i+1, params[i]);
+			for (int i = 0; i < params.length; i++) {
+				statement.setObject(i + 1, params[i]);
 			}
 			return statement.executeUpdate();
 		} finally {

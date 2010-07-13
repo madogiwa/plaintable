@@ -26,13 +26,12 @@ import org.madogiwa.plaintable.criteria.value.ValueExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class BetweenPredicate implements BooleanExpression {
 
 	enum BetweenType {
-		BETWEEN,
-		NOT_BETWEEN
+		BETWEEN, NOT_BETWEEN
 	}
 
 	private ValueExpression target;
@@ -49,7 +48,8 @@ public class BetweenPredicate implements BooleanExpression {
 	 * @param high
 	 * @param type
 	 */
-	public BetweenPredicate(NumericExpression target, NumericExpression low, NumericExpression high, BetweenType type) {
+	public BetweenPredicate(NumericExpression target, NumericExpression low,
+			NumericExpression high, BetweenType type) {
 		this.target = target;
 		this.low = low;
 		this.high = high;
@@ -62,21 +62,30 @@ public class BetweenPredicate implements BooleanExpression {
 	 * @param high
 	 * @param type
 	 */
-	public BetweenPredicate(DateTimeExpression target, DateTimeExpression low, DateTimeExpression high, BetweenType type) {
+	public BetweenPredicate(DateTimeExpression target, DateTimeExpression low,
+			DateTimeExpression high, BetweenType type) {
 		this.target = target;
 		this.low = low;
 		this.high = high;
 		this.type = type;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa.simpletable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa
+	 * .simpletable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		if (type == BetweenType.BETWEEN) {
-			return String.format("(%s BETWEEN %s AND %s)", target.getSQLString(context), low.getSQLString(context), high.getSQLString(context));
+			return String.format("(%s BETWEEN %s AND %s)",
+					target.getSQLString(context), low.getSQLString(context),
+					high.getSQLString(context));
 		} else {
-			return String.format("(%s NOT BETWEEN %s AND %s)", target.getSQLString(context), low.getSQLString(context), high.getSQLString(context));
+			return String.format("(%s NOT BETWEEN %s AND %s)",
+					target.getSQLString(context), low.getSQLString(context),
+					high.getSQLString(context));
 		}
 	}
 

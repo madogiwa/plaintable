@@ -24,7 +24,7 @@ import org.madogiwa.plaintable.criteria.cond.Is.Truth;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Conds {
 

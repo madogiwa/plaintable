@@ -52,11 +52,12 @@ import org.madogiwa.plaintable.util.JdbcUtils;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class SessionImpl implements Session {
 
-	private static Logger logger = Logger.getLogger(SessionImpl.class.getName());
+	private static Logger logger = Logger
+			.getLogger(SessionImpl.class.getName());
 
 	private DataSource dataSource = null;
 
@@ -78,7 +79,9 @@ public class SessionImpl implements Session {
 		this.dialect = dialect;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Session#open()
 	 */
 	public void open() throws PlainTableException {
@@ -97,19 +100,23 @@ public class SessionImpl implements Session {
 			}
 
 			if (transactionMode != null) {
-				switch(transactionMode) {
+				switch (transactionMode) {
 				case READ_COMMITTED:
-					connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+					connection
+							.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 					break;
 				case SERIALIZABLE:
-					connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+					connection
+							.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 					break;
 				}
 			} else {
 				if (readOnly) {
-					connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+					connection
+							.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				} else {
-					connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+					connection
+							.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 				}
 			}
 
@@ -120,7 +127,9 @@ public class SessionImpl implements Session {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Session#close()
 	 */
 	public void close() throws PlainTableException {
@@ -135,29 +144,39 @@ public class SessionImpl implements Session {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#setTransactionMode(org.madogiwa.plaintable.Session.TransactionMode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#setTransactionMode(org.madogiwa.plaintable
+	 * .Session.TransactionMode)
 	 */
 	public void setTransactionMode(TransactionMode mode)
 			throws PlainTableException {
 		this.transactionMode = mode;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Session#setDelayedOpen(boolean)
 	 */
 	public void setDelayedOpen(boolean delayedOpen) {
 		this.delayedOpen = delayedOpen;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Session#setReadOnly(boolean)
 	 */
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Session#commit()
 	 */
 	public void commit() throws PlainTableException {
@@ -170,7 +189,9 @@ public class SessionImpl implements Session {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Session#rollback()
 	 */
 	public void rollback() throws PlainTableException {
@@ -183,8 +204,12 @@ public class SessionImpl implements Session {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#lock(org.madogiwa.plaintable.schema.Schema)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#lock(org.madogiwa.plaintable.schema.Schema
+	 * )
 	 */
 	public void lock(Schema schema) throws PlainTableException {
 		checkAndOpenSession();
@@ -212,8 +237,12 @@ public class SessionImpl implements Session {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#doAtomic(org.madogiwa.plaintable.AtomicAction)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#doAtomic(org.madogiwa.plaintable.AtomicAction
+	 * )
 	 */
 	public void doAtomic(AtomicAction action) throws PlainTableException {
 		try {
@@ -222,7 +251,7 @@ public class SessionImpl implements Session {
 				action.doAtomic(this);
 			} catch (PlainTableException e) {
 				try {
-					connection.rollback(savepoint);	
+					connection.rollback(savepoint);
 				} catch (SQLException e2) {
 					throw new RuntimeException(e2);
 				}
@@ -235,7 +264,9 @@ public class SessionImpl implements Session {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.Session#isOpened()
 	 */
 	public boolean isOpened() throws PlainTableException {
@@ -263,8 +294,12 @@ public class SessionImpl implements Session {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#load(org.madogiwa.plaintable.schema.Schema, long, org.madogiwa.plaintable.mapper.Mapper)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#load(org.madogiwa.plaintable.schema.Schema
+	 * , long, org.madogiwa.plaintable.mapper.Mapper)
 	 */
 	public <T> T load(Schema schema, long id, RowMapper<T> mapper)
 			throws PlainTableException {
@@ -277,42 +312,64 @@ public class SessionImpl implements Session {
 		return handler.getResult();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#count(org.madogiwa.plaintable.schema.Schema, org.madogiwa.plaintable.criteria.Restriction, org.madogiwa.plaintable.schema.Column)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#count(org.madogiwa.plaintable.schema.
+	 * Schema, org.madogiwa.plaintable.criteria.Restriction,
+	 * org.madogiwa.plaintable.schema.Column)
 	 */
-	public long count(Schema schema, Restriction restriction, Column column) throws PlainTableException {
+	public long count(Schema schema, Restriction restriction, Column column)
+			throws PlainTableException {
 
 		Query query = new Query(schema);
 		query.setRestriction(restriction);
-		String targetColumnName = (column != null) ? column.getName() : schema.getSyntheticKey().getName();
-		query.getProjection().add(new NumericAggregation(column, NumericAggregation.Function.COUNT), String.format("count(%s)", targetColumnName.toLowerCase()));
+		String targetColumnName = (column != null) ? column.getName() : schema
+				.getSyntheticKey().getName();
+		query.getProjection().add(
+				new NumericAggregation(column,
+						NumericAggregation.Function.COUNT),
+				String.format("count(%s)", targetColumnName.toLowerCase()));
 
-		SingleHandler<Long> handler = new SingleHandler<Long>(new RowMapper<Long>() {
+		SingleHandler<Long> handler = new SingleHandler<Long>(
+				new RowMapper<Long>() {
 
-			public Long map(Row row) {
-				try {
-					return row.getLong(0);
-				} catch (PlainTableException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			
-		});
+					public Long map(Row row) {
+						try {
+							return row.getLong(0);
+						} catch (PlainTableException e) {
+							throw new RuntimeException(e);
+						}
+					}
+
+				});
 		select(query, handler);
 		return handler.getResult();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#select(org.madogiwa.plaintable.criteria.IQuery, org.madogiwa.plaintable.handler.RowHandler)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#select(org.madogiwa.plaintable.criteria
+	 * .IQuery, org.madogiwa.plaintable.handler.RowHandler)
 	 */
-	public void select(IQuery query, RowHandler handler) throws PlainTableException {
+	public void select(IQuery query, RowHandler handler)
+			throws PlainTableException {
 		select(query, handler, new Window());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#select(org.madogiwa.plaintable.criteria.IQuery, org.madogiwa.plaintable.handler.RowHandler, org.madogiwa.plaintable.criteria.Window)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#select(org.madogiwa.plaintable.criteria
+	 * .IQuery, org.madogiwa.plaintable.handler.RowHandler,
+	 * org.madogiwa.plaintable.criteria.Window)
 	 */
-	public void select(IQuery query, RowHandler handler, Window window) throws PlainTableException {
+	public void select(IQuery query, RowHandler handler, Window window)
+			throws PlainTableException {
 		checkAndOpenSession();
 
 		StatementBuilder builder = new StatementBuilder(dialect);
@@ -329,7 +386,8 @@ public class SessionImpl implements Session {
 	 * @param window
 	 * @throws PlainTableException
 	 */
-	private void doSelect(Context context, String sql, RowHandler handler, Projection projection, Window window) throws PlainTableException {
+	private void doSelect(Context context, String sql, RowHandler handler,
+			Projection projection, Window window) throws PlainTableException {
 		logger.fine(sql);
 
 		PreparedStatement statement = null;
@@ -337,19 +395,19 @@ public class SessionImpl implements Session {
 		try {
 			statement = connection.prepareStatement(sql);
 			if (!dialect.isLimitSupported()) {
-				statement.setFetchSize((int)window.getLimit());
+				statement.setFetchSize((int) window.getLimit());
 			}
 			context.resolveParameters(statement);
 			resultSet = statement.executeQuery();
 
 			if (!dialect.isLimitSupported()) {
-				for(int i = 0; i < window.getOffset(); i++) {
+				for (int i = 0; i < window.getOffset(); i++) {
 					resultSet.next();
 				}
 			}
 
 			handler.begin();
-			while(resultSet.next()) {
+			while (resultSet.next()) {
 				RowImpl row = new RowImpl(projection, resultSet);
 				row.begin();
 				handler.handle(row);
@@ -364,26 +422,32 @@ public class SessionImpl implements Session {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#insert(org.madogiwa.plaintable.schema.Schema, org.madogiwa.plaintable.provider.RowProvider)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#insert(org.madogiwa.plaintable.schema
+	 * .Schema, org.madogiwa.plaintable.provider.RowProvider)
 	 */
-	public long insert(RowProvider provider)
-			throws PlainTableException {
+	public long insert(RowProvider provider) throws PlainTableException {
 		checkAndOpenSession();
 
 		StatementBuilder builder = new StatementBuilder(dialect);
 		Context context = new Context(dialect);
-		String sql = builder.buildInsertSql(context, provider.getSchema(), provider);
+		String sql = builder.buildInsertSql(context, provider.getSchema(),
+				provider);
 		return doInsert(context, sql);
 	}
 
-	private long doInsert(Context context, String sql) throws PlainTableException {
+	private long doInsert(Context context, String sql)
+			throws PlainTableException {
 		logger.fine("insert: " + sql);
 
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		try {
-			statement = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
+			statement = connection.prepareStatement(sql.toString(),
+					Statement.RETURN_GENERATED_KEYS);
 			context.resolveParameters(statement);
 			statement.executeUpdate();
 			resultSet = statement.getGeneratedKeys();
@@ -395,7 +459,7 @@ public class SessionImpl implements Session {
 			JdbcUtils.closeResultSet(resultSet);
 			JdbcUtils.closeStatement(statement);
 		}
-		
+
 	}
 
 	public boolean update(RowProvider provider, Long id)
@@ -407,16 +471,19 @@ public class SessionImpl implements Session {
 		return (result == 1) ? true : false;
 	}
 
-	public long update(RowProvider provider, Restriction restriction) throws PlainTableException {
+	public long update(RowProvider provider, Restriction restriction)
+			throws PlainTableException {
 		checkAndOpenSession();
 
 		StatementBuilder builder = new StatementBuilder(dialect);
 		Context context = new Context(dialect);
-		String sql = builder.buildUpdateSql(context, provider.getSchema(), restriction, provider);
+		String sql = builder.buildUpdateSql(context, provider.getSchema(),
+				restriction, provider);
 		return doUpdate(context, sql);
 	}
 
-	private long doUpdate(Context context, String sql) throws PlainTableException {
+	private long doUpdate(Context context, String sql)
+			throws PlainTableException {
 		logger.fine("update: " + sql);
 
 		PreparedStatement statement = null;
@@ -428,14 +495,17 @@ public class SessionImpl implements Session {
 			throw new PlainTableException(e);
 		} finally {
 			JdbcUtils.closeStatement(statement);
-		}	
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#delete(org.madogiwa.plaintable.schema.Schema, Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#delete(org.madogiwa.plaintable.schema
+	 * .Schema, Long)
 	 */
-	public boolean delete(Schema schema, Long id)
-			throws PlainTableException {
+	public boolean delete(Schema schema, Long id) throws PlainTableException {
 
 		Restriction restriction = new Restriction();
 		restriction.add(Bools.eq(schema.getSyntheticKey(), id));
@@ -443,19 +513,26 @@ public class SessionImpl implements Session {
 		return (count == 1) ? true : false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#delete(org.madogiwa.plaintable.schema.Schema, Long[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#delete(org.madogiwa.plaintable.schema
+	 * .Schema, Long[])
 	 */
-	public long delete(Schema schema, Long[] ids)
-			throws PlainTableException {
+	public long delete(Schema schema, Long[] ids) throws PlainTableException {
 
 		Restriction restriction = new Restriction();
 		restriction.add(Bools.in(schema.getSyntheticKey(), ids));
 		return delete(schema, restriction);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Session#delete(org.madogiwa.plaintable.schema.Schema, org.madogiwa.plaintable.criteria.Restriction)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.Session#delete(org.madogiwa.plaintable.schema
+	 * .Schema, org.madogiwa.plaintable.criteria.Restriction)
 	 */
 	public long delete(Schema schema, Restriction restriction)
 			throws PlainTableException {
@@ -471,9 +548,10 @@ public class SessionImpl implements Session {
 	 * @param context
 	 * @param sql
 	 * @return
-	 * @throws PlainTableException 
+	 * @throws PlainTableException
 	 */
-	private long doDelete(Context context, String sql) throws PlainTableException {
+	private long doDelete(Context context, String sql)
+			throws PlainTableException {
 		logger.fine("delete: " + sql);
 
 		PreparedStatement statement = null;

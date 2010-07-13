@@ -40,10 +40,9 @@ import org.madogiwa.plaintable.schema.attr.StringAttribute;
 import org.madogiwa.plaintable.schema.attr.TimeAttribute;
 import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class MySQLDialect implements Dialect {
 
@@ -71,13 +70,15 @@ public class MySQLDialect implements Dialect {
 	public String getSQLType(Type type, int length) {
 		String sqlType = typeMap.get(type);
 		if (sqlType == null) {
-			throw new RuntimeException(String.format("undefiend type %s", type.toString()));
+			throw new RuntimeException(String.format("undefiend type %s",
+					type.toString()));
 		}
 
 		if (type.equals(CharAttribute.class)) {
 			int charLen = (length == -1) ? MAX_CHAR_LENGTH : length;
 			if (charLen <= 0 || charLen > MAX_CHAR_LENGTH) {
-				throw new RuntimeException(String.format("invalid length %d type %s", length, type));
+				throw new RuntimeException(String.format(
+						"invalid length %d type %s", length, type));
 			}
 			sqlType = String.format("%s(%d)", sqlType, charLen);
 		}
@@ -85,7 +86,8 @@ public class MySQLDialect implements Dialect {
 		if (type.equals(BytesAttribute.class)) {
 			int charLen = (length == -1) ? MAX_BYTES_LENGTH : length;
 			if (charLen <= 0 || charLen > MAX_BYTES_LENGTH) {
-				throw new RuntimeException(String.format("invalid length %d type %s", length, type));
+				throw new RuntimeException(String.format(
+						"invalid length %d type %s", length, type));
 			}
 			sqlType = String.format("%s(%d)", sqlType, charLen);
 		}
@@ -93,14 +95,18 @@ public class MySQLDialect implements Dialect {
 		return sqlType;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.dialect.Dialect#isLimitSupported()
 	 */
 	public boolean isLimitSupported() {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.dialect.Dialect#getLimitFragment(long, long)
 	 */
 	public String getLimitFragment(long offset, long count) {
@@ -115,14 +121,18 @@ public class MySQLDialect implements Dialect {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.dialect.Dialect#quote(java.lang.String)
 	 */
 	public String quote(String identifier) {
 		return "`" + identifier + "`";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.dialect.Dialect#escape(java.lang.String)
 	 */
 	public String escape(String literal) {

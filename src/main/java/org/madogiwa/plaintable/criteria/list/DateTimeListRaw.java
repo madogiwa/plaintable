@@ -30,7 +30,7 @@ import org.madogiwa.plaintable.criteria.Resolver;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class DateTimeListRaw implements DateTimeListExpression {
 
@@ -43,8 +43,12 @@ public class DateTimeListRaw implements DateTimeListExpression {
 		list = new ArrayList<Date>(list);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		if (list.size() == 0) {
@@ -53,7 +57,7 @@ public class DateTimeListRaw implements DateTimeListExpression {
 
 		StringBuilder sql = new StringBuilder();
 
-		for(final Date date : list) {
+		for (final Date date : list) {
 			String marker = context.getResolverMarker(new Resolver() {
 
 				public void resolve(PreparedStatement statement, int index)
@@ -61,7 +65,7 @@ public class DateTimeListRaw implements DateTimeListExpression {
 
 					statement.setDate(index, new java.sql.Date(date.getTime()));
 				}
-				
+
 			});
 			sql.append(String.format("%s,", marker));
 		}

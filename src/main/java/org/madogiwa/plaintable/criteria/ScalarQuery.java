@@ -23,7 +23,7 @@ import org.madogiwa.plaintable.criteria.value.ValueExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class ScalarQuery implements IQuery {
 
@@ -37,21 +37,29 @@ public class ScalarQuery implements IQuery {
 		query.getProjection().add(column, alias);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.IQuery#getProjection()
 	 */
 	public Projection getProjection() {
 		return query.getProjection();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.IQuery#getSQLString(org.madogiwa.plaintable.criteria.Context)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.IQuery#getSQLString(org.madogiwa.plaintable
+	 * .criteria.Context)
 	 */
 	public String getSQLString(Context context) {
 		return query.getSQLString(context);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.IQuery#getSource()
 	 */
 	public ISource getSource() {

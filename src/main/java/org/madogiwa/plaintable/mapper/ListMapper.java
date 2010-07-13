@@ -27,21 +27,24 @@ import org.madogiwa.plaintable.Row;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
-public class ListMapper implements RowMapper< List<Object> > {
+public class ListMapper implements RowMapper<List<Object>> {
 
 	public ListMapper() {
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.mapper.Mapper#map(org.madogiwa.plaintable.Row)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.mapper.Mapper#map(org.madogiwa.plaintable.Row)
 	 */
 	public List<Object> map(Row row) throws PlainTableException {
 		List<Object> list = new ArrayList<Object>();
 
-		for(int i = 0; i < row.size(); i++) {
+		for (int i = 0; i < row.size(); i++) {
 			list.add(row.getObject(i));
 		}
 

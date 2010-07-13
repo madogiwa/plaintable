@@ -26,10 +26,9 @@ import java.util.Date;
 import org.madogiwa.plaintable.criteria.Context;
 import org.madogiwa.plaintable.criteria.Resolver;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class DateTimeRaw implements DateTimeExpression, Resolver {
 
@@ -42,18 +41,26 @@ public class DateTimeRaw implements DateTimeExpression, Resolver {
 		this.date = date;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		String marker = context.getResolverMarker(this);
 		return String.format("(%s)", marker);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.Resolver#resolve(java.sql.PreparedStatement, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.madogiwa.plaintable.Resolver#resolve(java.sql.PreparedStatement,
+	 * int)
 	 */
-	public void resolve(PreparedStatement statement, int index) throws SQLException {
+	public void resolve(PreparedStatement statement, int index)
+			throws SQLException {
 		statement.setDate(index, new java.sql.Date(getDate().getTime()));
 	}
 

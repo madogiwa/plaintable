@@ -21,7 +21,7 @@ package org.madogiwa.plaintable;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class PlainTableException extends Exception {

@@ -23,7 +23,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,7 +36,7 @@ import org.madogiwa.plaintable.util.ReflectionUtils;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class BeanMapper<T> implements RowMapper<T> {
 
@@ -56,7 +55,8 @@ public class BeanMapper<T> implements RowMapper<T> {
 			throw new RuntimeException();
 		}
 		this.beanClass = clazz;
-		this.sourceAlias = ReflectionUtils.findSchema(mapped.schema()).getAlias().toLowerCase();
+		this.sourceAlias = ReflectionUtils.findSchema(mapped.schema())
+				.getAlias().toLowerCase();
 
 		init();
 	}
@@ -85,13 +85,19 @@ public class BeanMapper<T> implements RowMapper<T> {
 	 */
 	private void init() {
 		List<PropertyDescriptor> properties = getProperties(beanClass);
-		for(PropertyDescriptor property : properties) {
+		for (PropertyDescriptor property : properties) {
 			final Method method = property.getWriteMethod();
-			final String path = (sourceAlias + "." + property.getName()).toLowerCase();
+			final String path = (sourceAlias + "." + property.getName())
+					.toLowerCase();
 
-			Mapped mapped = property.getPropertyType().getAnnotation(Mapped.class);
+			Mapped mapped = property.getPropertyType().getAnnotation(
+					Mapped.class);
 			if (mapped != null) {
-				final BeanMapper mapper = new BeanMapper(property.getPropertyType(), property.getName() + "_" + ReflectionUtils.findSchema(mapped.schema()).getName());
+				final BeanMapper mapper = new BeanMapper(
+						property.getPropertyType(), property.getName()
+								+ "_"
+								+ ReflectionUtils.findSchema(mapped.schema())
+										.getName());
 				funcs.put(path, new MappingFunction<T>() {
 					public void map(Row row, T bean) throws Exception {
 						Object value = mapper.map(row);
@@ -108,8 +114,11 @@ public class BeanMapper<T> implements RowMapper<T> {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.mapper.Mapper#map(org.madogiwa.plaintable.Row)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.mapper.Mapper#map(org.madogiwa.plaintable.Row)
 	 */
 	public T map(Row row) throws PlainTableException {
 		T bean;
@@ -122,7 +131,7 @@ public class BeanMapper<T> implements RowMapper<T> {
 			throw new RuntimeException(e);
 		}
 
-		for(String path : row.getAliasList()) {
+		for (String path : row.getAliasList()) {
 			if (funcs.containsKey(path)) {
 				try {
 					funcs.get(path).map(row, bean);

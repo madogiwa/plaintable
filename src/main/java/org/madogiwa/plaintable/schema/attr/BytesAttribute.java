@@ -24,7 +24,7 @@ import org.madogiwa.plaintable.schema.Schema;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class BytesAttribute extends BinaryAttribute {
 

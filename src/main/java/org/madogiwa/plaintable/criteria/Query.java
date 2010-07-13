@@ -26,10 +26,9 @@ import org.madogiwa.plaintable.criteria.value.ValueExpression;
 import org.madogiwa.plaintable.schema.Column;
 import org.madogiwa.plaintable.schema.Schema;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class Query implements IQuery, Cloneable, Serializable {
@@ -125,7 +124,9 @@ public class Query implements IQuery, Cloneable, Serializable {
 		return this;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.ICriteria#getProjection()
 	 */
 	public Projection getProjection() {
@@ -178,16 +179,20 @@ public class Query implements IQuery, Cloneable, Serializable {
 		sql.append(String.format("FROM %s ", source.getSQLString(context)));
 
 		if (restriction.notEmpty()) {
-			sql.append(String.format("WHERE %s ", restriction.getSQLString(context)));
+			sql.append(String.format("WHERE %s ",
+					restriction.getSQLString(context)));
 		}
 		if (projection.isGroupBy()) {
-			sql.append(String.format("GROUP BY %s ", projection.getGroupBy().getSQLString(context)));
+			sql.append(String.format("GROUP BY %s ", projection.getGroupBy()
+					.getSQLString(context)));
 		}
 		if (projection.hasHaving()) {
-			sql.append(String.format("HAVING %s ", projection.getHaving().getSQLString(context)));
+			sql.append(String.format("HAVING %s ", projection.getHaving()
+					.getSQLString(context)));
 		}
 		if (order.notEmpty()) {
-			sql.append(String.format("ORDER BY %s ", order.getSQLString(context)));
+			sql.append(String.format("ORDER BY %s ",
+					order.getSQLString(context)));
 		}
 
 		return sql.toString();

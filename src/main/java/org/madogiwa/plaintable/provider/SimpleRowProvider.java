@@ -28,7 +28,7 @@ import org.madogiwa.plaintable.schema.Schema;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class SimpleRowProvider implements RowProvider {
 
@@ -50,7 +50,9 @@ public class SimpleRowProvider implements RowProvider {
 		return this;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.provider.RowProvider#getSchema()
 	 */
 	public Schema getSchema() {

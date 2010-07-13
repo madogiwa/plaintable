@@ -23,10 +23,9 @@ import java.util.List;
 
 import org.madogiwa.plaintable.Path;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface ISource extends IExpression {
 

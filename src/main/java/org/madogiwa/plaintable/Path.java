@@ -25,7 +25,7 @@ import org.madogiwa.plaintable.schema.Column;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Path {
 

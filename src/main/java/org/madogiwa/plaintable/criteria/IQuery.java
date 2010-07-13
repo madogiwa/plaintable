@@ -21,7 +21,7 @@ package org.madogiwa.plaintable.criteria;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface IQuery {
 

@@ -30,7 +30,7 @@ import org.madogiwa.plaintable.criteria.Resolver;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class NumericListRaw implements NumericListExpression {
 
@@ -43,8 +43,12 @@ public class NumericListRaw implements NumericListExpression {
 		this.list.addAll(list);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		if (list.size() == 0) {
@@ -53,25 +57,25 @@ public class NumericListRaw implements NumericListExpression {
 
 		StringBuilder sql = new StringBuilder();
 
-		for(final Number num : list) {
+		for (final Number num : list) {
 			String marker = context.getResolverMarker(new Resolver() {
 
 				public void resolve(PreparedStatement statement, int index)
 						throws SQLException {
 
 					if (num instanceof Short) {
-						statement.setShort(index, (Short)num);
+						statement.setShort(index, (Short) num);
 					} else if (num instanceof Integer) {
-						statement.setInt(index, (Integer)num);
+						statement.setInt(index, (Integer) num);
 					} else if (num instanceof Long) {
-						statement.setLong(index, (Long)num);
+						statement.setLong(index, (Long) num);
 					} else if (num instanceof BigDecimal) {
-						statement.setBigDecimal(index, (BigDecimal)num);
+						statement.setBigDecimal(index, (BigDecimal) num);
 					} else {
 						throw new RuntimeException();
 					}
 				}
-				
+
 			});
 			sql.append(String.format("%s,", marker));
 		}

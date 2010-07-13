@@ -24,7 +24,7 @@ import java.sql.SQLException;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface Resolver {
 
@@ -32,6 +32,7 @@ public interface Resolver {
 	 * @param statement
 	 * @param index
 	 */
-	public void resolve(PreparedStatement statement, int index) throws SQLException;
+	public void resolve(PreparedStatement statement, int index)
+			throws SQLException;
 
 }

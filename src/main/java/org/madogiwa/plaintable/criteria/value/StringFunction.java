@@ -23,17 +23,20 @@ import org.madogiwa.plaintable.criteria.Context;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class StringFunction implements StringExpression {
 
 	public enum Function {
-		LOWER,
-		UPPER
+		LOWER, UPPER
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		// TODO Auto-generated method stub

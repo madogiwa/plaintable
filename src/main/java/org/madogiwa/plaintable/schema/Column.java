@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public abstract class Column implements Serializable {
 
@@ -60,7 +60,8 @@ public abstract class Column implements Serializable {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;

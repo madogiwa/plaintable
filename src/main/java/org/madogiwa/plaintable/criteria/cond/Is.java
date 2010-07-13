@@ -24,14 +24,12 @@ import org.madogiwa.plaintable.criteria.bool.BooleanExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Is implements ConditionExpression {
 
 	enum Truth {
-		TRUE,
-		FALSE,
-		UNKNOWN
+		TRUE, FALSE, UNKNOWN
 	}
 
 	private BooleanExpression expr;
@@ -47,11 +45,16 @@ public class Is implements ConditionExpression {
 		this.truth = truth;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa.simpletable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa
+	 * .simpletable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return " ( " + expr.getSQLString(context) + " ) IS " + truth.toString() + " ";
+		return " ( " + expr.getSQLString(context) + " ) IS " + truth.toString()
+				+ " ";
 	}
 
 }

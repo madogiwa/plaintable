@@ -49,11 +49,9 @@ import org.madogiwa.plaintable.schema.attr.LongAttribute;
 import org.madogiwa.plaintable.schema.attr.StringAttribute;
 import org.madogiwa.plaintable.util.JdbcUtils;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class DatabaseSchemaImpl implements DatabaseSchema {
 
@@ -61,7 +59,8 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 
 	private static final String SCHEMA_TABLE = "PlaintableSchema";
 
-	private static Logger logger = Logger.getLogger(DatabaseSchemaImpl.class.getName());
+	private static Logger logger = Logger.getLogger(DatabaseSchemaImpl.class
+			.getName());
 
 	private DataSource dataSource;
 
@@ -81,7 +80,9 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		this.initialized = false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.DatabaseSchema#open()
 	 */
 	public void open() throws SQLException {
@@ -97,7 +98,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	}
 
 	/**
-	 * @throws SQLException 
+	 * @throws SQLException
 	 * 
 	 */
 	private void init() throws SQLException {
@@ -110,7 +111,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	}
 
 	/**
-	 * @throws SQLException 
+	 * @throws SQLException
 	 * 
 	 */
 	private void initLockTable() throws SQLException {
@@ -121,7 +122,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	}
 
 	/**
-	 * @throws SQLException 
+	 * @throws SQLException
 	 * 
 	 */
 	private void initSchemaTable() throws SQLException {
@@ -147,7 +148,9 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.DatabaseSchema#close()
 	 */
 	public void close() throws SQLException {
@@ -155,8 +158,12 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		JdbcUtils.closeConnection(connection);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.DatabaseManager#createTable(org.madogiwa.plaintable.schema.Schema)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.DatabaseManager#createTable(org.madogiwa.plaintable
+	 * .schema.Schema)
 	 */
 	public void createTable(Schema schema) throws SQLException {
 		String sql = buildCreateTableSql(schema);
@@ -173,24 +180,34 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	 */
 	private String buildCreateTableSql(Schema schema) {
 		StringBuilder query = new StringBuilder();
-		query.append(String.format("CREATE TABLE %s ( ", dialect.quote(schema.getName())));
-		query.append(String.format("%s %s PRIMARY KEY ", dialect.quote(schema.getSyntheticKey().getName()), dialect.getSQLType(SyntheticKey.class, -1)));
+		query.append(String.format("CREATE TABLE %s ( ",
+				dialect.quote(schema.getName())));
+		query.append(String.format("%s %s PRIMARY KEY ",
+				dialect.quote(schema.getSyntheticKey().getName()),
+				dialect.getSQLType(SyntheticKey.class, -1)));
 
-		for(ReferenceKey ref : schema.getReferenceKeys()) {
-			query.append(String.format(", %s %s ", dialect.quote(ref.getName()), dialect.getSQLType(ReferenceKey.class, -1)));
-			query.append( ref.isNullable() ? "" : " NOT NULL " );
-			query.append( ref.isUnique() ? " UNIQUE " : "" );
+		for (ReferenceKey ref : schema.getReferenceKeys()) {
+			query.append(String.format(", %s %s ",
+					dialect.quote(ref.getName()),
+					dialect.getSQLType(ReferenceKey.class, -1)));
+			query.append(ref.isNullable() ? "" : " NOT NULL ");
+			query.append(ref.isUnique() ? " UNIQUE " : "");
 
 			SchemaReference schemaRef = ref.getTarget();
-			query.append(String.format(" REFERENCES %s(%s) ", dialect.quote(schemaRef.getSchema().getName()), dialect.quote(schemaRef.getSchema().getSyntheticKey().getName())));
-			query.append( ref.isCascade() ? " ON DELETE CASCADE " : "" );
+			query.append(String.format(
+					" REFERENCES %s(%s) ",
+					dialect.quote(schemaRef.getSchema().getName()),
+					dialect.quote(schemaRef.getSchema().getSyntheticKey()
+							.getName())));
+			query.append(ref.isCascade() ? " ON DELETE CASCADE " : "");
 		}
 
-		for(AttributeColumn attr : schema.getAttributes()) {
+		for (AttributeColumn attr : schema.getAttributes()) {
 			String type = dialect.getSQLType(attr.getClass(), attr.getLength());
-			query.append(String.format(", %s %s", dialect.quote(attr.getName()), type));
-			query.append( attr.isNullable() ? "" : " NOT NULL " );
-			query.append( attr.isUnique() ? " UNIQUE " : "" );
+			query.append(String.format(", %s %s",
+					dialect.quote(attr.getName()), type));
+			query.append(attr.isNullable() ? "" : " NOT NULL ");
+			query.append(attr.isUnique() ? " UNIQUE " : "");
 		}
 
 		query.append(" )");
@@ -205,50 +222,66 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	private void createIndicies(Schema schema) throws SQLException {
 		List<Column> indexedColumns = new ArrayList<Column>();
 
-		for(ReferenceKey ref : schema.getReferenceKeys()) {
+		for (ReferenceKey ref : schema.getReferenceKeys()) {
 			if (ref.isIndexed()) {
 				indexedColumns.add(ref);
 			}
 		}
-		for(AttributeColumn attr : schema.getAttributes()) {
+		for (AttributeColumn attr : schema.getAttributes()) {
 			if (attr.isIndexed()) {
 				indexedColumns.add(attr);
 			}
 		}
 
-		for(Column column : indexedColumns) {
+		for (Column column : indexedColumns) {
 			if (!column.isUnique()) {
-				JdbcUtils.executeUpdate(connection, String.format("CREATE %s INDEX %s ON %s (%s)", column.isUnique() ? "UNIQUE" : "", schema.getName() + "_" + column.getName(), schema.getName(), column.getName()), new Object[] {});  
+				JdbcUtils.executeUpdate(connection, String.format(
+						"CREATE %s INDEX %s ON %s (%s)",
+						column.isUnique() ? "UNIQUE" : "", schema.getName()
+								+ "_" + column.getName(), schema.getName(),
+						column.getName()), new Object[] {});
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.DatabaseManager#dropTable(org.madogiwa.plaintable.schema.Schema)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.DatabaseManager#dropTable(org.madogiwa.plaintable
+	 * .schema.Schema)
 	 */
 	public void dropTable(Schema schema) throws SQLException {
 		StringBuilder query = new StringBuilder();
-		query.append(String.format("DROP TABLE %s", dialect.quote(schema.getName())));
+		query.append(String.format("DROP TABLE %s",
+				dialect.quote(schema.getName())));
 		JdbcUtils.executeUpdate(connection, query.toString(), new Object[] {});
 
 		removeLock(schema.getName());
 		removeSchema(schema.getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.DatabaseManager#retrieveSchema(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.DatabaseManager#retrieveSchema(java.lang.String)
 	 */
 	public Schema retrieveSchema(String name) throws SQLException {
 		return retrieveSchemaMap().get(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.DatabaseSchema#retrieveSchemaMap()
 	 */
 	public Map<String, Schema> retrieveSchemaMap() throws SQLException {
 		Map<String, Schema> map = new HashMap<String, Schema>();
 
-		String query = String.format("SELECT %s,%s,%s FROM %s", dialect.quote("name"), dialect.quote("version"), dialect.quote("schema"), dialect.quote(SCHEMA_TABLE));
+		String query = String.format("SELECT %s,%s,%s FROM %s",
+				dialect.quote("name"), dialect.quote("version"),
+				dialect.quote("schema"), dialect.quote(SCHEMA_TABLE));
 		logger.fine(query);
 
 		Connection connection = null;
@@ -258,7 +291,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 			connection = dataSource.getConnection();
 			statement = connection.prepareStatement(query.toString());
 			resultSet = statement.executeQuery();
-			while(resultSet.next()) {
+			while (resultSet.next()) {
 				byte[] schemaBytes = resultSet.getBytes("schema");
 				Schema schema = schemaFromByteArray(schemaBytes);
 				map.put(schema.getName(), schema);
@@ -285,11 +318,15 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.DatabaseManager#updateTable(org.madogiwa.plaintable.schema.Schema)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.DatabaseManager#updateTable(org.madogiwa.plaintable
+	 * .schema.Schema)
 	 */
 	public void updateTable(Schema schema) throws SQLException {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -315,7 +352,11 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	}
 
 	private void addSchema(Schema schema) throws SQLException {
-		JdbcUtils.executeUpdate(connection, String.format("INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", SCHEMA_TABLE, dialect.quote("name"), dialect.quote("version"), dialect.quote("schema")), new Object[] {schema.getName(), schema.getVersion(), schemaToByteArray(schema)});
+		JdbcUtils.executeUpdate(connection, String.format(
+				"INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", SCHEMA_TABLE,
+				dialect.quote("name"), dialect.quote("version"),
+				dialect.quote("schema")), new Object[] { schema.getName(),
+				schema.getVersion(), schemaToByteArray(schema) });
 	}
 
 	private byte[] schemaToByteArray(Schema schema) {
@@ -331,15 +372,21 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	}
 
 	private void removeSchema(String name) throws SQLException {
-		JdbcUtils.executeUpdate(connection, String.format("DELETE FROM %s WHERE name = ?", SCHEMA_TABLE), new Object[] {name});
+		JdbcUtils.executeUpdate(connection,
+				String.format("DELETE FROM %s WHERE name = ?", SCHEMA_TABLE),
+				new Object[] { name });
 	}
 
 	private void addLock(Schema schema) throws SQLException {
-		JdbcUtils.executeUpdate(connection, String.format("INSERT INTO %s (name) VALUES (?)", LOCK_TABLE), new Object[] {schema.getName()});
+		JdbcUtils.executeUpdate(connection,
+				String.format("INSERT INTO %s (name) VALUES (?)", LOCK_TABLE),
+				new Object[] { schema.getName() });
 	}
 
 	private void removeLock(String name) throws SQLException {
-		JdbcUtils.executeUpdate(connection, String.format("DELETE FROM %s WHERE name = ?", LOCK_TABLE), new Object[] {name});
+		JdbcUtils.executeUpdate(connection,
+				String.format("DELETE FROM %s WHERE name = ?", LOCK_TABLE),
+				new Object[] { name });
 	}
 
 }

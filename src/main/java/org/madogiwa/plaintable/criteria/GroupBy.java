@@ -27,14 +27,14 @@ import org.madogiwa.plaintable.schema.NumericAttribute;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class GroupBy {
 
 	private List<Column> groupByList = new ArrayList<Column>();
 
 	public GroupBy() {
-		
+
 	}
 
 	public void add(Column column) {
@@ -51,7 +51,7 @@ public class GroupBy {
 
 	public String getSQLString(Context context) {
 		StringBuilder sql = new StringBuilder();
-		for(Column column : groupByList) {
+		for (Column column : groupByList) {
 			sql.append(String.format(" %s, ", column.getName()));
 		}
 		sql.deleteCharAt(sql.lastIndexOf(","));

@@ -27,14 +27,12 @@ import org.madogiwa.plaintable.criteria.Resolver;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class IntervalRaw implements IntervalExpression, Resolver {
 
 	enum Unit {
-		DAY(""),
-		MONTH(""),
-		YEAR("");
+		DAY(""), MONTH(""), YEAR("");
 
 		private String unit;
 
@@ -60,16 +58,24 @@ public class IntervalRaw implements IntervalExpression, Resolver {
 		this.value = value;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		String marker = context.getResolverMarker(this);
 		return String.format("interval %d %s", marker, unit.toString());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Resolver#resolve(java.sql.PreparedStatement, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Resolver#resolve(java.sql.PreparedStatement
+	 * , int)
 	 */
 	public void resolve(PreparedStatement statement, int index)
 			throws SQLException {

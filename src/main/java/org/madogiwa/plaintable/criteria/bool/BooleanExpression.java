@@ -23,7 +23,7 @@ import org.madogiwa.plaintable.criteria.IExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface BooleanExpression extends IExpression {
 

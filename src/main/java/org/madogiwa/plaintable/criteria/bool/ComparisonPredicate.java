@@ -24,17 +24,13 @@ import org.madogiwa.plaintable.criteria.value.ValueExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class ComparisonPredicate implements BooleanExpression {
 
 	public enum Operator {
-		EQUAL("="),
-		NOT_EQUAL("<>"),
-		GREATER_THAN(">"),
-		GREATER_THAN_OR_EQUAL(">="),
-		LITTLE_THAN("<"),
-		LITTLE_THAN_OR_EQUAL("<=");
+		EQUAL("="), NOT_EQUAL("<>"), GREATER_THAN(">"), GREATER_THAN_OR_EQUAL(
+				">="), LITTLE_THAN("<"), LITTLE_THAN_OR_EQUAL("<=");
 
 		private String op;
 
@@ -58,17 +54,23 @@ public class ComparisonPredicate implements BooleanExpression {
 	 * @param rhs
 	 * @param op
 	 */
-	public ComparisonPredicate(ValueExpression lhs, ValueExpression rhs, Operator op) {
+	public ComparisonPredicate(ValueExpression lhs, ValueExpression rhs,
+			Operator op) {
 		this.lhs = lhs;
 		this.rhs = rhs;
 		this.op = op;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa.simpletable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa
+	 * .simpletable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("(%s %s %s)", lhs.getSQLString(context), op.toString(), rhs.getSQLString(context));
+		return String.format("(%s %s %s)", lhs.getSQLString(context),
+				op.toString(), rhs.getSQLString(context));
 	}
 
 }

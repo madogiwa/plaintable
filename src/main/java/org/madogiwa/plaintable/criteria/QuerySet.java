@@ -25,7 +25,7 @@ import org.madogiwa.plaintable.Path;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class QuerySet implements IQuery, ISource {
 
@@ -52,21 +52,30 @@ public class QuerySet implements IQuery, ISource {
 		return c1.getProjection();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.ICriteria#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.ICriteria#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("(%s) %s (%s)", c1.getSQLString(context), op, c2.getSQLString(context));
+		return String.format("(%s) %s (%s)", c1.getSQLString(context), op,
+				c2.getSQLString(context));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.IQuery#getSource()
 	 */
 	public ISource getSource() {
 		return c1.getSource();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.ISource#getPathList()
 	 */
 	public List<Path> getPathList() {

@@ -19,10 +19,9 @@
  */
 package org.madogiwa.plaintable;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface DatabaseManager {
 

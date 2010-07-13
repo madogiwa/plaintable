@@ -19,10 +19,9 @@
  */
 package org.madogiwa.plaintable.schema;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public abstract class AttributeColumn extends Column {
 
@@ -51,7 +50,8 @@ public abstract class AttributeColumn extends Column {
 	}
 
 	/**
-	 * @param length the length to set
+	 * @param length
+	 *            the length to set
 	 */
 	public void setLength(int length) {
 		this.length = length;
@@ -65,7 +65,8 @@ public abstract class AttributeColumn extends Column {
 	}
 
 	/**
-	 * @param nullable the nullable to set
+	 * @param nullable
+	 *            the nullable to set
 	 */
 	public void setNullable(boolean nullable) {
 		this.nullable = nullable;
@@ -79,7 +80,8 @@ public abstract class AttributeColumn extends Column {
 	}
 
 	/**
-	 * @param indexed the indexed to set
+	 * @param indexed
+	 *            the indexed to set
 	 */
 	public void setIndexed(boolean indexed) {
 		this.indexed = indexed;
@@ -93,7 +95,8 @@ public abstract class AttributeColumn extends Column {
 	}
 
 	/**
-	 * @param unique the unique to set
+	 * @param unique
+	 *            the unique to set
 	 */
 	public void setUnique(boolean unique) {
 		this.unique = unique;

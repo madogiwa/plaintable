@@ -26,14 +26,12 @@ import org.madogiwa.plaintable.criteria.value.ValueExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class QuantifiedPredicate implements BooleanExpression {
 
 	enum Quantified {
-		ALL,
-		SOME,
-		ANY
+		ALL, SOME, ANY
 	}
 
 	private ValueExpression value;
@@ -49,18 +47,25 @@ public class QuantifiedPredicate implements BooleanExpression {
 	 * @param list
 	 * @param op
 	 */
-	protected QuantifiedPredicate(ValueExpression value, ValueListExpression list, Quantified quantified, Operator op) {
+	protected QuantifiedPredicate(ValueExpression value,
+			ValueListExpression list, Quantified quantified, Operator op) {
 		this.value = value;
 		this.list = list;
 		this.quantified = quantified;
 		this.op = op;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa.simpletable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa
+	 * .simpletable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("(%s %s %s (%s)", value.getSQLString(context), op.toString(), quantified.toString(), list.getSQLString(context));
+		return String.format("(%s %s %s (%s)", value.getSQLString(context),
+				op.toString(), quantified.toString(),
+				list.getSQLString(context));
 	}
 
 }

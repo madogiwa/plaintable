@@ -19,6 +19,7 @@
  */
 package org.madogiwa.plaintable.criteria.list;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import org.madogiwa.plaintable.criteria.Query;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Lists {
 
@@ -38,8 +39,8 @@ public class Lists {
 		return new KeyListQuery(criteria);
 	}
 
-	public static DateTimeListExpression list(List<Date> list) {
-		return dateTimeList(list);
+	public static DateTimeListExpression list(Date[] array) {
+		return dateTimeList(Arrays.asList(array));
 	}
 
 	public static DateTimeListExpression dateTimeList(List<Date> list) {
@@ -50,8 +51,8 @@ public class Lists {
 		return new DateTimeListQuery(criteria);
 	}
 
-	public static NumericListExpression list(List<Number> list) {
-		return numericList(list);
+	public static NumericListExpression list(Number[] array) {
+		return numericList(Arrays.asList(array));
 	}
 
 	public static NumericListExpression numericList(List<Number> list) {
@@ -62,8 +63,8 @@ public class Lists {
 		return new NumericListQuery(criteria);
 	}
 
-	public static StringListExpression list(List<String> list) {
-		return stringList(list);
+	public static StringListExpression list(String[] array) {
+		return stringList(Arrays.asList(array));
 	}
 
 	public static StringListExpression stringList(List<String> list) {

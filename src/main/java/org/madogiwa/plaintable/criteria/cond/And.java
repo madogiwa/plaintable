@@ -22,10 +22,9 @@ package org.madogiwa.plaintable.criteria.cond;
 import org.madogiwa.plaintable.criteria.Context;
 import org.madogiwa.plaintable.criteria.bool.BooleanExpression;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class And implements ConditionExpression {
 
@@ -42,11 +41,16 @@ public class And implements ConditionExpression {
 		this.rhs = rhs;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("(%s AND %s)", lhs.getSQLString(context), rhs.getSQLString(context));
+		return String.format("(%s AND %s)", lhs.getSQLString(context),
+				rhs.getSQLString(context));
 	}
 
 	/**
@@ -54,7 +58,8 @@ public class And implements ConditionExpression {
 	 * @param rhs
 	 * @return
 	 */
-	public static ConditionExpression and(BooleanExpression lhs, BooleanExpression rhs) {
+	public static ConditionExpression and(BooleanExpression lhs,
+			BooleanExpression rhs) {
 		return new And(lhs, rhs);
 	}
 

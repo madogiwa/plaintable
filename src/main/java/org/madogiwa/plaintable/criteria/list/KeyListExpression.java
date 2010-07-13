@@ -21,7 +21,7 @@ package org.madogiwa.plaintable.criteria.list;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface KeyListExpression extends ValueListExpression {
 

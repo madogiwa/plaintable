@@ -27,7 +27,7 @@ import org.madogiwa.plaintable.impl.DatabaseManagerImpl;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class DatabaseManagerFactory {
 

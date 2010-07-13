@@ -23,7 +23,7 @@ import org.madogiwa.plaintable.criteria.Context;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class NullRaw implements NullExpression {
 
@@ -31,11 +31,15 @@ public class NullRaw implements NullExpression {
 	 * 
 	 */
 	public NullRaw() {
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		return " NULL ";

@@ -25,7 +25,7 @@ import org.madogiwa.plaintable.mapper.RowMapper;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class SingleHandler<T> implements RowHandler {
 
@@ -40,22 +40,30 @@ public class SingleHandler<T> implements RowHandler {
 		this.mapper = mapper;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.handler.RowHandler#begin()
 	 */
 	public void begin() {
 		result = null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.handler.RowHandler#end()
 	 */
 	public void end() {
 		// nothing todo
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.handler.RowHandler#handle(org.madogiwa.plaintable.Row)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.handler.RowHandler#handle(org.madogiwa.plaintable
+	 * .Row)
 	 */
 	public void handle(Row row) throws PlainTableException {
 		if (result != null) {

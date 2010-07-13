@@ -39,7 +39,7 @@ import org.madogiwa.plaintable.schema.TextAttribute;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Projection implements Cloneable {
 
@@ -58,7 +58,8 @@ public class Projection implements Cloneable {
 	}
 
 	public Projection add(NumericAttribute column) {
-		add(new NumericColumnReference(column), new Path(column).getPathString());
+		add(new NumericColumnReference(column),
+				new Path(column).getPathString());
 		return this;
 	}
 
@@ -68,12 +69,14 @@ public class Projection implements Cloneable {
 	}
 
 	public Projection add(DateTimeAttribute column) {
-		add(new DateTimeColumnReference(column), new Path(column).getPathString());
+		add(new DateTimeColumnReference(column),
+				new Path(column).getPathString());
 		return this;
 	}
 
 	public Projection add(BinaryAttribute column) {
-		add(new BinaryColumnReference(new TableSource(column.getSchema()), column.getName()), new Path(column).getPathString());
+		add(new BinaryColumnReference(new TableSource(column.getSchema()),
+				column.getName()), new Path(column).getPathString());
 		return this;
 	}
 
@@ -90,15 +93,17 @@ public class Projection implements Cloneable {
 	public void addAll(Schema schema) {
 		for (Column column : schema.getColumns()) {
 			if (NumericAttribute.class.isAssignableFrom(column.getClass())) {
-				add((NumericAttribute)column);
+				add((NumericAttribute) column);
 			} else if (TextAttribute.class.isAssignableFrom(column.getClass())) {
-				add((TextAttribute)column);
-			} else if (DateTimeAttribute.class.isAssignableFrom(column.getClass())) {
-				add((DateTimeAttribute)column);
-			} else if (BinaryAttribute.class.isAssignableFrom(column.getClass())) {
-				add((BinaryAttribute)column);
+				add((TextAttribute) column);
+			} else if (DateTimeAttribute.class.isAssignableFrom(column
+					.getClass())) {
+				add((DateTimeAttribute) column);
+			} else if (BinaryAttribute.class
+					.isAssignableFrom(column.getClass())) {
+				add((BinaryAttribute) column);
 			} else if (KeyColumn.class.isAssignableFrom(column.getClass())) {
-				add((KeyColumn)column);
+				add((KeyColumn) column);
 			}
 		}
 	}
@@ -139,13 +144,16 @@ public class Projection implements Cloneable {
 		StringBuilder sql = new StringBuilder();
 
 		if (columnList.size() != 0) {
-			for(ProjectionItem item : columnList) {
-				sql.append(String.format(" %s AS %s,", item.expr.getSQLString(context), context.getDialect().quote(item.alias)));
+			for (ProjectionItem item : columnList) {
+				sql.append(String.format(" %s AS %s,", item.expr
+						.getSQLString(context),
+						context.getDialect().quote(item.alias)));
 			}
 			sql.deleteCharAt(sql.lastIndexOf(","));
 		} else {
-			for(Path path : source.getPathList()) {
-				sql.append(String.format(" %s AS %s,", path.getPathString(), context.getDialect().quote(path.getPathString())));
+			for (Path path : source.getPathList()) {
+				sql.append(String.format(" %s AS %s,", path.getPathString(),
+						context.getDialect().quote(path.getPathString())));
 			}
 			sql.deleteCharAt(sql.lastIndexOf(","));
 		}
@@ -155,7 +163,7 @@ public class Projection implements Cloneable {
 	private class ProjectionItem {
 
 		public ValueExpression expr;
-	
+
 		public String alias;
 
 		/**

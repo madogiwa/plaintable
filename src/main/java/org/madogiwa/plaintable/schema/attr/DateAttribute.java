@@ -22,10 +22,9 @@ package org.madogiwa.plaintable.schema.attr;
 import org.madogiwa.plaintable.schema.DateTimeAttribute;
 import org.madogiwa.plaintable.schema.Schema;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class DateAttribute extends DateTimeAttribute {
 

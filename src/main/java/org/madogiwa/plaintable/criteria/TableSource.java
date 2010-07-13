@@ -28,7 +28,7 @@ import org.madogiwa.plaintable.schema.Schema;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class TableSource extends Source {
 
@@ -52,26 +52,34 @@ public class TableSource extends Source {
 		this.alias = alias;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.ISource#getAlias()
 	 */
 	public String getAlias() {
 		return alias;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa.plaintable.criteria.Context)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
 		return String.format("%s AS %s", schema.getName(), getAlias());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.ISource#getPathList()
 	 */
 	public List<Path> getPathList() {
 		List<Path> list = new ArrayList<Path>();
-		for(Column column : schema.getColumns()) {
+		for (Column column : schema.getColumns()) {
 			list.add(new Path(alias, column.getName()));
 		}
 		return list;

@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class StringUtils {
 
@@ -37,7 +37,7 @@ public class StringUtils {
 
 		if (list.size() > 0) {
 			str.append(list.get(0));
-			for(int i = 1; i < list.size(); i++) {
+			for (int i = 1; i < list.size(); i++) {
 				str.append(delimiter);
 				str.append(list.get(i));
 			}
@@ -50,9 +50,10 @@ public class StringUtils {
 		return makeStringList(word, count, ",");
 	}
 
-	public static List<String> makeStringList(String word, int count, String delimiter) {
+	public static List<String> makeStringList(String word, int count,
+			String delimiter) {
 		List<String> list = new ArrayList<String>();
-		for(int i = 0; i < count; i++) {
+		for (int i = 0; i < count; i++) {
 			list.add(word);
 		}
 		return list;

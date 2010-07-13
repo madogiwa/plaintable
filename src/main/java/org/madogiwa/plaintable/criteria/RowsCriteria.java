@@ -21,7 +21,7 @@ package org.madogiwa.plaintable.criteria;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class RowsCriteria implements Rows {
 
@@ -34,8 +34,12 @@ public class RowsCriteria implements Rows {
 		this.criteria = criteria;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		return criteria.getSQLString(context);

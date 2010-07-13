@@ -29,7 +29,7 @@ import org.madogiwa.plaintable.criteria.Resolver;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class KeyListRaw implements KeyListExpression {
 
@@ -42,8 +42,12 @@ public class KeyListRaw implements KeyListExpression {
 		this.list = list;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		if (list.size() == 0) {
@@ -52,7 +56,7 @@ public class KeyListRaw implements KeyListExpression {
 
 		StringBuilder sql = new StringBuilder();
 
-		for(final Long key : list) {
+		for (final Long key : list) {
 			String marker = context.getResolverMarker(new Resolver() {
 
 				public void resolve(PreparedStatement statement, int index)
@@ -60,7 +64,7 @@ public class KeyListRaw implements KeyListExpression {
 
 					statement.setLong(index, key);
 				}
-				
+
 			});
 			sql.append(String.format("%s,", marker));
 		}

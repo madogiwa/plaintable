@@ -28,7 +28,7 @@ import org.madogiwa.plaintable.util.JdbcUtils;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class DialectFactory {
 
@@ -42,7 +42,8 @@ public class DialectFactory {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
-			String productName = connection.getMetaData().getDatabaseProductName();
+			String productName = connection.getMetaData()
+					.getDatabaseProductName();
 			if (productName.startsWith("MySQL")) {
 				return new MySQLDialect();
 			} else if (productName.startsWith("PostgreSQL")) {
@@ -58,7 +59,7 @@ public class DialectFactory {
 			throw new RuntimeException(e);
 		} finally {
 			JdbcUtils.closeConnection(connection);
-		}		
+		}
 	}
 
 }

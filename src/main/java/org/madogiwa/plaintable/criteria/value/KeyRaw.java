@@ -23,7 +23,7 @@ import org.madogiwa.plaintable.criteria.Context;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class KeyRaw implements KeyExpression {
 
@@ -36,8 +36,12 @@ public class KeyRaw implements KeyExpression {
 		this.id = id;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		return String.format(" %d ", id);

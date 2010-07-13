@@ -22,10 +22,9 @@ package org.madogiwa.plaintable.schema.attr;
 import org.madogiwa.plaintable.schema.Schema;
 import org.madogiwa.plaintable.schema.TextAttribute;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class CharAttribute extends TextAttribute {
 

@@ -42,7 +42,7 @@ import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class H2Dialect implements Dialect {
 
@@ -64,28 +64,35 @@ public class H2Dialect implements Dialect {
 		typeMap.put(StringAttribute.class, "CLOB");
 		typeMap.put(StreamAttribute.class, "BLOB");
 		typeMap.put(ReferenceKey.class, "BIGINT");
-		typeMap.put(SyntheticKey.class, "IDENTITY");		
+		typeMap.put(SyntheticKey.class, "IDENTITY");
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.dialect.Dialect#getSQLType(java.lang.reflect.Type, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.dialect.Dialect#getSQLType(java.lang.reflect.
+	 * Type, int)
 	 */
 	public String getSQLType(Type type, int length) {
 		String sqlType = typeMap.get(type);
 		if (sqlType == null) {
-			throw new RuntimeException(String.format("undefiend type %s", type.toString()));
+			throw new RuntimeException(String.format("undefiend type %s",
+					type.toString()));
 		}
 
 		if (type.equals(CharAttribute.class)) {
 			int charLen = (length == -1) ? MAX_CHAR_LENGTH : length;
 			if (charLen <= 0 || charLen > MAX_CHAR_LENGTH) {
-				throw new RuntimeException(String.format("invalid length %d type %s", length, type));
+				throw new RuntimeException(String.format(
+						"invalid length %d type %s", length, type));
 			}
 			sqlType = String.format("%s(%d)", sqlType, charLen);
 		} else if (type.equals(BytesAttribute.class)) {
 			int bytesLen = (length == -1) ? MAX_BYTES_LENGTH : length;
 			if (bytesLen <= 0 || bytesLen > MAX_BYTES_LENGTH) {
-				throw new RuntimeException(String.format("invalid length %d type %s", length, type));
+				throw new RuntimeException(String.format(
+						"invalid length %d type %s", length, type));
 			}
 			sqlType = String.format("%s(%d)", sqlType, bytesLen);
 		}
@@ -93,14 +100,18 @@ public class H2Dialect implements Dialect {
 		return sqlType;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.dialect.Dialect#isLimitSupported()
 	 */
 	public boolean isLimitSupported() {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.dialect.Dialect#getLimitFragment(long, long)
 	 */
 	public String getLimitFragment(long offset, long count) {
@@ -111,7 +122,9 @@ public class H2Dialect implements Dialect {
 		return "\"" + identifier + "\"";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.dialect.Dialect#escape(java.lang.String)
 	 */
 	public String escape(String literal) {

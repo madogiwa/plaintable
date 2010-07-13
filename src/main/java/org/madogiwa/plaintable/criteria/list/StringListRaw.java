@@ -28,7 +28,7 @@ import org.madogiwa.plaintable.criteria.Resolver;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class StringListRaw implements StringListExpression {
 
@@ -41,8 +41,12 @@ public class StringListRaw implements StringListExpression {
 		this.list = list;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		if (list.size() == 0) {
@@ -51,7 +55,7 @@ public class StringListRaw implements StringListExpression {
 
 		StringBuilder sql = new StringBuilder();
 
-		for(final String str : list) {
+		for (final String str : list) {
 			String marker = context.getResolverMarker(new Resolver() {
 
 				public void resolve(PreparedStatement statement, int index)
@@ -59,7 +63,7 @@ public class StringListRaw implements StringListExpression {
 
 					statement.setString(index, str);
 				}
-				
+
 			});
 			sql.append(String.format("%s,", marker));
 		}

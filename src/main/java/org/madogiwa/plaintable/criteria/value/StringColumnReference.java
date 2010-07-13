@@ -26,7 +26,7 @@ import org.madogiwa.plaintable.schema.TextAttribute;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class StringColumnReference implements StringExpression {
 
@@ -50,8 +50,12 @@ public class StringColumnReference implements StringExpression {
 		this.column = column;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa.plaintable.criteria.Context)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
 		return String.format("(%s.%s)", source.getAlias(), column);

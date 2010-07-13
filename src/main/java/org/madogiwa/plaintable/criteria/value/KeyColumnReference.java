@@ -26,7 +26,7 @@ import org.madogiwa.plaintable.schema.KeyColumn;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class KeyColumnReference implements KeyExpression {
 
@@ -50,8 +50,12 @@ public class KeyColumnReference implements KeyExpression {
 		this.column = column;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Expression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		return String.format("(%s.%s)", source.getAlias(), column);

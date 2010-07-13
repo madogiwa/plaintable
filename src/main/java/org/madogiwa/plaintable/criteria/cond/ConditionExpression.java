@@ -23,7 +23,7 @@ import org.madogiwa.plaintable.criteria.bool.BooleanExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface ConditionExpression extends BooleanExpression {
 

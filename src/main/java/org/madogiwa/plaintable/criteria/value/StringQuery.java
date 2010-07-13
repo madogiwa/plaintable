@@ -19,12 +19,12 @@
  */
 package org.madogiwa.plaintable.criteria.value;
 
-import org.madogiwa.plaintable.criteria.Query;
 import org.madogiwa.plaintable.criteria.Context;
+import org.madogiwa.plaintable.criteria.Query;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class StringQuery implements StringExpression {
 

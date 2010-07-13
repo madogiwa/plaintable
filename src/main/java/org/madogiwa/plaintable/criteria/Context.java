@@ -32,7 +32,7 @@ import org.madogiwa.plaintable.dialect.Dialect;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Context {
 
@@ -53,7 +53,7 @@ public class Context {
 	 * @return
 	 */
 	public Dialect getDialect() {
-		return dialect;	
+		return dialect;
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class Context {
 		Matcher matcher = pattern.matcher(sql);
 
 		int matchCount = 0;
-		while(true) {
+		while (true) {
 			if (!matcher.find()) {
 				break;
 			}
@@ -97,9 +97,10 @@ public class Context {
 	 * @param statement
 	 * @throws SQLException
 	 */
-	public void resolveParameters(PreparedStatement statement) throws SQLException {
-		for(int i = 0; i < resolverList.size(); i++) {
-			resolverList.get(i).resolve(statement, i+1);
+	public void resolveParameters(PreparedStatement statement)
+			throws SQLException {
+		for (int i = 0; i < resolverList.size(); i++) {
+			resolverList.get(i).resolve(statement, i + 1);
 		}
 	}
 

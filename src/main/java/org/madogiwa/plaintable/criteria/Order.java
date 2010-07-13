@@ -26,7 +26,7 @@ import org.madogiwa.plaintable.schema.Column;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Order {
 
@@ -36,7 +36,7 @@ public class Order {
 	 * 
 	 */
 	public Order() {
-		
+
 	}
 
 	/**
@@ -61,7 +61,8 @@ public class Order {
 	 * @return
 	 */
 	public Order add(Column column, boolean ascending) {
-		orderList.add(new OrderItem(new TableSource(column.getSchema()), column, ascending));
+		orderList.add(new OrderItem(new TableSource(column.getSchema()),
+				column, ascending));
 		return this;
 	}
 
@@ -115,7 +116,8 @@ public class Order {
 		}
 
 		public String getSQLString(Context context) {
-			return String.format("%s.%s %s", source.getAlias(), column.getName(), getOrderString());
+			return String.format("%s.%s %s", source.getAlias(),
+					column.getName(), getOrderString());
 		}
 
 		private String getOrderString() {

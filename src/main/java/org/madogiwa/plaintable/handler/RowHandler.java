@@ -24,7 +24,7 @@ import org.madogiwa.plaintable.Row;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface RowHandler {
 

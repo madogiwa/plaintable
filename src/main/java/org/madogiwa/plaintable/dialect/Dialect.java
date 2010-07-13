@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface Dialect {
 

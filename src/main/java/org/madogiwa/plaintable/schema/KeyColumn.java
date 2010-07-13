@@ -21,7 +21,7 @@ package org.madogiwa.plaintable.schema;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public abstract class KeyColumn extends Column {
 

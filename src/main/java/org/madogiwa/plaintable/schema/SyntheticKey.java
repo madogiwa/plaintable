@@ -19,10 +19,9 @@
  */
 package org.madogiwa.plaintable.schema;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class SyntheticKey extends KeyColumn {
 
@@ -38,7 +37,9 @@ public class SyntheticKey extends KeyColumn {
 		super(table, name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.simpletable.schema.ColumnSchema#isUnique()
 	 */
 	@Override

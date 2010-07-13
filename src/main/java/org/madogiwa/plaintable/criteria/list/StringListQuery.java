@@ -19,12 +19,12 @@
  */
 package org.madogiwa.plaintable.criteria.list;
 
-import org.madogiwa.plaintable.criteria.Query;
 import org.madogiwa.plaintable.criteria.Context;
+import org.madogiwa.plaintable.criteria.Query;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class StringListQuery implements StringListExpression {
 
@@ -37,8 +37,12 @@ public class StringListQuery implements StringListExpression {
 		this.query = query;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		return String.format("(%s)", query.getSQLString(context));

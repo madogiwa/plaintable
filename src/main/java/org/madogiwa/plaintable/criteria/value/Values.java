@@ -30,12 +30,13 @@ import org.madogiwa.plaintable.schema.TextAttribute;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Values {
 
 	public static BinaryExpression binary(BinaryAttribute column) {
-		return new BinaryColumnReference(new TableSource(column.getSchema()), column.getName());
+		return new BinaryColumnReference(new TableSource(column.getSchema()),
+				column.getName());
 	}
 
 	public static DateTimeExpression date(Date date) {
@@ -45,7 +46,7 @@ public class Values {
 	public static DateTimeExpression date(DateTimeAttribute attr) {
 		return new DateTimeColumnReference(attr);
 	}
-	
+
 	public static KeyExpression key(long id) {
 		return new KeyRaw(id);
 	}

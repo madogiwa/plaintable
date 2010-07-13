@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface Row {
 

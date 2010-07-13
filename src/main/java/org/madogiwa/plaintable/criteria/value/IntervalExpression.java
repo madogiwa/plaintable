@@ -19,10 +19,9 @@
  */
 package org.madogiwa.plaintable.criteria.value;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface IntervalExpression extends ValueExpression {
 

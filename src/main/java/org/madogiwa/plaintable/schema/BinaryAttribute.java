@@ -19,10 +19,9 @@
  */
 package org.madogiwa.plaintable.schema;
 
-
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public abstract class BinaryAttribute extends AttributeColumn {
 

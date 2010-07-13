@@ -23,15 +23,12 @@ import org.madogiwa.plaintable.criteria.Context;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class NumericTerm implements NumericExpression {
 
 	enum Operator {
-		ADD("+"),
-		SUB("-"),
-		MULTIPLE("*"),
-		DIVIDE("/");
+		ADD("+"), SUB("-"), MULTIPLE("*"), DIVIDE("/");
 
 		private String op;
 
@@ -62,11 +59,16 @@ public class NumericTerm implements NumericExpression {
 		this.op = op;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("(%s %s %s)", lhs.getSQLString(context), op.toString(), rhs.getSQLString(context));
+		return String.format("(%s %s %s)", lhs.getSQLString(context),
+				op.toString(), rhs.getSQLString(context));
 	}
 
 }

@@ -34,13 +34,12 @@ import org.madogiwa.plaintable.schema.Schema;
  */
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public interface Session {
 
 	public enum TransactionMode {
-		READ_COMMITTED,
-		SERIALIZABLE
+		READ_COMMITTED, SERIALIZABLE
 	};
 
 	/**
@@ -52,7 +51,8 @@ public interface Session {
 	 * @param mode
 	 * @throws PlainTableException
 	 */
-	public void setTransactionMode(TransactionMode mode) throws PlainTableException;
+	public void setTransactionMode(TransactionMode mode)
+			throws PlainTableException;
 
 	/**
 	 * @throws PlainTableException
@@ -115,7 +115,8 @@ public interface Session {
 	 * @return
 	 * @throws PlainTableException
 	 */
-	public long count(Schema schema, Restriction restriction, Column column) throws PlainTableException;
+	public long count(Schema schema, Restriction restriction, Column column)
+			throws PlainTableException;
 
 	/**
 	 * @param query
@@ -147,7 +148,7 @@ public interface Session {
 	 * @param schema
 	 * @param rowProvider
 	 * @param id
-	 * @return 
+	 * @return
 	 * @throws PlainTableException
 	 */
 	public boolean update(RowProvider rowProvider, Long id)
@@ -160,12 +161,13 @@ public interface Session {
 	 * @return
 	 * @throws PlainTableException
 	 */
-	public long update(RowProvider rowProvider, Restriction restriction) throws PlainTableException;
+	public long update(RowProvider rowProvider, Restriction restriction)
+			throws PlainTableException;
 
 	/**
 	 * @param schema
 	 * @param id
-	 * @return 
+	 * @return
 	 * @throws PlainTableException
 	 */
 	public boolean delete(Schema schema, Long id) throws PlainTableException;
@@ -173,7 +175,7 @@ public interface Session {
 	/**
 	 * @param schema
 	 * @param ids
-	 * @return 
+	 * @return
 	 * @throws PlainTableException
 	 */
 	public long delete(Schema schema, Long[] ids) throws PlainTableException;
@@ -184,6 +186,7 @@ public interface Session {
 	 * @return
 	 * @throws PlainTableException
 	 */
-	public long delete(Schema schema, Restriction restriction) throws PlainTableException;
+	public long delete(Schema schema, Restriction restriction)
+			throws PlainTableException;
 
 }

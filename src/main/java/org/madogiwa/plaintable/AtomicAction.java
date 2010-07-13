@@ -23,7 +23,7 @@ import java.sql.SQLException;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public abstract class AtomicAction {
 

@@ -24,7 +24,7 @@ import org.madogiwa.plaintable.criteria.bool.BooleanExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Not implements ConditionExpression {
 
@@ -37,8 +37,12 @@ public class Not implements ConditionExpression {
 		this.expr = expr;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa.simpletable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa
+	 * .simpletable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		return " ( NOT ( " + expr.getSQLString(context) + " ) ) ";

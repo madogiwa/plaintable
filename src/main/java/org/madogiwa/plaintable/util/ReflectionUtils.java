@@ -26,13 +26,15 @@ import org.madogiwa.plaintable.schema.Schema;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class ReflectionUtils {
 
 	public static Schema findSchema(Class<?> clazz) {
-		for(Field field : clazz.getFields()) {
-			if (Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers()) && field.getType().equals(Schema.class)) {
+		for (Field field : clazz.getFields()) {
+			if (Modifier.isStatic(field.getModifiers())
+					&& Modifier.isPublic(field.getModifiers())
+					&& field.getType().equals(Schema.class)) {
 				try {
 					return (Schema) field.get(null);
 				} catch (IllegalArgumentException e) {
@@ -47,4 +49,3 @@ public class ReflectionUtils {
 	}
 
 }
-

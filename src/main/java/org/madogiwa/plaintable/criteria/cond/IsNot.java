@@ -25,7 +25,7 @@ import org.madogiwa.plaintable.criteria.cond.Is.Truth;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class IsNot implements ConditionExpression {
 
@@ -42,11 +42,16 @@ public class IsNot implements ConditionExpression {
 		this.truth = truth;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa.simpletable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa
+	 * .simpletable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return " ( " + expr.getSQLString(context) + " ) IS NOT " + truth.toString() + " ";
+		return " ( " + expr.getSQLString(context) + " ) IS NOT "
+				+ truth.toString() + " ";
 	}
 
 }

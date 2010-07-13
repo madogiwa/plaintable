@@ -28,13 +28,12 @@ import org.madogiwa.plaintable.criteria.value.ValueExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class NullPredicate implements BooleanExpression {
 
 	enum Type {
-		IS_NULL,
-		IS_NOT_NULL
+		IS_NULL, IS_NOT_NULL
 	}
 
 	private ValueExpression column;
@@ -69,14 +68,19 @@ public class NullPredicate implements BooleanExpression {
 		this.column = column;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa.simpletable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.simpletable.criteria.Criterion#getSQLString(org.madogiwa
+	 * .simpletable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		if (type == Type.IS_NULL) {
 			return String.format("(%s IS NULL)", column.getSQLString(context));
 		} else {
-			return String.format("(%s IS NOT NULL)", column.getSQLString(context));
+			return String.format("(%s IS NOT NULL)",
+					column.getSQLString(context));
 		}
 	}
 

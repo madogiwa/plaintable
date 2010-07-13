@@ -27,7 +27,7 @@ import org.madogiwa.plaintable.criteria.bool.BooleanExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class CaseExpression implements ValueExpression {
 
@@ -59,23 +59,28 @@ public class CaseExpression implements ValueExpression {
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa.plaintable.criteria.Context)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" CASE ");
-		for(CaseItem item : caseList) {
+		for (CaseItem item : caseList) {
 			sql.append(item.getSQLString(context));
 		}
-		sql.append(String.format(" ELSE %s ", defaultValue.getSQLString(context)));
+		sql.append(String.format(" ELSE %s ",
+				defaultValue.getSQLString(context)));
 		sql.append(" END ");
 		return sql.toString();
 	}
 
 	class CaseItem {
 		public BooleanExpression cond;
-	
+
 		public ValueExpression value;
 
 		public CaseItem(BooleanExpression cond, ValueExpression value) {
@@ -84,7 +89,8 @@ public class CaseExpression implements ValueExpression {
 		}
 
 		public String getSQLString(Context context) {
-			return String.format(" WHEN %s THEN %s ", cond.getSQLString(context), value.getSQLString(context));
+			return String.format(" WHEN %s THEN %s ",
+					cond.getSQLString(context), value.getSQLString(context));
 		}
 	}
 

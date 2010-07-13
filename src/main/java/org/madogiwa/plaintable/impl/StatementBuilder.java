@@ -34,7 +34,7 @@ import org.madogiwa.plaintable.schema.Schema;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class StatementBuilder {
 
@@ -52,7 +52,8 @@ public class StatementBuilder {
 	 * @throws PlainTableException
 	 */
 	public String buildLockSql(Schema schema) throws PlainTableException {
-		return String.format("SELECT * FROM %s WHERE name LIKE ? FOR UPDATE", DatabaseSchemaImpl.LOCK_TABLE);
+		return String.format("SELECT * FROM %s WHERE name LIKE ? FOR UPDATE",
+				DatabaseSchemaImpl.LOCK_TABLE);
 	}
 
 	/**
@@ -62,10 +63,14 @@ public class StatementBuilder {
 	 * @return
 	 * @throws PlainTableException
 	 */
-	protected String buildSelectSql(Context context, IQuery query, Window window) throws PlainTableException {
+	protected String buildSelectSql(Context context, IQuery query, Window window)
+			throws PlainTableException {
 		String sql = query.getSQLString(context);
 		if (dialect.isLimitSupported()) {
-			sql = sql + " " + dialect.getLimitFragment(window.getOffset(), window.getLimit());
+			sql = sql
+					+ " "
+					+ dialect.getLimitFragment(window.getOffset(),
+							window.getLimit());
 		}
 		return context.replaceMarker(sql);
 	}
@@ -76,20 +81,22 @@ public class StatementBuilder {
 	 * @param provider
 	 * @return
 	 */
-	public String buildInsertSql(Context context, Schema schema, RowProvider provider) {
+	public String buildInsertSql(Context context, Schema schema,
+			RowProvider provider) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(String.format("INSERT INTO %s ", dialect.quote(schema.getName())));
+		sql.append(String.format("INSERT INTO %s ",
+				dialect.quote(schema.getName())));
 
 		sql.append(" ( ");
 		Map<Column, ValueExpression> map = provider.getMap();
-		for(Column column : map.keySet()) {
+		for (Column column : map.keySet()) {
 			sql.append(String.format(" %s,", dialect.quote(column.getName())));
 		}
 		sql.deleteCharAt(sql.lastIndexOf(","));
 		sql.append(" ) ");
 
 		sql.append(" VALUES ( ");
-		for(ValueExpression value : map.values()) {
+		for (ValueExpression value : map.values()) {
 			sql.append(String.format(" %s,", value.getSQLString(context)));
 		}
 		sql.deleteCharAt(sql.lastIndexOf(","));
@@ -105,14 +112,17 @@ public class StatementBuilder {
 	 * @param provider
 	 * @return
 	 */
-	public String buildUpdateSql(Context context, Schema schema, Restriction restriction, RowProvider provider) {
+	public String buildUpdateSql(Context context, Schema schema,
+			Restriction restriction, RowProvider provider) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(String.format("UPDATE %s ", dialect.quote(schema.getName().toLowerCase())));
+		sql.append(String.format("UPDATE %s ",
+				dialect.quote(schema.getName().toLowerCase())));
 		sql.append(" SET ");
 
 		Map<Column, ValueExpression> map = provider.getMap();
-		for(Column column : map.keySet()) {
-			sql.append(String.format(" %s = %s,", column.getPath(), map.get(column).getSQLString(context)));
+		for (Column column : map.keySet()) {
+			sql.append(String.format(" %s = %s,", column.getPath(),
+					map.get(column).getSQLString(context)));
 		}
 		sql.deleteCharAt(sql.lastIndexOf(","));
 
@@ -120,7 +130,7 @@ public class StatementBuilder {
 			sql.append(" WHERE " + restriction.getSQLString(context));
 		}
 
-		return context.replaceMarker(sql.toString());	
+		return context.replaceMarker(sql.toString());
 	}
 
 	/**
@@ -129,12 +139,15 @@ public class StatementBuilder {
 	 * @param restriction
 	 * @return
 	 */
-	public String buildDeleteSql(Context context, Schema schema, Restriction restriction) {
+	public String buildDeleteSql(Context context, Schema schema,
+			Restriction restriction) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(String.format("DELETE FROM %s ", schema.getName().toLowerCase()));
+		sql.append(String.format("DELETE FROM %s ", schema.getName()
+				.toLowerCase()));
 
 		if (restriction.notEmpty()) {
-			sql.append(String.format(" WHERE %s ", restriction.getSQLString(context)));
+			sql.append(String.format(" WHERE %s ",
+					restriction.getSQLString(context)));
 		}
 
 		return context.replaceMarker(sql.toString());

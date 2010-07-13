@@ -29,7 +29,7 @@ import org.madogiwa.plaintable.dialect.Dialect;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class DatabaseManagerImpl implements DatabaseManager {
 
@@ -53,14 +53,18 @@ public class DatabaseManagerImpl implements DatabaseManager {
 		schemaManager = new SchemaManagerImpl(databaseSchema);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.DatabaseManager#getSchemaManager()
 	 */
 	public SchemaManager getSchemaManager() {
 		return schemaManager;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.DatabaseManager#newSession()
 	 */
 	public Session newSession() {

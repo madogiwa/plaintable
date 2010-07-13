@@ -27,7 +27,7 @@ import org.madogiwa.plaintable.schema.Column;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class OuterJoinedSource extends JoinedSource {
 
@@ -53,7 +53,11 @@ public class OuterJoinedSource extends JoinedSource {
 	 * @param rightColumn
 	 */
 	public OuterJoinedSource(ISource left, Column leftColumn, Column rightColumn) {
-		this(left, new Path(leftColumn), new TableSource(rightColumn.getSchema(), leftColumn.getName() + "_" + rightColumn.getSchema().getName()), new Path(leftColumn.getName() + "_" + rightColumn.getSchema().getName(), rightColumn.getName()));
+		this(left, new Path(leftColumn), new TableSource(
+				rightColumn.getSchema(), leftColumn.getName() + "_"
+						+ rightColumn.getSchema().getName()), new Path(
+				leftColumn.getName() + "_" + rightColumn.getSchema().getName(),
+				rightColumn.getName()));
 	}
 
 	/**
@@ -62,7 +66,8 @@ public class OuterJoinedSource extends JoinedSource {
 	 * @param right
 	 * @param rightColumn
 	 */
-	public OuterJoinedSource(ISource left, Column leftColumn, ISource right, Column rightColumn) {
+	public OuterJoinedSource(ISource left, Column leftColumn, ISource right,
+			Column rightColumn) {
 		this(left, new Path(leftColumn), right, new Path(rightColumn));
 	}
 
@@ -72,21 +77,30 @@ public class OuterJoinedSource extends JoinedSource {
 	 * @param right
 	 * @param rightPath
 	 */
-	public OuterJoinedSource(ISource left, Path leftPath, ISource right, Path rightPath) {
+	public OuterJoinedSource(ISource left, Path leftPath, ISource right,
+			Path rightPath) {
 		this.left = left;
 		this.leftColumn = leftPath;
 		this.right = right;
 		this.rightColumn = rightPath;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa.plaintable.criteria.Context)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.IExpression#getSQLString(org.madogiwa
+	 * .plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("(%s LEFT OUTER JOIN %s ON %s = %s)", left.getSQLString(context), right.getSQLString(context), leftColumn.getPathString(), rightColumn.getPathString());
+		return String.format("(%s LEFT OUTER JOIN %s ON %s = %s)",
+				left.getSQLString(context), right.getSQLString(context),
+				leftColumn.getPathString(), rightColumn.getPathString());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.ISource#getPathList()
 	 */
 	public List<Path> getPathList() {

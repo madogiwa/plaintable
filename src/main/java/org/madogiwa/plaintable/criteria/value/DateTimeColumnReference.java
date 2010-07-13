@@ -26,7 +26,7 @@ import org.madogiwa.plaintable.schema.DateTimeAttribute;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class DateTimeColumnReference implements DateTimeExpression {
 
@@ -50,8 +50,12 @@ public class DateTimeColumnReference implements DateTimeExpression {
 		this.column = column;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.Criterion#getSQLString(org.madogiwa.
+	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		return String.format("(%s.%s)", source.getAlias(), column);

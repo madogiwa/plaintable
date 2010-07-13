@@ -27,7 +27,7 @@ import org.madogiwa.plaintable.criteria.Context;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Schema implements Serializable {
 
@@ -94,7 +94,8 @@ public class Schema implements Serializable {
 	 * @param name
 	 * @param target
 	 */
-	public void addReferenceKey(String name, Class<? extends Serializable> target) {
+	public void addReferenceKey(String name,
+			Class<? extends Serializable> target) {
 		addReferenceKey(name, target, false);
 	}
 
@@ -103,8 +104,10 @@ public class Schema implements Serializable {
 	 * @param target
 	 * @param cascade
 	 */
-	public void addReferenceKey(String name, Class<? extends Serializable> target, boolean cascade) {
-		addReferenceKey(new ReferenceKey(this, name, new SchemaReference(target), cascade));
+	public void addReferenceKey(String name,
+			Class<? extends Serializable> target, boolean cascade) {
+		addReferenceKey(new ReferenceKey(this, name,
+				new SchemaReference(target), cascade));
 	}
 
 	/**
@@ -146,15 +149,21 @@ public class Schema implements Serializable {
 		return columnSet;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.madogiwa.plaintable.criteria.ISource#getAlias()
 	 */
 	public String getAlias() {
 		return getName();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.madogiwa.plaintable.criteria.ISource#getSQLString(org.madogiwa.plaintable.criteria.CriteriaContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.madogiwa.plaintable.criteria.ISource#getSQLString(org.madogiwa.plaintable
+	 * .criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
 		return " " + getName() + " ";

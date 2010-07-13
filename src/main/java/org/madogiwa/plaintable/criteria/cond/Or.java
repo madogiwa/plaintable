@@ -24,7 +24,7 @@ import org.madogiwa.plaintable.criteria.bool.BooleanExpression;
 
 /**
  * @author Hidenori Sugiyama
- *
+ * 
  */
 public class Or implements ConditionExpression {
 
@@ -42,7 +42,8 @@ public class Or implements ConditionExpression {
 	}
 
 	public String getSQLString(Context context) {
-		return " (( " + lhs.getSQLString(context) + " ) OR ( " + rhs.getSQLString(context) + " )) ";
+		return " (( " + lhs.getSQLString(context) + " ) OR ( "
+				+ rhs.getSQLString(context) + " )) ";
 	}
 
 }
