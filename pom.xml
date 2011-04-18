@@ -165,6 +165,13 @@
         </excludes>
       </resource>
     </resources>
+
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav-jackrabbit</artifactId>
+      </extension>
+    </extensions>
   </build>
 
   <dependencies>
