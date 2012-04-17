@@ -19,9 +19,9 @@
  */
 package org.madogiwa.plaintable.schema;
 
-import java.io.Serializable;
-
 import org.madogiwa.plaintable.util.ReflectionUtils;
+
+import java.io.Serializable;
 
 /**
  * @author Hidenori Sugiyama
@@ -79,7 +79,7 @@ public class SchemaReference implements Serializable {
 	public Schema getSchema() {
 		try {
 			if (schema == null) {
-				Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(
+				Class<?> clazz = getClass().getClassLoader().loadClass(
 						className);
 				schema = ReflectionUtils.findSchema(clazz);
 			}
