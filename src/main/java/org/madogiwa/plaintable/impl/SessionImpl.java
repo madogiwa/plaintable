@@ -111,13 +111,8 @@ public class SessionImpl implements Session {
 					break;
 				}
 			} else {
-				if (readOnly) {
-					connection
-							.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-				} else {
-					connection
-							.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-				}
+				connection
+						.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			}
 
 			connection.setAutoCommit(false);
