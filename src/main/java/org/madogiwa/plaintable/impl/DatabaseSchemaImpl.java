@@ -237,9 +237,9 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 			if (!column.isUnique()) {
 				JdbcUtils.executeUpdate(connection, String.format(
 						"CREATE %s INDEX %s ON %s (%s)",
-						column.isUnique() ? "UNIQUE" : "", schema.getName()
-								+ "_" + column.getName(), schema.getName(),
-						column.getName()), new Object[] {});
+						column.isUnique() ? "UNIQUE" : "", dialect.quote(schema.getName()
+								+ "_" + column.getName()), dialect.quote(schema.getName()),
+						dialect.quote(column.getName())), new Object[] {});
 			}
 		}
 	}
