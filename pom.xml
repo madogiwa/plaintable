@@ -13,7 +13,7 @@
   <artifactId>plaintable</artifactId>
   <name>PlainTable</name>
   <version>${application.version}</version>
-  <url>http://code.google.com/p/${artifactId}/</url>
+  <url>http://code.google.com/p/${project.artifactId}/</url>
   <inceptionYear>2008</inceptionYear>
 
   <licenses>
@@ -34,14 +34,14 @@
   </developers>
 
   <scm>
-    <connection>scm:hg:http://${artifactId}.googlecode.com/hg/</connection>
-    <developerConnection>scm:hg:https://${artifactId}.googlecode.com/hg/</developerConnection>
-    <url>http://${artifactId}.googlecode.com/hg/</url>
+    <connection>scm:hg:http://${project.artifactId}.googlecode.com/hg/</connection>
+    <developerConnection>scm:hg:https://${project.artifactId}.googlecode.com/hg/</developerConnection>
+    <url>http://${project.artifactId}.googlecode.com/hg/</url>
   </scm>
 
   <issueManagement>
     <system>Google Code</system>
-    <url>http://code.google.com/p/${artifactId}/issues/list</url>
+    <url>http://code.google.com/p/${project.artifactId}/issues/list</url>
   </issueManagement>
 
   <reporting>
