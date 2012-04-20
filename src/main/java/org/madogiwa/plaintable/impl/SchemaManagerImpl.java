@@ -111,161 +111,61 @@ public class SchemaManagerImpl implements SchemaManager {
 	private Schema extractSchemaFromClass(Class<? extends Serializable> clazz,
 			String name, long serial) {
 
-		Field field = findInstanceField(clazz);
-		if (field != null) {
-			return extractSchemaFromClassWithSingleton(clazz, name, serial);
-		} else {
-			return extractSchemaFromClassWithStaticField(clazz, name, serial);
-		}
-	}
-
-	private Field findInstanceField(Class<? extends Serializable> clazz) {
-		Field[] fields = clazz.getFields();
-		for (Field field : fields) {
-			if (Modifier.isStatic(field.getModifiers()) &&
-				field.getType().equals(clazz)) {
-				return field;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * @param clazz
-	 * @param name
-	 * @param serial
-	 */
-	private Schema extractSchemaFromClassWithStaticField(Class<? extends Serializable> clazz,
-										  String name, long serial) {
 		Schema schema = new Schema(name, serial);
 
-		Field[] fields = clazz.getFields();
+		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
-			if (Modifier.isStatic(field.getModifiers())
-					&& Modifier.isPublic(field.getModifiers())) {
-				if (field.getType().equals(SyntheticKey.class)) {
-					if (schema.getSyntheticKey() != null) {
-						throw new RuntimeException(String.format(
-								"%s has duplicate SyntheticKey", clazz));
-					}
-
-					SyntheticKey key = new SyntheticKey(schema, field.getName());
-					schema.setSyntheticKey(key);
-				} else if (field.getType().equals(ReferenceKey.class)) {
-					Reference reference = field.getAnnotation(Reference.class);
-
-					ReferenceKey ref = new ReferenceKey(schema,
-							field.getName(), new SchemaReference(reference
-									.target().getCanonicalName()));
-					ref.setIndexed(true);
-					ref.setUnique(reference.unique());
-					ref.setCascade(reference.cascade());
-					schema.addReferenceKey(ref);
-				} else if (AttributeColumn.class.isAssignableFrom(field
-						.getType())) {
-					Attribute column = field.getAnnotation(Attribute.class);
-
-					try {
-						Constructor<?> constructor = field.getType()
-								.getConstructor(
-										new Class[] { Schema.class,
-												String.class });
-						AttributeColumn attr = (AttributeColumn) constructor
-								.newInstance(new Object[] { schema,
-										field.getName() });
-						attr.setNullable((column != null) ? column.nullable()
-								: false);
-						attr.setIndexed((column != null) ? column.indexed()
-								: false);
-						attr.setUnique((column != null) ? column.unique()
-								: false);
-						attr.setLength((column != null) ? column.length() : -1);
-						schema.addAttribute(attr);
-					} catch (SecurityException e) {
-						throw new RuntimeException(e);
-					} catch (NoSuchMethodException e) {
-						throw new RuntimeException(e);
-					} catch (IllegalArgumentException e) {
-						throw new RuntimeException(e);
-					} catch (InstantiationException e) {
-						throw new RuntimeException(e);
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e);
-					} catch (InvocationTargetException e) {
-						throw new RuntimeException(e);
-					}
+			field.setAccessible(true);
+			if (field.getType().equals(SyntheticKey.class)) {
+				if (schema.getSyntheticKey() != null) {
+					throw new RuntimeException(String.format(
+							"%s has duplicate SyntheticKey", clazz));
 				}
-			}
-		}
 
-		return schema;
-	}
+				SyntheticKey key = new SyntheticKey(schema, field.getName());
+				schema.setSyntheticKey(key);
+			} else if (field.getType().equals(ReferenceKey.class)) {
+				Reference reference = field.getAnnotation(Reference.class);
 
-	/**
-	 * @param clazz
-	 * @param name
-	 * @param serial
-	 */
-	private Schema extractSchemaFromClassWithSingleton(Class<? extends Serializable> clazz,
-												 String name, long serial) {
-		Schema schema = new Schema(name, serial);
+				ReferenceKey ref = new ReferenceKey(schema,
+						field.getName(), new SchemaReference(reference
+						.target().getCanonicalName()));
+				ref.setIndexed(true);
+				ref.setUnique(reference.unique());
+				ref.setCascade(reference.cascade());
+				schema.addReferenceKey(ref);
+			} else if (AttributeColumn.class.isAssignableFrom(field
+					.getType())) {
+				Attribute column = field.getAnnotation(Attribute.class);
 
-		Field[] fields = clazz.getFields();
-		for (Field field : fields) {
-			if (!Modifier.isStatic(field.getModifiers())
-					&& Modifier.isPublic(field.getModifiers())) {
-				if (field.getType().equals(SyntheticKey.class)) {
-					if (schema.getSyntheticKey() != null) {
-						throw new RuntimeException(String.format(
-								"%s has duplicate SyntheticKey", clazz));
-					}
-
-					SyntheticKey key = new SyntheticKey(schema, field.getName());
-					schema.setSyntheticKey(key);
-				} else if (field.getType().equals(ReferenceKey.class)) {
-					Reference reference = field.getAnnotation(Reference.class);
-
-					ReferenceKey ref = new ReferenceKey(schema,
-							field.getName(), new SchemaReference(reference
-							.target().getCanonicalName()));
-					ref.setIndexed(true);
-					ref.setUnique(reference.unique());
-					ref.setCascade(reference.cascade());
-					schema.addReferenceKey(ref);
-				} else if (AttributeColumn.class.isAssignableFrom(field
-						.getType())) {
-					Attribute column = field.getAnnotation(Attribute.class);
-
-					try {
-						Constructor<?> constructor = field.getType()
-								.getConstructor(
-										new Class[] { Schema.class,
-												String.class });
-						AttributeColumn attr = (AttributeColumn) constructor
-								.newInstance(new Object[] { schema,
-										field.getName() });
-						attr.setNullable((column != null) ? column.nullable()
-								: false);
-						attr.setIndexed((column != null) ? column.indexed()
-								: false);
-						attr.setUnique((column != null) ? column.unique()
-								: false);
-						attr.setLength((column != null) ? column.length() : -1);
-						schema.addAttribute(attr);
-					} catch (SecurityException e) {
-						throw new RuntimeException(e);
-					} catch (NoSuchMethodException e) {
-						throw new RuntimeException(e);
-					} catch (IllegalArgumentException e) {
-						throw new RuntimeException(e);
-					} catch (InstantiationException e) {
-						throw new RuntimeException(e);
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e);
-					} catch (InvocationTargetException e) {
-						throw new RuntimeException(e);
-					}
+				try {
+					Constructor<?> constructor = field.getType()
+							.getConstructor(
+									new Class[]{Schema.class,
+											String.class});
+					AttributeColumn attr = (AttributeColumn) constructor
+							.newInstance(new Object[] { schema,
+									field.getName() });
+					attr.setNullable((column != null) ? column.nullable()
+							: false);
+					attr.setIndexed((column != null) ? column.indexed()
+							: false);
+					attr.setUnique((column != null) ? column.unique()
+							: false);
+					attr.setLength((column != null) ? column.length() : -1);
+					schema.addAttribute(attr);
+				} catch (SecurityException e) {
+					throw new RuntimeException(e);
+				} catch (NoSuchMethodException e) {
+					throw new RuntimeException(e);
+				} catch (IllegalArgumentException e) {
+					throw new RuntimeException(e);
+				} catch (InstantiationException e) {
+					throw new RuntimeException(e);
+				} catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				} catch (InvocationTargetException e) {
+					throw new RuntimeException(e);
 				}
 			}
 		}
@@ -279,58 +179,51 @@ public class SchemaManagerImpl implements SchemaManager {
 	 */
 	private void updateClassFields(Class<? extends Serializable> clazz,
 			Schema schema) {
-		Field instanceField = findInstanceField(clazz);
+		try {
+			Object instance = findInstance(clazz);
 
-		Field[] fields = clazz.getFields();
-		for (Field field : fields) {
-			if (Modifier.isStatic(field.getModifiers())
-					&& Modifier.isPublic(field.getModifiers())) {
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field field : fields) {
+				field.setAccessible(true);
 				if (field.getType().equals(Schema.class)) {
-					try {
-						field.set(instanceField, schema);
-					} catch (IllegalArgumentException e) {
-						throw new RuntimeException(e);
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e);
-					}
+					field.set(instance, schema);
 				} else if (field.getType().equals(SyntheticKey.class)) {
-					try {
-						field.set(instanceField, schema.getSyntheticKey());
-					} catch (IllegalArgumentException e) {
-						throw new RuntimeException(e);
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e);
-					}
+					field.set(instance, schema.getSyntheticKey());
 				} else if (field.getType().equals(ReferenceKey.class)) {
-					try {
-						Set<ReferenceKey> keySet = schema.getReferenceKeys();
-						for (ReferenceKey key : keySet) {
-							if (field.getName().equals(key.getName())) {
-								field.set(instanceField, key);
-							}
+					Set<ReferenceKey> keySet = schema.getReferenceKeys();
+					for (ReferenceKey key : keySet) {
+						if (field.getName().equals(key.getName())) {
+							field.set(instance, key);
 						}
-					} catch (IllegalArgumentException e) {
-						throw new RuntimeException(e);
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e);
 					}
 				} else if (AttributeColumn.class.isAssignableFrom(field
 						.getType())) {
-					try {
-						Set<AttributeColumn> attrSet = schema.getAttributes();
-						for (AttributeColumn attr : attrSet) {
-							if (field.getName().equals(attr.getName())) {
-								field.set(instanceField, attr);
-							}
+					Set<AttributeColumn> attrSet = schema.getAttributes();
+					for (AttributeColumn attr : attrSet) {
+						if (field.getName().equals(attr.getName())) {
+							field.set(instance, attr);
 						}
-					} catch (IllegalArgumentException e) {
-						throw new RuntimeException(e);
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e);
 					}
 				}
 			}
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
 		}
+	}
+
+	private Object findInstance(Class<? extends Serializable> clazz) throws IllegalAccessException {
+		Field[] fields = clazz.getFields();
+		for (Field field : fields) {
+			if (Modifier.isStatic(field.getModifiers()) &&
+					field.getType().equals(clazz)) {
+
+				return field.get(null);
+			}
+		}
+
+		return null;
 	}
 
 	/*
