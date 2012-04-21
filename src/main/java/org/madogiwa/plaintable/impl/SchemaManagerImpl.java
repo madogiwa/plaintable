@@ -21,10 +21,11 @@ package org.madogiwa.plaintable.impl;
 
 import java.io.ObjectStreamClass;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,7 @@ import org.madogiwa.plaintable.schema.SyntheticKey;
 import org.madogiwa.plaintable.schema.annot.Attribute;
 import org.madogiwa.plaintable.schema.annot.Reference;
 import org.madogiwa.plaintable.schema.annot.Table;
+import org.madogiwa.plaintable.util.ReflectionUtils;
 
 /**
  * @author Hidenori Sugiyama
@@ -70,9 +72,25 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * @see org.madogiwa.plaintable.TableManager#addTable(java.lang.Class)
 	 */
 	public void manage(Class<? extends Serializable> clazz) {
-		Schema schema = extractSchemaFromClass(clazz);
-		updateClassFields(clazz, schema);
+		Class<? extends Serializable> implClazz = findImplClass(clazz);
+		Schema schema = extractSchemaFromClass(implClazz);
+		updateClassFields(implClazz, schema);
 		manage(schema);
+	}
+
+	private Class<? extends Serializable> findImplClass(Class<? extends Serializable> clazz) {
+		Table annot = (Table) clazz.getAnnotation(Table.class);
+		if (annot != null) {
+			return clazz;
+		}
+
+		Class<?> implClass = ReflectionUtils.findClass(clazz.getCanonicalName() + "$");
+		if (implClass != null && Serializable.class.isAssignableFrom(implClass)) {
+			return findImplClass((Class<Serializable>)implClass);
+		}
+
+		throw new RuntimeException(String.format(
+				"%s is not a table schema", clazz));
 	}
 
 	/**
@@ -180,7 +198,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	private void updateClassFields(Class<? extends Serializable> clazz,
 			Schema schema) {
 		try {
-			Object instance = findInstance(clazz);
+			Object instance = ReflectionUtils.findInstance(clazz);
 
 			Field[] fields = clazz.getDeclaredFields();
 			for (Field field : fields) {
@@ -211,19 +229,6 @@ public class SchemaManagerImpl implements SchemaManager {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private Object findInstance(Class<? extends Serializable> clazz) throws IllegalAccessException {
-		Field[] fields = clazz.getFields();
-		for (Field field : fields) {
-			if (Modifier.isStatic(field.getModifiers()) &&
-					field.getType().equals(clazz)) {
-
-				return field.get(null);
-			}
-		}
-
-		return null;
 	}
 
 	/*

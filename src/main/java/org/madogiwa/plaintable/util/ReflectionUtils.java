@@ -31,21 +31,66 @@ import org.madogiwa.plaintable.schema.Schema;
 public class ReflectionUtils {
 
 	public static Schema findSchema(Class<?> clazz) {
-		for (Field field : clazz.getFields()) {
+		try {
+			Schema schema = findSchemaFromStaticField(clazz);
+			if (schema != null) {
+				return schema;
+			}
+
+			Object instance = findInstance(clazz);
+			if (instance == null) {
+				return null;
+			}
+
+			return findSchemaFromInstance(clazz, instance);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static Schema findSchemaFromStaticField(Class<?> clazz) throws IllegalAccessException {
+		for (Field field : clazz.getDeclaredFields()) {
+			field.setAccessible(true);
 			if (Modifier.isStatic(field.getModifiers())
-					&& Modifier.isPublic(field.getModifiers())
 					&& field.getType().equals(Schema.class)) {
-				try {
-					return (Schema) field.get(null);
-				} catch (IllegalArgumentException e) {
-					throw new RuntimeException(e);
-				} catch (IllegalAccessException e) {
-					throw new RuntimeException(e);
-				}
+				return (Schema) field.get(null);
 			}
 		}
 
 		return null;
+	}
+
+	private static Schema findSchemaFromInstance(Class<?> clazz, Object instance) throws IllegalAccessException {
+		for (Field field : clazz.getDeclaredFields()) {
+			field.setAccessible(true);
+			if (!Modifier.isStatic(field.getModifiers())
+					&& field.getType().equals(Schema.class)) {
+				return (Schema) field.get(instance);
+			}
+		}
+
+		return null;
+	}
+
+	public static Object findInstance(Class<?> clazz) throws IllegalAccessException {
+		Field[] fields = clazz.getFields();
+		for (Field field : fields) {
+			if (Modifier.isStatic(field.getModifiers()) &&
+					field.getType().equals(clazz)) {
+
+				return field.get(null);
+			}
+		}
+
+		return null;
+	}
+
+	public static Class<?> findClass(String className) {
+		try {
+			return ReflectionUtils.class.getClassLoader().loadClass(className);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
 	}
 
 }
