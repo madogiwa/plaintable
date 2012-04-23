@@ -4,7 +4,6 @@
   <packaging>jar</packaging>
 
   <properties>
-    <application.version>0.1-SNAPSHOT</application.version>
     <java-compiler.version>1.5</java-compiler.version>
     <junit.version>4.4</junit.version>
   </properties>
@@ -12,7 +11,7 @@
   <groupId>org.madogiwa</groupId>
   <artifactId>plaintable</artifactId>
   <name>PlainTable</name>
-  <version>${application.version}</version>
+  <version>0.1-SNAPSHOT</version>
   <url>http://code.google.com/p/${project.artifactId}/</url>
   <inceptionYear>2008</inceptionYear>
 
@@ -46,11 +45,6 @@
 
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
