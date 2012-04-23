@@ -11,7 +11,7 @@
   <groupId>org.madogiwa</groupId>
   <artifactId>plaintable</artifactId>
   <name>PlainTable</name>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <url>http://code.google.com/p/${project.artifactId}/</url>
   <inceptionYear>2008</inceptionYear>
 
