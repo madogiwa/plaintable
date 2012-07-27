@@ -19,11 +19,16 @@
  */
 package org.madogiwa.plaintable.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import org.madogiwa.plaintable.DatabaseSchema;
+import org.madogiwa.plaintable.dialect.Dialect;
+import org.madogiwa.plaintable.schema.*;
+import org.madogiwa.plaintable.schema.attr.BytesAttribute;
+import org.madogiwa.plaintable.schema.attr.LongAttribute;
+import org.madogiwa.plaintable.schema.attr.StringAttribute;
+import org.madogiwa.plaintable.util.JdbcUtils;
+
+import javax.sql.DataSource;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,28 +39,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.sql.DataSource;
-
-import org.madogiwa.plaintable.DatabaseSchema;
-import org.madogiwa.plaintable.dialect.Dialect;
-import org.madogiwa.plaintable.schema.AttributeColumn;
-import org.madogiwa.plaintable.schema.Column;
-import org.madogiwa.plaintable.schema.ReferenceKey;
-import org.madogiwa.plaintable.schema.Schema;
-import org.madogiwa.plaintable.schema.SchemaReference;
-import org.madogiwa.plaintable.schema.SyntheticKey;
-import org.madogiwa.plaintable.schema.attr.BytesAttribute;
-import org.madogiwa.plaintable.schema.attr.LongAttribute;
-import org.madogiwa.plaintable.schema.attr.StringAttribute;
-import org.madogiwa.plaintable.util.JdbcUtils;
-
 /**
  * @author Hidenori Sugiyama
  * 
  */
 public class DatabaseSchemaImpl implements DatabaseSchema {
 
-	public static final String LOCK_TABLE = "PlaintableLock";
+	private static final String LOCK_TABLE = "PlaintableLock";
 
 	private static final String SCHEMA_TABLE = "PlaintableSchema";
 
@@ -70,13 +60,16 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 
 	private boolean initialized;
 
+	private String prefix;
+
 	/**
 	 * @param dataSource
 	 * @param dialect
 	 */
-	public DatabaseSchemaImpl(DataSource dataSource, Dialect dialect) {
+	public DatabaseSchemaImpl(DataSource dataSource, Dialect dialect, String prefix) {
 		this.dataSource = dataSource;
 		this.dialect = dialect;
+		this.prefix = prefix;
 		this.initialized = false;
 	}
 
@@ -102,10 +95,10 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	 * 
 	 */
 	private void init() throws SQLException {
-		if (!JdbcUtils.isTableExist(dataSource, LOCK_TABLE)) {
+		if (!JdbcUtils.isTableExist(dataSource, getLockTableName())) {
 			initLockTable();
 		}
-		if (!JdbcUtils.isTableExist(dataSource, SCHEMA_TABLE)) {
+		if (!JdbcUtils.isTableExist(dataSource, getSchemaTableName())) {
 			initSchemaTable();
 		}
 	}
@@ -140,8 +133,8 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		PreparedStatement statement = null;
 		try {
 			statement = connection.prepareStatement(String.format(
-					"SELECT * FROM %s WHERE name = ? FOR UPDATE", LOCK_TABLE));
-			statement.setString(1, SCHEMA_TABLE);
+					"SELECT * FROM %s WHERE name = ? FOR UPDATE", getLockTableName()));
+			statement.setString(1, getSchemaTableName());
 			statement.execute();
 		} finally {
 			JdbcUtils.closeStatement(statement);
@@ -181,7 +174,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	private String buildCreateTableSql(Schema schema) {
 		StringBuilder query = new StringBuilder();
 		query.append(String.format("CREATE TABLE %s ( ",
-				dialect.quote(schema.getName())));
+				dialect.quote(schema.getFullName())));
 		query.append(String.format("%s %s PRIMARY KEY ",
 				dialect.quote(schema.getSyntheticKey().getName()),
 				dialect.getSQLType(SyntheticKey.class, -1)));
@@ -196,7 +189,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 			SchemaReference schemaRef = ref.getTarget();
 			query.append(String.format(
 					" REFERENCES %s(%s) ",
-					dialect.quote(schemaRef.getSchema().getName()),
+					dialect.quote(schemaRef.getSchema().getFullName()),
 					dialect.quote(schemaRef.getSchema().getSyntheticKey()
 							.getName())));
 			query.append(ref.isCascade() ? " ON DELETE CASCADE " : "");
@@ -237,8 +230,8 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 			if (!column.isUnique()) {
 				JdbcUtils.executeUpdate(connection, String.format(
 						"CREATE %s INDEX %s ON %s (%s)",
-						column.isUnique() ? "UNIQUE" : "", dialect.quote(schema.getName()
-								+ "_" + column.getName()), dialect.quote(schema.getName()),
+						column.isUnique() ? "UNIQUE" : "", dialect.quote(schema.getFullName()
+								+ "_" + column.getName()), dialect.quote(schema.getFullName()),
 						dialect.quote(column.getName())), new Object[] {});
 			}
 		}
@@ -254,11 +247,11 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	public void dropTable(Schema schema) throws SQLException {
 		StringBuilder query = new StringBuilder();
 		query.append(String.format("DROP TABLE %s",
-				dialect.quote(schema.getName())));
+				dialect.quote(schema.getFullName())));
 		JdbcUtils.executeUpdate(connection, query.toString(), new Object[] {});
 
-		removeLock(schema.getName());
-		removeSchema(schema.getName());
+		removeLock(schema.getFullName());
+		removeSchema(schema.getFullName());
 	}
 
 	/*
@@ -281,7 +274,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 
 		String query = String.format("SELECT %s,%s,%s FROM %s",
 				dialect.quote("name"), dialect.quote("version"),
-				dialect.quote("schema"), dialect.quote(SCHEMA_TABLE));
+				dialect.quote("schema"), dialect.quote(getSchemaTableName()));
 		logger.fine(query);
 
 		Connection connection = null;
@@ -294,7 +287,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 			while (resultSet.next()) {
 				byte[] schemaBytes = resultSet.getBytes("schema");
 				Schema schema = schemaFromByteArray(schemaBytes);
-				map.put(schema.getName(), schema);
+				map.put(schema.getFullName(), schema);
 			}
 		} finally {
 			JdbcUtils.closeResultSet(resultSet);
@@ -333,7 +326,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	 * @return
 	 */
 	private Schema getPlaintableSchema() {
-		Schema schema = new Schema(SCHEMA_TABLE, 1);
+		Schema schema = new Schema(prefix, SCHEMA_TABLE, 1);
 		schema.setSyntheticKey(new SyntheticKey(schema, "id"));
 		schema.addAttribute(new StringAttribute(schema, "name"));
 		schema.addAttribute(new LongAttribute(schema, "version"));
@@ -345,7 +338,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	 * @return
 	 */
 	private Schema getLockTableSchema() {
-		Schema schema = new Schema(LOCK_TABLE, 1);
+		Schema schema = new Schema(prefix, LOCK_TABLE, 1);
 		schema.setSyntheticKey(new SyntheticKey(schema, "id"));
 		schema.addAttribute(new StringAttribute(schema, "name"));
 		return schema;
@@ -353,9 +346,9 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 
 	private void addSchema(Schema schema) throws SQLException {
 		JdbcUtils.executeUpdate(connection, String.format(
-				"INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", SCHEMA_TABLE,
+				"INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", getSchemaTableName(),
 				dialect.quote("name"), dialect.quote("version"),
-				dialect.quote("schema")), new Object[] { schema.getName(),
+				dialect.quote("schema")), new Object[] { schema.getFullName(),
 				schema.getVersion(), schemaToByteArray(schema) });
 	}
 
@@ -373,20 +366,28 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 
 	private void removeSchema(String name) throws SQLException {
 		JdbcUtils.executeUpdate(connection,
-				String.format("DELETE FROM %s WHERE name = ?", SCHEMA_TABLE),
+				String.format("DELETE FROM %s WHERE name = ?", getSchemaTableName()),
 				new Object[] { name });
 	}
 
 	private void addLock(Schema schema) throws SQLException {
 		JdbcUtils.executeUpdate(connection,
-				String.format("INSERT INTO %s (name) VALUES (?)", LOCK_TABLE),
-				new Object[] { schema.getName() });
+				String.format("INSERT INTO %s (name) VALUES (?)", getLockTableName()),
+				new Object[] { schema.getFullName() });
 	}
 
 	private void removeLock(String name) throws SQLException {
 		JdbcUtils.executeUpdate(connection,
-				String.format("DELETE FROM %s WHERE name = ?", LOCK_TABLE),
+				String.format("DELETE FROM %s WHERE name = ?", getLockTableName()),
 				new Object[] { name });
+	}
+
+	public String getLockTableName() {
+		return prefix + LOCK_TABLE;
+	}
+
+	public String getSchemaTableName() {
+		return prefix + SCHEMA_TABLE;
 	}
 
 }

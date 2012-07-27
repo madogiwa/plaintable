@@ -19,11 +19,11 @@
  */
 package org.madogiwa.plaintable;
 
-import javax.sql.DataSource;
-
 import org.madogiwa.plaintable.dialect.Dialect;
 import org.madogiwa.plaintable.dialect.DialectFactory;
 import org.madogiwa.plaintable.impl.DatabaseManagerImpl;
+
+import javax.sql.DataSource;
 
 /**
  * @author Hidenori Sugiyama
@@ -33,11 +33,21 @@ public class DatabaseManagerFactory {
 
 	private DataSource dataSource;
 
+	private String prefix = "";
+
 	/**
 	 * @param dataSource
 	 */
 	public DatabaseManagerFactory(DataSource dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	public String getPrefix() {
+		return this.prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 
 	/**
@@ -46,7 +56,8 @@ public class DatabaseManagerFactory {
 	public DatabaseManager getDatabaseManager() {
 		DialectFactory dialectFactory = new DialectFactory(dataSource);
 		Dialect dialect = dialectFactory.getDialect();
-		return new DatabaseManagerImpl(dataSource, dialect);
+
+		return new DatabaseManagerImpl(dataSource, dialect, prefix);
 	}
 
 }

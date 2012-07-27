@@ -19,32 +19,26 @@
  */
 package org.madogiwa.plaintable.impl;
 
+import org.madogiwa.plaintable.DatabaseSchema;
+import org.madogiwa.plaintable.PlainTableException;
+import org.madogiwa.plaintable.SchemaManager;
+import org.madogiwa.plaintable.schema.*;
+import org.madogiwa.plaintable.schema.annot.Attribute;
+import org.madogiwa.plaintable.schema.annot.Reference;
+import org.madogiwa.plaintable.schema.annot.Table;
+import org.madogiwa.plaintable.util.ReflectionUtils;
+
 import java.io.ObjectStreamClass;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import org.madogiwa.plaintable.DatabaseSchema;
-import org.madogiwa.plaintable.PlainTableException;
-import org.madogiwa.plaintable.SchemaManager;
-import org.madogiwa.plaintable.schema.AttributeColumn;
-import org.madogiwa.plaintable.schema.ReferenceKey;
-import org.madogiwa.plaintable.schema.Schema;
-import org.madogiwa.plaintable.schema.SchemaReference;
-import org.madogiwa.plaintable.schema.SyntheticKey;
-import org.madogiwa.plaintable.schema.annot.Attribute;
-import org.madogiwa.plaintable.schema.annot.Reference;
-import org.madogiwa.plaintable.schema.annot.Table;
-import org.madogiwa.plaintable.util.ReflectionUtils;
 
 /**
  * @author Hidenori Sugiyama
@@ -59,11 +53,14 @@ public class SchemaManagerImpl implements SchemaManager {
 
 	private DatabaseSchema databaseSchema;
 
+	private String prefix;
+
 	/**
-	 * @param dataSource
+	 * @param databaseSchema
 	 */
-	public SchemaManagerImpl(DatabaseSchema databaseSchema) {
+	public SchemaManagerImpl(DatabaseSchema databaseSchema, String prefix) {
 		this.databaseSchema = databaseSchema;
+		this.prefix = prefix;
 	}
 
 	/*
@@ -129,7 +126,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	private Schema extractSchemaFromClass(Class<? extends Serializable> clazz,
 			String name, long serial) {
 
-		Schema schema = new Schema(name, serial);
+		Schema schema = new Schema(prefix, name, serial);
 
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
@@ -239,11 +236,11 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * .schema.TableSchema)
 	 */
 	public void manage(Schema schema) {
-		if (schemaMap.containsKey(schema.getName())) {
+		if (schemaMap.containsKey(schema.getFullName())) {
 			return;
 		}
 
-		schemaMap.put(schema.getName(), schema);
+		schemaMap.put(schema.getFullName(), schema);
 	}
 
 	/*
@@ -343,7 +340,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	private void dropAll(Map<String, Schema> schemaMap) throws SQLException {
 		Map<String, Schema> remainMap = new HashMap<String, Schema>(schemaMap);
 		for (Schema schema : schemaMap.values()) {
-			drop(remainMap, schema.getName());
+			drop(remainMap, schema.getFullName());
 		}
 	}
 
@@ -372,8 +369,8 @@ public class SchemaManagerImpl implements SchemaManager {
 	private void createAll(Map<String, Schema> schemaMap) throws SQLException {
 		Map<String, Schema> remainMap = new HashMap<String, Schema>(schemaMap);
 		for (Schema schema : schemaMap.values()) {
-			logger.fine("create " + schema.getName());
-			create(remainMap, schema.getName());
+			logger.info("create table " + schema.getFullName());
+			create(remainMap, schema.getFullName());
 		}
 	}
 

@@ -20,7 +20,6 @@
 package org.madogiwa.plaintable.impl;
 
 import org.madogiwa.plaintable.DatabaseManager;
-import org.madogiwa.plaintable.DatabaseSchema;
 import org.madogiwa.plaintable.SchemaManager;
 import org.madogiwa.plaintable.Session;
 import org.madogiwa.plaintable.dialect.Dialect;
@@ -37,9 +36,9 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
 	private Dialect dialect;
 
-	private DatabaseSchema databaseSchema;
+	private DatabaseSchemaImpl databaseSchema;
 
-	private SchemaManager schemaManager;
+	private SchemaManagerImpl schemaManager;
 
 	private boolean delayedOpen = false;
 
@@ -47,16 +46,19 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
 	private Session.TransactionMode transactionMode = Session.TransactionMode.READ_COMMITTED;
 
+	private String prefix;
+
 	/**
 	 * @param dataSource
 	 * @param dialect
 	 */
-	public DatabaseManagerImpl(DataSource dataSource, Dialect dialect) {
+	public DatabaseManagerImpl(DataSource dataSource, Dialect dialect, String prefix) {
 		this.dataSource = dataSource;
 		this.dialect = dialect;
+		this.prefix = prefix;
 
-		databaseSchema = new DatabaseSchemaImpl(dataSource, dialect);
-		schemaManager = new SchemaManagerImpl(databaseSchema);
+		databaseSchema = new DatabaseSchemaImpl(dataSource, dialect, prefix);
+		schemaManager = new SchemaManagerImpl(databaseSchema, prefix);
 	}
 
 	/*
@@ -74,7 +76,7 @@ public class DatabaseManagerImpl implements DatabaseManager {
 	 * @see org.madogiwa.plaintable.DatabaseManager#newSession()
 	 */
 	public Session newSession() {
-		Session session = new SessionImpl(dataSource, dialect);
+		Session session = new SessionImpl(this, dataSource, dialect);
 		session.setDelayedOpen(delayedOpen);
 		session.setReadOnly(readOnly);
 		session.setTransactionMode(transactionMode);
@@ -103,6 +105,10 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
 	public void setDefaultTransactionMode(Session.TransactionMode mode) {
 		this.transactionMode = mode;
+	}
+
+	public StatementBuilder createStatementBuilder() {
+		return new StatementBuilder(dialect, databaseSchema);
 	}
 
 }

@@ -40,11 +40,15 @@ public class StatementBuilder {
 
 	private Dialect dialect;
 
+	private DatabaseSchemaImpl databaseSchema;
+
 	/**
 	 * @param dialect
+	 * @param databaseSchema
 	 */
-	public StatementBuilder(Dialect dialect) {
+	public StatementBuilder(Dialect dialect, DatabaseSchemaImpl databaseSchema) {
 		this.dialect = dialect;
+		this.databaseSchema = databaseSchema;
 	}
 
 	/**
@@ -53,7 +57,7 @@ public class StatementBuilder {
 	 */
 	public String buildLockSql(Schema schema) throws PlainTableException {
 		return String.format("SELECT * FROM %s WHERE name LIKE ? FOR UPDATE",
-				DatabaseSchemaImpl.LOCK_TABLE);
+				databaseSchema.getLockTableName());
 	}
 
 	/**
@@ -85,7 +89,7 @@ public class StatementBuilder {
 			RowProvider provider) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(String.format("INSERT INTO %s ",
-				dialect.quote(schema.getName())));
+				dialect.quote(schema.getFullName())));
 
 		sql.append(" ( ");
 		Map<Column, ValueExpression> map = provider.getMap();
@@ -116,7 +120,7 @@ public class StatementBuilder {
 			Restriction restriction, RowProvider provider) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(String.format("UPDATE %s ",
-				dialect.quote(schema.getName())));
+				dialect.quote(schema.getFullName())));
 		sql.append(" SET ");
 
 		Map<Column, ValueExpression> map = provider.getMap();
@@ -142,7 +146,7 @@ public class StatementBuilder {
 	public String buildDeleteSql(Context context, Schema schema,
 			Restriction restriction) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(String.format("DELETE FROM %s ", schema.getName()));
+		sql.append(String.format("DELETE FROM %s ", schema.getFullName()));
 
 		if (restriction.notEmpty()) {
 			sql.append(String.format(" WHERE %s ",

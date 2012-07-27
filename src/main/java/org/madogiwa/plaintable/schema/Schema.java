@@ -23,8 +23,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.madogiwa.plaintable.criteria.Context;
-
 /**
  * @author Hidenori Sugiyama
  * 
@@ -35,6 +33,8 @@ public class Schema implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private String prefix;
 
 	private String name;
 
@@ -51,6 +51,16 @@ public class Schema implements Serializable {
 	 * @param version
 	 */
 	public Schema(String name, long version) {
+		this("", name, version);
+	}
+
+	/**
+	 * @param prefix
+	 * @param name
+	 * @param version
+	 */
+	public Schema(String prefix, String name, long version) {
+		this.prefix = prefix;
 		this.name = name;
 		this.version = version;
 	}
@@ -58,8 +68,22 @@ public class Schema implements Serializable {
 	/**
 	 * @return
 	 */
+	public String getPrefix() {
+		return prefix;
+	}
+
+	/**
+	 * @return
+	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getFullName() {
+		return prefix + name;
 	}
 
 	/**
@@ -147,26 +171,6 @@ public class Schema implements Serializable {
 		columnSet.addAll(referenceKeySet);
 		columnSet.addAll(attributeSet);
 		return columnSet;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.madogiwa.plaintable.criteria.ISource#getAlias()
-	 */
-	public String getAlias() {
-		return getName();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.madogiwa.plaintable.criteria.ISource#getSQLString(org.madogiwa.plaintable
-	 * .criteria.CriteriaContext)
-	 */
-	public String getSQLString(Context context) {
-		return " " + getName() + " ";
 	}
 
 }

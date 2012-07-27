@@ -19,6 +19,11 @@
  */
 package org.madogiwa.plaintable.mapper;
 
+import org.madogiwa.plaintable.PlainTableException;
+import org.madogiwa.plaintable.Row;
+import org.madogiwa.plaintable.schema.Schema;
+import org.madogiwa.plaintable.util.ReflectionUtils;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -28,11 +33,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.madogiwa.plaintable.PlainTableException;
-import org.madogiwa.plaintable.Row;
-import org.madogiwa.plaintable.schema.Schema;
-import org.madogiwa.plaintable.util.ReflectionUtils;
 
 /**
  * @author Hidenori Sugiyama
@@ -56,7 +56,7 @@ public class BeanMapper<T> implements RowMapper<T> {
 		}
 		this.beanClass = clazz;
 		this.sourceAlias = ReflectionUtils.findSchema(mapped.schema())
-				.getAlias().toLowerCase();
+				.getFullName();
 
 		init();
 	}
@@ -66,7 +66,7 @@ public class BeanMapper<T> implements RowMapper<T> {
 	 * @param schema
 	 */
 	public BeanMapper(Class<T> clazz, Schema schema) {
-		this(clazz, schema.getAlias());
+		this(clazz, schema.getFullName());
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class BeanMapper<T> implements RowMapper<T> {
 	 */
 	public BeanMapper(Class<T> clazz, String sourceAlias) {
 		this.beanClass = clazz;
-		this.sourceAlias = sourceAlias.toLowerCase();
+		this.sourceAlias = sourceAlias;
 
 		init();
 	}

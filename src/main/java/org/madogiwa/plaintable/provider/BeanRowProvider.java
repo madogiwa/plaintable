@@ -66,6 +66,7 @@ public class BeanRowProvider<T> implements RowProvider {
 		}
 
 		this.schema = ReflectionUtils.findSchema(mapping.schema());
+		System.out.println(bean + " : " + mapping.schema() + " : " + schema.getName());
 		this.bean = bean;
 		this.mapping = new HashMap<Column, String>();
 	}

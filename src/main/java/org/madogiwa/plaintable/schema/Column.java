@@ -71,7 +71,7 @@ public abstract class Column implements Serializable {
 	 * @return
 	 */
 	public String getPath() {
-		return schema.getAlias() + "." + name;
+		return schema.getFullName() + "." + name;
 	}
 
 	/**

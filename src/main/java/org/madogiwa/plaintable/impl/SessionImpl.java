@@ -19,26 +19,11 @@
  */
 package org.madogiwa.plaintable.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Savepoint;
-import java.sql.Statement;
-import java.util.logging.Logger;
-
-import javax.sql.DataSource;
-
 import org.madogiwa.plaintable.AtomicAction;
 import org.madogiwa.plaintable.PlainTableException;
 import org.madogiwa.plaintable.Row;
 import org.madogiwa.plaintable.Session;
-import org.madogiwa.plaintable.criteria.Context;
-import org.madogiwa.plaintable.criteria.IQuery;
-import org.madogiwa.plaintable.criteria.Projection;
-import org.madogiwa.plaintable.criteria.Query;
-import org.madogiwa.plaintable.criteria.Restriction;
-import org.madogiwa.plaintable.criteria.Window;
+import org.madogiwa.plaintable.criteria.*;
 import org.madogiwa.plaintable.criteria.bool.Bools;
 import org.madogiwa.plaintable.criteria.value.NumericAggregation;
 import org.madogiwa.plaintable.dialect.Dialect;
@@ -50,6 +35,10 @@ import org.madogiwa.plaintable.schema.Column;
 import org.madogiwa.plaintable.schema.Schema;
 import org.madogiwa.plaintable.util.JdbcUtils;
 
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.logging.Logger;
+
 /**
  * @author Hidenori Sugiyama
  * 
@@ -58,6 +47,8 @@ public class SessionImpl implements Session {
 
 	private static Logger logger = Logger
 			.getLogger(SessionImpl.class.getName());
+
+	private DatabaseManagerImpl databaseManager;
 
 	private DataSource dataSource = null;
 
@@ -72,9 +63,12 @@ public class SessionImpl implements Session {
 	private TransactionMode transactionMode;
 
 	/**
-	 * @param manager
+	 * @param databaseManager
+	 * @param dataSource
+	 * @param dialect
 	 */
-	public SessionImpl(DataSource dataSource, Dialect dialect) {
+	public SessionImpl(DatabaseManagerImpl databaseManager, DataSource dataSource, Dialect dialect) {
+		this.databaseManager = databaseManager;
 		this.dataSource = dataSource;
 		this.dialect = dialect;
 	}
@@ -211,7 +205,7 @@ public class SessionImpl implements Session {
 	public void lock(Schema schema) throws PlainTableException {
 		checkAndOpenSession();
 
-		StatementBuilder builder = new StatementBuilder(dialect);
+		StatementBuilder builder = databaseManager.createStatementBuilder();
 		String sql = builder.buildLockSql(schema);
 		doLock(sql, schema);
 	}
@@ -369,7 +363,7 @@ public class SessionImpl implements Session {
 			throws PlainTableException {
 		checkAndOpenSession();
 
-		StatementBuilder builder = new StatementBuilder(dialect);
+		StatementBuilder builder = databaseManager.createStatementBuilder();
 		Context context = new Context(dialect);
 		String sql = builder.buildSelectSql(context, query, window);
 		doSelect(context, sql, handler, query.getProjection(), window);
@@ -429,7 +423,7 @@ public class SessionImpl implements Session {
 	public long insert(RowProvider provider) throws PlainTableException {
 		checkAndOpenSession();
 
-		StatementBuilder builder = new StatementBuilder(dialect);
+		StatementBuilder builder = databaseManager.createStatementBuilder();
 		Context context = new Context(dialect);
 		String sql = builder.buildInsertSql(context, provider.getSchema(),
 				provider);
@@ -438,7 +432,7 @@ public class SessionImpl implements Session {
 
 	private long doInsert(Context context, String sql)
 			throws PlainTableException {
-		logger.fine("insert: " + sql);
+		logger.info("insert: " + sql);
 
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -472,7 +466,7 @@ public class SessionImpl implements Session {
 			throws PlainTableException {
 		checkAndOpenSession();
 
-		StatementBuilder builder = new StatementBuilder(dialect);
+		StatementBuilder builder = databaseManager.createStatementBuilder();
 		Context context = new Context(dialect);
 		String sql = builder.buildUpdateSql(context, provider.getSchema(),
 				restriction, provider);
@@ -535,7 +529,7 @@ public class SessionImpl implements Session {
 			throws PlainTableException {
 		checkAndOpenSession();
 
-		StatementBuilder builder = new StatementBuilder(dialect);
+		StatementBuilder builder = databaseManager.createStatementBuilder();
 		Context context = new Context(dialect);
 		String sql = builder.buildDeleteSql(context, schema, restriction);
 		return doDelete(context, sql);

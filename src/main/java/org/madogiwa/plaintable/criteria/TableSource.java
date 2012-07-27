@@ -19,12 +19,12 @@
  */
 package org.madogiwa.plaintable.criteria;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.madogiwa.plaintable.Path;
 import org.madogiwa.plaintable.schema.Column;
 import org.madogiwa.plaintable.schema.Schema;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Hidenori Sugiyama
@@ -40,7 +40,7 @@ public class TableSource extends Source {
 	 * @param schema
 	 */
 	public TableSource(Schema schema) {
-		this(schema, schema.getName());
+		this(schema, schema.getFullName());
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class TableSource extends Source {
 	 * .plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("%s AS %s", schema.getName(), getAlias());
+		return String.format("%s AS %s", schema.getFullName(), getAlias());
 	}
 
 	/*
