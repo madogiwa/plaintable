@@ -39,7 +39,7 @@ import org.madogiwa.plaintable.schema.Schema;
 public interface Session {
 
 	public enum TransactionMode {
-		READ_COMMITTED, SERIALIZABLE
+		READ_COMMITTED, SERIALIZABLE, CONNECTOR_DEFAULT
 	};
 
 	/**

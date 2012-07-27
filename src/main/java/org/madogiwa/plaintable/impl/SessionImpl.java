@@ -109,6 +109,9 @@ public class SessionImpl implements Session {
 					connection
 							.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 					break;
+				case CONNECTOR_DEFAULT:
+					// don't set transaction level
+					break;
 				}
 			} else {
 				connection
