@@ -19,8 +19,6 @@
  */
 package org.madogiwa.plaintable.impl;
 
-import java.util.Map;
-
 import org.madogiwa.plaintable.PlainTableException;
 import org.madogiwa.plaintable.criteria.Context;
 import org.madogiwa.plaintable.criteria.IQuery;
@@ -31,6 +29,8 @@ import org.madogiwa.plaintable.dialect.Dialect;
 import org.madogiwa.plaintable.provider.RowProvider;
 import org.madogiwa.plaintable.schema.Column;
 import org.madogiwa.plaintable.schema.Schema;
+
+import java.util.Map;
 
 /**
  * @author Hidenori Sugiyama
@@ -116,7 +116,7 @@ public class StatementBuilder {
 			Restriction restriction, RowProvider provider) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(String.format("UPDATE %s ",
-				dialect.quote(schema.getName().toLowerCase())));
+				dialect.quote(schema.getName())));
 		sql.append(" SET ");
 
 		Map<Column, ValueExpression> map = provider.getMap();
@@ -142,8 +142,7 @@ public class StatementBuilder {
 	public String buildDeleteSql(Context context, Schema schema,
 			Restriction restriction) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(String.format("DELETE FROM %s ", schema.getName()
-				.toLowerCase()));
+		sql.append(String.format("DELETE FROM %s ", schema.getName()));
 
 		if (restriction.notEmpty()) {
 			sql.append(String.format(" WHERE %s ",
