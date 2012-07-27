@@ -35,4 +35,34 @@ public interface DatabaseManager {
 	 */
 	public Session newSession();
 
+	/**
+	 * @return
+	 */
+	public boolean getDefaultReadOnly();
+
+	/*
+	 *
+	 */
+	public void setDefaultReadOnly(boolean readOnly);
+
+	/**
+     * @return
+     */
+	public Session.TransactionMode getDefaultTransactionMode();
+
+    /*
+     *
+     */
+	public void setDefaultTransactionMode(Session.TransactionMode mode);
+
+    /**
+     * @return
+     */
+	public boolean getDefaultDelayedOpen();
+
+    /*
+     *
+     */
+	public void setDefaultDelayedOpen(boolean delayedOpen);
+
 }

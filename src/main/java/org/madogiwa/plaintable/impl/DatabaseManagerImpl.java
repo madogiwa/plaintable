@@ -19,13 +19,13 @@
  */
 package org.madogiwa.plaintable.impl;
 
-import javax.sql.DataSource;
-
 import org.madogiwa.plaintable.DatabaseManager;
 import org.madogiwa.plaintable.DatabaseSchema;
 import org.madogiwa.plaintable.SchemaManager;
 import org.madogiwa.plaintable.Session;
 import org.madogiwa.plaintable.dialect.Dialect;
+
+import javax.sql.DataSource;
 
 /**
  * @author Hidenori Sugiyama
@@ -40,6 +40,12 @@ public class DatabaseManagerImpl implements DatabaseManager {
 	private DatabaseSchema databaseSchema;
 
 	private SchemaManager schemaManager;
+
+	private boolean delayedOpen = false;
+
+	private boolean readOnly = false;
+
+	private Session.TransactionMode transactionMode = Session.TransactionMode.READ_COMMITTED;
 
 	/**
 	 * @param dataSource
@@ -68,7 +74,35 @@ public class DatabaseManagerImpl implements DatabaseManager {
 	 * @see org.madogiwa.plaintable.DatabaseManager#newSession()
 	 */
 	public Session newSession() {
-		return new SessionImpl(dataSource, dialect);
+		Session session = new SessionImpl(dataSource, dialect);
+		session.setDelayedOpen(delayedOpen);
+		session.setReadOnly(readOnly);
+		session.setTransactionMode(transactionMode);
+		return session;
+	}
+
+	public boolean getDefaultReadOnly() {
+		return readOnly;
+	}
+
+	public void setDefaultReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	public boolean getDefaultDelayedOpen() {
+		return delayedOpen;
+	}
+
+	public void setDefaultDelayedOpen(boolean delayedOpen) {
+		this.delayedOpen = delayedOpen;
+	}
+
+	public Session.TransactionMode getDefaultTransactionMode() {
+		return transactionMode;
+	}
+
+	public void setDefaultTransactionMode(Session.TransactionMode mode) {
+		this.transactionMode = mode;
 	}
 
 }
