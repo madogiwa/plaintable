@@ -49,10 +49,8 @@ public interface Session {
 
 	/**
 	 * @param mode
-	 * @throws PlainTableException
 	 */
-	public void setTransactionMode(TransactionMode mode)
-			throws PlainTableException;
+	public void setTransactionMode(TransactionMode mode);
 
 	/**
 	 * @throws PlainTableException

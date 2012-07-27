@@ -146,8 +146,7 @@ public class SessionImpl implements Session {
 	 * org.madogiwa.plaintable.Session#setTransactionMode(org.madogiwa.plaintable
 	 * .Session.TransactionMode)
 	 */
-	public void setTransactionMode(TransactionMode mode)
-			throws PlainTableException {
+	public void setTransactionMode(TransactionMode mode) {
 		this.transactionMode = mode;
 	}
 
