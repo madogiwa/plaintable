@@ -31,6 +31,7 @@ import org.madogiwa.plaintable.handler.ListHandler;
 import org.madogiwa.plaintable.handler.RowHandler;
 import org.madogiwa.plaintable.handler.SingleHandler;
 import org.madogiwa.plaintable.mapper.RowMapper;
+import org.madogiwa.plaintable.provider.BeanRowProvider;
 import org.madogiwa.plaintable.provider.RowProvider;
 import org.madogiwa.plaintable.schema.Column;
 import org.madogiwa.plaintable.schema.Schema;
@@ -423,6 +424,11 @@ public class SessionImpl implements Session {
 			JdbcUtils.closeResultSet(resultSet);
 			JdbcUtils.closeStatement(statement);
 		}
+	}
+
+	public <T> long insert(T bean) throws PlainTableException {
+		BeanRowProvider<T> provider = new BeanRowProvider<T>(bean);
+		return insert(provider);
 	}
 
 	/*

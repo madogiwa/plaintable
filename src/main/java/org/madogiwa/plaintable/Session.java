@@ -144,6 +144,13 @@ public interface Session {
 			throws PlainTableException;
 
 	/**
+	 * @param bean
+	 * @return
+	 * @throws PlainTableException
+	 */
+	public <T> long insert(T bean) throws PlainTableException;
+
+	/**
 	 * @param schema
 	 * @param rowProvider
 	 * @return
