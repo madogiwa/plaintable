@@ -444,7 +444,7 @@ public class SessionImpl implements Session {
 
 	private long doInsert(Context context, String sql)
 			throws PlainTableException {
-		logger.info("insert: " + sql);
+		logger.fine("insert: " + sql);
 
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
