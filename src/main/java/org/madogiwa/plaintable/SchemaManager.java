@@ -19,9 +19,8 @@
  */
 package org.madogiwa.plaintable;
 
-import java.io.Serializable;
-
 import org.madogiwa.plaintable.schema.Schema;
+import org.madogiwa.plaintable.schema.SchemaDefinition;
 
 /**
  * @author Hidenori Sugiyama
@@ -37,7 +36,7 @@ public interface SchemaManager {
 	 * @param clazz
 	 * @throws PlainTableException
 	 */
-	public void manage(Class<? extends Serializable> clazz)
+	public void manage(Class<? extends SchemaDefinition> clazz)
 			throws PlainTableException;
 
 	/**

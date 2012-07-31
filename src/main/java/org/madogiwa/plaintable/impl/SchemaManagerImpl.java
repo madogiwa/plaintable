@@ -66,16 +66,16 @@ public class SchemaManagerImpl implements SchemaManager {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.madogiwa.plaintable.TableManager#addTable(java.lang.Class)
+	 * @see org.madogiwa.plaintable.TableManager#manage(java.lang.Class)
 	 */
-	public void manage(Class<? extends Serializable> clazz) {
+	public void manage(Class<? extends SchemaDefinition> clazz) {
 		Class<? extends Serializable> implClazz = findImplClass(clazz);
 		Schema schema = extractSchemaFromClass(implClazz);
 		updateClassFields(implClazz, schema);
 		manage(schema);
 	}
 
-	private Class<? extends Serializable> findImplClass(Class<? extends Serializable> clazz) {
+	private Class<? extends Serializable> findImplClass(Class<? extends SchemaDefinition> clazz) {
 		Table annot = (Table) clazz.getAnnotation(Table.class);
 		if (annot != null) {
 			return clazz;
@@ -83,7 +83,7 @@ public class SchemaManagerImpl implements SchemaManager {
 
 		Class<?> implClass = ReflectionUtils.findClass(clazz.getCanonicalName() + "$");
 		if (implClass != null && Serializable.class.isAssignableFrom(implClass)) {
-			return findImplClass((Class<Serializable>)implClass);
+			return findImplClass((Class<SchemaDefinition>)implClass);
 		}
 
 		throw new RuntimeException(String.format(
