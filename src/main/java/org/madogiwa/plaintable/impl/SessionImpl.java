@@ -27,6 +27,7 @@ import org.madogiwa.plaintable.criteria.*;
 import org.madogiwa.plaintable.criteria.bool.Bools;
 import org.madogiwa.plaintable.criteria.value.NumericAggregation;
 import org.madogiwa.plaintable.dialect.Dialect;
+import org.madogiwa.plaintable.handler.ListHandler;
 import org.madogiwa.plaintable.handler.RowHandler;
 import org.madogiwa.plaintable.handler.SingleHandler;
 import org.madogiwa.plaintable.mapper.RowMapper;
@@ -37,6 +38,7 @@ import org.madogiwa.plaintable.util.JdbcUtils;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -337,6 +339,16 @@ public class SessionImpl implements Session {
 				});
 		select(query, handler);
 		return handler.getResult();
+	}
+
+	public <T> List<T> select(IQuery query, RowMapper<T> mapper) throws PlainTableException {
+		return select(query, mapper, new Window());
+	}
+
+	public <T> List<T> select(IQuery query, RowMapper<T> mapper, Window window) throws PlainTableException {
+		ListHandler handler = new ListHandler<T>(mapper);
+		select(query, handler, window);
+		return handler.getList();
 	}
 
 	/*

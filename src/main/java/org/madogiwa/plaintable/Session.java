@@ -21,12 +21,15 @@ package org.madogiwa.plaintable;
 
 import org.madogiwa.plaintable.criteria.IQuery;
 import org.madogiwa.plaintable.criteria.Restriction;
+import org.madogiwa.plaintable.criteria.Rows;
 import org.madogiwa.plaintable.criteria.Window;
 import org.madogiwa.plaintable.handler.RowHandler;
 import org.madogiwa.plaintable.mapper.RowMapper;
 import org.madogiwa.plaintable.provider.RowProvider;
 import org.madogiwa.plaintable.schema.Column;
 import org.madogiwa.plaintable.schema.Schema;
+
+import java.util.List;
 
 /**
  * @author Hidenori Sugiyama
@@ -114,6 +117,12 @@ public interface Session {
 	 * @throws PlainTableException
 	 */
 	public long count(Schema schema, Restriction restriction, Column column)
+			throws PlainTableException;
+
+	public <T> List<T> select(IQuery query, RowMapper<T> mapper)
+			throws PlainTableException;
+
+	public <T> List<T> select(IQuery query, RowMapper<T> mapper, Window window)
 			throws PlainTableException;
 
 	/**
