@@ -14,7 +14,7 @@
     <!-- dependency -->
 
     <!-- project -->
-    <version.project>0.2.2</version.project>
+    <version.project>0.3-SNAPSHOT</version.project>
     <version.module>${version.project}</version.module>
   </properties>
 
