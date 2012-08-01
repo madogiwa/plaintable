@@ -28,7 +28,16 @@ import org.madogiwa.plaintable.criteria.Context;
 public class StringFunction implements StringExpression {
 
 	public enum Function {
-		LOWER, UPPER
+		LOWER, UPPER;
+	}
+
+	private StringExpression expr;
+
+	private Function func;
+
+	public StringFunction(StringExpression expr, Function func) {
+		this.expr = expr;
+		this.func = func;
 	}
 
 	/*
@@ -39,8 +48,7 @@ public class StringFunction implements StringExpression {
 	 * .plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		// TODO Auto-generated method stub
-		return null;
+		return String.format("%s(%s)", func.toString(), expr.getSQLString(context));
 	}
 
 }

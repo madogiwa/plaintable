@@ -51,7 +51,7 @@ public class NumericFunction implements NumericExpression {
 	 * .plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("%s(%s)", func, expr.getSQLString(context));
+		return String.format("%s(%s)", func.toString(), expr.getSQLString(context));
 	}
 
 }
