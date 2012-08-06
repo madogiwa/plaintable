@@ -20,8 +20,8 @@
 package org.madogiwa.plaintable;
 
 import org.madogiwa.plaintable.criteria.IQuery;
+import org.madogiwa.plaintable.criteria.Projection;
 import org.madogiwa.plaintable.criteria.Restriction;
-import org.madogiwa.plaintable.criteria.Rows;
 import org.madogiwa.plaintable.criteria.Window;
 import org.madogiwa.plaintable.handler.RowHandler;
 import org.madogiwa.plaintable.mapper.RowMapper;
@@ -107,6 +107,15 @@ public interface Session {
 	 * @throws PlainTableException
 	 */
 	public <T> T load(Schema schema, long id, RowMapper<T> mapper)
+			throws PlainTableException;
+
+	/**
+	 * @param schema
+	 * @param restriction
+	 * @return
+	 * @throws PlainTableException
+	 */
+	public long count(Schema schema, Restriction restriction)
 			throws PlainTableException;
 
 	/**

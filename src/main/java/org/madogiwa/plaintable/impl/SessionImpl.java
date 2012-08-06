@@ -308,6 +308,19 @@ public class SessionImpl implements Session {
 
 	/*
 	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.madogiwa.plaintable.Session#count(org.madogiwa.plaintable.schema.
+	 * Schema, org.madogiwa.plaintable.criteria.Restriction)
+	 */
+	public long count(Schema schema, Restriction restriction)
+			throws PlainTableException {
+
+		return count(schema, restriction);
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * 
 	 * @see
 	 * org.madogiwa.plaintable.Session#count(org.madogiwa.plaintable.schema.
