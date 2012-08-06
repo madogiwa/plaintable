@@ -128,6 +128,14 @@ public interface Session {
 	public long count(Schema schema, Restriction restriction, Column column)
 			throws PlainTableException;
 
+	/**
+	 * @param query
+	 * @return
+	 * @throws PlainTableException
+	 */
+	public long count(IQuery query)
+			throws PlainTableException;
+
 	public <T> List<T> select(IQuery query, RowMapper<T> mapper)
 			throws PlainTableException;
 

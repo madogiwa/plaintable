@@ -26,6 +26,7 @@ import org.madogiwa.plaintable.Session;
 import org.madogiwa.plaintable.criteria.*;
 import org.madogiwa.plaintable.criteria.bool.Bools;
 import org.madogiwa.plaintable.criteria.value.NumericAggregation;
+import org.madogiwa.plaintable.criteria.value.NumericExpression;
 import org.madogiwa.plaintable.dialect.Dialect;
 import org.madogiwa.plaintable.handler.ListHandler;
 import org.madogiwa.plaintable.handler.RowHandler;
@@ -316,7 +317,7 @@ public class SessionImpl implements Session {
 	public long count(Schema schema, Restriction restriction)
 			throws PlainTableException {
 
-		return count(schema, restriction);
+		return count(schema, restriction, null);
 	}
 
 	/*
@@ -332,12 +333,46 @@ public class SessionImpl implements Session {
 
 		Query query = new Query(schema);
 		query.setRestriction(restriction);
-		String targetColumnName = (column != null) ? column.getName() : schema
-				.getSyntheticKey().getName();
-		query.getProjection().add(
+		if (column != null) {
+			query.getProjection().add(
 				new NumericAggregation(column,
 						NumericAggregation.Function.COUNT),
-				String.format("count(%s)", targetColumnName.toLowerCase()));
+				String.format("count(%s)", column.getName().toLowerCase()));
+		} else {
+			query.getProjection().add(
+				new NumericExpression() {
+					public String getSQLString(Context context) {
+						return "count(*)";
+					}
+				}, "count");
+		}
+
+		SingleHandler<Long> handler = new SingleHandler<Long>(
+				new RowMapper<Long>() {
+
+					public Long map(Row row) {
+						try {
+							return row.getLong(0);
+						} catch (PlainTableException e) {
+							throw new RuntimeException(e);
+						}
+					}
+
+				});
+		select(query, handler);
+		return handler.getResult();
+	}
+
+	public long count(IQuery query)
+			throws PlainTableException {
+
+		Query countQuery = new Query(new QuerySource(query, "query"));
+		query.getProjection().add(
+				new NumericExpression() {
+					public String getSQLString(Context context) {
+						return "count(*)";
+					}
+				}, "count");
 
 		SingleHandler<Long> handler = new SingleHandler<Long>(
 				new RowMapper<Long>() {
