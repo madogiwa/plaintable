@@ -25,12 +25,12 @@ import java.sql.SQLException;
  * @author Hidenori Sugiyama
  * 
  */
-public abstract class AtomicAction {
+public interface AtomicAction {
 
 	/**
 	 * @param session
 	 * @throws SQLException
 	 */
-	public abstract void doAtomic(Session session) throws PlainTableException;
+	public void doAtomic(Session session) throws PlainTableException;
 
 }
