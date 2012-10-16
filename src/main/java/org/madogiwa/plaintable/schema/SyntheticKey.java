@@ -23,28 +23,13 @@ package org.madogiwa.plaintable.schema;
  * @author Hidenori Sugiyama
  * 
  */
-public class SyntheticKey extends KeyColumn {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class SyntheticKey extends PrimaryKey {
 
 	/**
 	 * @param name
 	 */
 	public SyntheticKey(Schema table, String name) {
 		super(table, name);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.madogiwa.simpletable.schema.ColumnSchema#isUnique()
-	 */
-	@Override
-	public boolean isUnique() {
-		return true;
 	}
 
 }

@@ -19,32 +19,19 @@
  */
 package org.madogiwa.plaintable.dialect;
 
+import org.madogiwa.plaintable.schema.ReferenceKey;
+import org.madogiwa.plaintable.schema.SyntheticKey;
+import org.madogiwa.plaintable.schema.attr.*;
+
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.madogiwa.plaintable.schema.ReferenceKey;
-import org.madogiwa.plaintable.schema.SyntheticKey;
-import org.madogiwa.plaintable.schema.attr.BignumAttribute;
-import org.madogiwa.plaintable.schema.attr.BooleanAttribute;
-import org.madogiwa.plaintable.schema.attr.BytesAttribute;
-import org.madogiwa.plaintable.schema.attr.CharAttribute;
-import org.madogiwa.plaintable.schema.attr.DateAttribute;
-import org.madogiwa.plaintable.schema.attr.DoubleAttribute;
-import org.madogiwa.plaintable.schema.attr.FloatAttribute;
-import org.madogiwa.plaintable.schema.attr.IntegerAttribute;
-import org.madogiwa.plaintable.schema.attr.LongAttribute;
-import org.madogiwa.plaintable.schema.attr.ShortAttribute;
-import org.madogiwa.plaintable.schema.attr.StreamAttribute;
-import org.madogiwa.plaintable.schema.attr.StringAttribute;
-import org.madogiwa.plaintable.schema.attr.TimeAttribute;
-import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
 
 /**
  * @author Hidenori Sugiyama
  * 
  */
-public class DerbyDialect implements Dialect {
+public class DerbyDialect extends GenericDialect {
 
 	private Map<Type, String> typeMap = new HashMap<Type, String>();
 

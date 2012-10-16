@@ -20,6 +20,7 @@
 package org.madogiwa.plaintable.schema;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,40 +30,32 @@ import java.util.Set;
  */
 public class Schema implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private String prefix;
 
 	private String name;
 
-	private long version;
-
-	private SyntheticKey syntheticKey;
+	private PrimaryKey primaryKey;
 
 	private Set<ReferenceKey> referenceKeySet = new HashSet<ReferenceKey>();
 
-	private Set<AttributeColumn> attributeSet = new HashSet<AttributeColumn>();
+	private HashMap<String, AttributeColumn> attributeSet = new HashMap<String, AttributeColumn>();
+
+	private Set<Index> indexSet = new HashSet<Index>();
 
 	/**
 	 * @param name
-	 * @param version
 	 */
-	public Schema(String name, long version) {
-		this("", name, version);
+	public Schema(String name) {
+		this("", name);
 	}
 
 	/**
 	 * @param prefix
 	 * @param name
-	 * @param version
 	 */
-	public Schema(String prefix, String name, long version) {
+	public Schema(String prefix, String name) {
 		this.prefix = prefix;
 		this.name = name;
-		this.version = version;
 	}
 
 	/**
@@ -87,31 +80,17 @@ public class Schema implements Serializable {
 	}
 
 	/**
-	 * @return the version
-	 */
-	public long getVersion() {
-		return version;
-	}
-
-	/**
 	 * @return
 	 */
-	public SyntheticKey getSyntheticKey() {
-		return syntheticKey;
-	}
-
-	/**
-	 * @param name
-	 */
-	public void setSyntheticKey(String name) {
-		setSyntheticKey(new SyntheticKey(this, name));
+	public PrimaryKey getPrimaryKey() {
+		return primaryKey;
 	}
 
 	/**
 	 * @param key
 	 */
-	public void setSyntheticKey(SyntheticKey key) {
-		this.syntheticKey = key;
+	public void setPrimaryKey(PrimaryKey key) {
+		this.primaryKey = key;
 	}
 
 	/**
@@ -149,17 +128,39 @@ public class Schema implements Serializable {
 	}
 
 	/**
+	 * @param name
+	 * @return
+	 */
+	public boolean hasReferenceKey(String name) {
+		for(ReferenceKey key : referenceKeySet) {
+			if (key.getName().equals(name)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * @param attr
 	 */
 	public void addAttribute(AttributeColumn attr) {
-		attributeSet.add(attr);
+		attributeSet.put(attr.getName(), attr);
+	}
+
+	/**
+	 * @param name
+	 * @return
+	 */
+	public AttributeColumn getAttribute(String name) {
+		return attributeSet.get(name);
 	}
 
 	/**
 	 * @return
 	 */
 	public Set<AttributeColumn> getAttributes() {
-		return attributeSet;
+		return new HashSet<AttributeColumn>(attributeSet.values());
 	}
 
 	/**
@@ -167,10 +168,26 @@ public class Schema implements Serializable {
 	 */
 	public Set<Column> getColumns() {
 		Set<Column> columnSet = new HashSet<Column>();
-		columnSet.add(syntheticKey);
+		columnSet.add(primaryKey);
 		columnSet.addAll(referenceKeySet);
-		columnSet.addAll(attributeSet);
+		columnSet.addAll(attributeSet.values());
 		return columnSet;
+	}
+
+	/**
+	 *
+	 * @param index
+	 */
+	public void addIndex(Index index) {
+		indexSet.add(index);
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public Set<Index> getIndices() {
+		return indexSet;
 	}
 
 }

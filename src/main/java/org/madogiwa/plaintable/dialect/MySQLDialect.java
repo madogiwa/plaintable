@@ -19,26 +19,14 @@
  */
 package org.madogiwa.plaintable.dialect;
 
+import org.madogiwa.plaintable.schema.ReferenceKey;
+import org.madogiwa.plaintable.schema.SchemaReference;
+import org.madogiwa.plaintable.schema.SyntheticKey;
+import org.madogiwa.plaintable.schema.attr.*;
+
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.madogiwa.plaintable.schema.ReferenceKey;
-import org.madogiwa.plaintable.schema.SyntheticKey;
-import org.madogiwa.plaintable.schema.attr.BignumAttribute;
-import org.madogiwa.plaintable.schema.attr.BooleanAttribute;
-import org.madogiwa.plaintable.schema.attr.BytesAttribute;
-import org.madogiwa.plaintable.schema.attr.CharAttribute;
-import org.madogiwa.plaintable.schema.attr.DateAttribute;
-import org.madogiwa.plaintable.schema.attr.DoubleAttribute;
-import org.madogiwa.plaintable.schema.attr.FloatAttribute;
-import org.madogiwa.plaintable.schema.attr.IntegerAttribute;
-import org.madogiwa.plaintable.schema.attr.LongAttribute;
-import org.madogiwa.plaintable.schema.attr.ShortAttribute;
-import org.madogiwa.plaintable.schema.attr.StreamAttribute;
-import org.madogiwa.plaintable.schema.attr.StringAttribute;
-import org.madogiwa.plaintable.schema.attr.TimeAttribute;
-import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
 
 /**
  * @author Hidenori Sugiyama
@@ -93,6 +81,22 @@ public class MySQLDialect implements Dialect {
 		}
 
 		return sqlType;
+	}
+
+	public String buildForeignKeyConstraint(ReferenceKey key) {
+		StringBuilder query = new StringBuilder();
+
+		query.append(String.format(" %s %s ", quote(key.getName()), getSQLType(ReferenceKey.class, -1)));
+		query.append(key.isNullable() ? "" : " NOT NULL ");
+
+		SchemaReference schemaRef = key.getTarget();
+		query.append(String.format(", FOREIGN KEY (%s) REFERENCES %s(%s) ",
+				quote(key.getName()),
+				quote(schemaRef.getSchema().getFullName()),
+				quote(schemaRef.getSchema().getPrimaryKey().getName())));
+		query.append(key.isCascade() ? " ON DELETE CASCADE " : "");
+
+		return query.toString();
 	}
 
 	/*

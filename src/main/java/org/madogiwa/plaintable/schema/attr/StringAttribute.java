@@ -29,11 +29,6 @@ import org.madogiwa.plaintable.schema.TextAttribute;
 public class StringAttribute extends TextAttribute {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * @param table
 	 * @param name
 	 */

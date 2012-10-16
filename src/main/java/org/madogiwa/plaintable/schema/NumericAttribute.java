@@ -26,11 +26,6 @@ package org.madogiwa.plaintable.schema;
 public abstract class NumericAttribute extends AttributeColumn {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * @param table
 	 * @param name
 	 */

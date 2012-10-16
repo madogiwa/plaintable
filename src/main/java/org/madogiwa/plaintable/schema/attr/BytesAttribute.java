@@ -29,11 +29,6 @@ import org.madogiwa.plaintable.schema.Schema;
 public class BytesAttribute extends BinaryAttribute {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * @param table
 	 * @param name
 	 */

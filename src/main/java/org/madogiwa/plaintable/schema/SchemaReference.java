@@ -19,20 +19,15 @@
  */
 package org.madogiwa.plaintable.schema;
 
-import java.io.Serializable;
-
 import org.madogiwa.plaintable.util.ReflectionUtils;
+
+import java.io.Serializable;
 
 /**
  * @author Hidenori Sugiyama
  * 
  */
 public class SchemaReference implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	private Schema schema;
 

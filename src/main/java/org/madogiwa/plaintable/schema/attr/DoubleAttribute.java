@@ -29,11 +29,6 @@ import org.madogiwa.plaintable.schema.Schema;
 public class DoubleAttribute extends NumericAttribute {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * @param schema
 	 * @param name
 	 */

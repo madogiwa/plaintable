@@ -300,7 +300,7 @@ public class SessionImpl implements Session {
 			throws PlainTableException {
 
 		Query criteria = new Query(schema);
-		criteria.getRestriction().add(Bools.eq(schema.getSyntheticKey(), id));
+		criteria.getRestriction().add(Bools.eq(schema.getPrimaryKey(), id));
 
 		SingleHandler<T> handler = new SingleHandler<T>(mapper);
 		select(criteria, handler);
@@ -523,7 +523,7 @@ public class SessionImpl implements Session {
 			throws PlainTableException {
 
 		Restriction restriction = new Restriction();
-		restriction.add(Bools.eq(provider.getSchema().getSyntheticKey(), id));
+		restriction.add(Bools.eq(provider.getSchema().getPrimaryKey(), id));
 		long result = update(provider, restriction);
 		return (result == 1) ? true : false;
 	}
@@ -565,7 +565,7 @@ public class SessionImpl implements Session {
 	public boolean delete(Schema schema, Long id) throws PlainTableException {
 
 		Restriction restriction = new Restriction();
-		restriction.add(Bools.eq(schema.getSyntheticKey(), id));
+		restriction.add(Bools.eq(schema.getPrimaryKey(), id));
 		long count = delete(schema, restriction);
 		return (count == 1) ? true : false;
 	}
@@ -580,7 +580,7 @@ public class SessionImpl implements Session {
 	public long delete(Schema schema, Long[] ids) throws PlainTableException {
 
 		Restriction restriction = new Restriction();
-		restriction.add(Bools.in(schema.getSyntheticKey(), ids));
+		restriction.add(Bools.in(schema.getPrimaryKey(), ids));
 		return delete(schema, restriction);
 	}
 

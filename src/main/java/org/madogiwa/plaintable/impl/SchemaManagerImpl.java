@@ -28,7 +28,6 @@ import org.madogiwa.plaintable.schema.annot.Reference;
 import org.madogiwa.plaintable.schema.annot.Table;
 import org.madogiwa.plaintable.util.ReflectionUtils;
 
-import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -101,54 +100,42 @@ public class SchemaManagerImpl implements SchemaManager {
 					"%s is not a table schema", clazz));
 		}
 
-		long serial = calculateSerialUUID(clazz);
-		return extractSchemaFromClass(clazz, annot.name(), serial);
-	}
-
-	/**
-	 * @param clazz
-	 * @return
-	 */
-	private long calculateSerialUUID(Class<? extends Serializable> clazz) {
-		ObjectStreamClass objStream = ObjectStreamClass.lookup(clazz);
-		if (objStream == null) {
-			throw new RuntimeException(
-					String.format("%s hasn't serialVersionUID"));
-		}
-		return objStream.getSerialVersionUID();
+		return extractSchemaFromClass(clazz, annot.name());
 	}
 
 	/**
 	 * @param clazz
 	 * @param name
-	 * @param serial
 	 */
 	private Schema extractSchemaFromClass(Class<? extends Serializable> clazz,
-			String name, long serial) {
+			String name) {
 
-		Schema schema = new Schema(prefix, name, serial);
+		Schema schema = new Schema(prefix, name);
 
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
 			field.setAccessible(true);
 			if (field.getType().equals(SyntheticKey.class)) {
-				if (schema.getSyntheticKey() != null) {
+				if (schema.getPrimaryKey() != null) {
 					throw new RuntimeException(String.format(
 							"%s has duplicate SyntheticKey", clazz));
 				}
 
 				SyntheticKey key = new SyntheticKey(schema, field.getName());
-				schema.setSyntheticKey(key);
+				schema.setPrimaryKey(key);
 			} else if (field.getType().equals(ReferenceKey.class)) {
 				Reference reference = field.getAnnotation(Reference.class);
 
 				ReferenceKey ref = new ReferenceKey(schema,
 						field.getName(), new SchemaReference(reference
 						.target().getCanonicalName()));
-				ref.setIndexed(true);
-				ref.setUnique(reference.unique());
 				ref.setCascade(reference.cascade());
 				schema.addReferenceKey(ref);
+
+				Index index = new Index(schema, ref);
+				index.setUnique(reference.unique());
+				schema.addIndex(index);
+
 			} else if (AttributeColumn.class.isAssignableFrom(field
 					.getType())) {
 				Attribute column = field.getAnnotation(Attribute.class);
@@ -161,14 +148,20 @@ public class SchemaManagerImpl implements SchemaManager {
 					AttributeColumn attr = (AttributeColumn) constructor
 							.newInstance(new Object[] { schema,
 									field.getName() });
-					attr.setNullable((column != null) ? column.nullable()
-							: false);
-					attr.setIndexed((column != null) ? column.indexed()
-							: false);
-					attr.setUnique((column != null) ? column.unique()
-							: false);
-					attr.setLength((column != null) ? column.length() : -1);
+					if (column != null) {
+						attr.setNullable(column.nullable());
+						attr.setLength(column.length());
+					} else {
+						attr.setNullable(false);
+						attr.setLength(-1);
+					}
 					schema.addAttribute(attr);
+
+					if (column != null && (column.indexed() || column.unique())) {
+						Index index = new Index(schema, attr);
+						index.setUnique(column.unique());
+						schema.addIndex(index);
+					}
 				} catch (SecurityException e) {
 					throw new RuntimeException(e);
 				} catch (NoSuchMethodException e) {
@@ -203,7 +196,7 @@ public class SchemaManagerImpl implements SchemaManager {
 				if (field.getType().equals(Schema.class)) {
 					field.set(instance, schema);
 				} else if (field.getType().equals(SyntheticKey.class)) {
-					field.set(instance, schema.getSyntheticKey());
+					field.set(instance, schema.getPrimaryKey());
 				} else if (field.getType().equals(ReferenceKey.class)) {
 					Set<ReferenceKey> keySet = schema.getReferenceKeys();
 					for (ReferenceKey key : keySet) {
@@ -310,13 +303,19 @@ public class SchemaManagerImpl implements SchemaManager {
 		for (String name : target.keySet()) {
 			if (!current.containsKey(name)) {
 				diffNames.add(name);
-			} else if (current.get(name).getVersion() != target.get(name)
-					.getVersion()) {
-				diffNames.add(name);
+			} else {
+				if (diffSchema(current.get(name), target.get(name))) {
+					diffNames.add(name);
+				}
 			}
 		}
 
 		return diffNames;
+	}
+
+	private boolean diffSchema(Schema s1, Schema s2) {
+		// FIX: implement
+		return false;
 	}
 
 	/**
@@ -356,8 +355,16 @@ public class SchemaManagerImpl implements SchemaManager {
 		if (schema == null) {
 			return;
 		}
-		for (ReferenceKey referenceKey : schema.getReferenceKeys()) {
-			drop(map, referenceKey.getTarget().getSchemaName());
+
+		logger.info("drop table " + schema.getFullName());
+
+		for(String schemaName : map.keySet()) {
+			Schema s = map.get(schemaName);
+			for (ReferenceKey key : s.getReferenceKeys()) {
+				if (key.getTarget().getSchemaName().equals(schema.getName())) {
+					drop(map, key.getSchema().getName());
+				}
+			}
 		}
 		databaseSchema.dropTable(schema);
 	}
@@ -369,7 +376,6 @@ public class SchemaManagerImpl implements SchemaManager {
 	private void createAll(Map<String, Schema> schemaMap) throws SQLException {
 		Map<String, Schema> remainMap = new HashMap<String, Schema>(schemaMap);
 		for (Schema schema : schemaMap.values()) {
-			logger.info("create table " + schema.getFullName());
 			create(remainMap, schema.getFullName());
 		}
 	}
@@ -387,6 +393,9 @@ public class SchemaManagerImpl implements SchemaManager {
 		if (schema == null) {
 			return;
 		}
+
+		logger.info("create table " + schema.getFullName());
+
 		for (ReferenceKey referenceKey : schema.getReferenceKeys()) {
 			create(map, referenceKey.getTarget().getSchemaName());
 		}

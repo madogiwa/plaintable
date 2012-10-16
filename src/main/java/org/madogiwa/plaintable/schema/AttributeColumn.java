@@ -25,18 +25,9 @@ package org.madogiwa.plaintable.schema;
  */
 public abstract class AttributeColumn extends Column {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private int length = -1;
 
 	private boolean nullable = false;
-
-	private boolean indexed = false;
-
-	private boolean unique = false;
 
 	public AttributeColumn(Schema table, String name) {
 		super(table, name);
@@ -70,36 +61,6 @@ public abstract class AttributeColumn extends Column {
 	 */
 	public void setNullable(boolean nullable) {
 		this.nullable = nullable;
-	}
-
-	/**
-	 * @return the indexed
-	 */
-	public boolean isIndexed() {
-		return indexed;
-	}
-
-	/**
-	 * @param indexed
-	 *            the indexed to set
-	 */
-	public void setIndexed(boolean indexed) {
-		this.indexed = indexed;
-	}
-
-	/**
-	 * @return the unique
-	 */
-	public boolean isUnique() {
-		return unique;
-	}
-
-	/**
-	 * @param unique
-	 *            the unique to set
-	 */
-	public void setUnique(boolean unique) {
-		this.unique = unique;
 	}
 
 }

@@ -27,11 +27,6 @@ import java.io.Serializable;
  */
 public abstract class Column implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private Schema schema;
 
 	private String name;
@@ -73,10 +68,5 @@ public abstract class Column implements Serializable {
 	public String getPath() {
 		return schema.getFullName() + "." + name;
 	}
-
-	/**
-	 * @return
-	 */
-	public abstract boolean isUnique();
 
 }

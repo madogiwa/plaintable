@@ -26,11 +26,6 @@ package org.madogiwa.plaintable.schema;
 public abstract class KeyColumn extends Column {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * @param table
 	 * @param name
 	 */

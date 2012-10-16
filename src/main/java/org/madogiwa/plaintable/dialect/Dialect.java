@@ -19,6 +19,8 @@
  */
 package org.madogiwa.plaintable.dialect;
 
+import org.madogiwa.plaintable.schema.ReferenceKey;
+
 import java.lang.reflect.Type;
 
 /**
@@ -32,6 +34,8 @@ public interface Dialect {
 	public static int MAX_BYTES_LENGTH = 30000;
 
 	public String getSQLType(Type type, int length);
+
+	public String buildForeignKeyConstraint(ReferenceKey key);
 
 	public boolean isLimitSupported();
 

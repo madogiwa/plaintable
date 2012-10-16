@@ -29,11 +29,6 @@ import org.madogiwa.plaintable.schema.Schema;
 public class StreamAttribute extends BinaryAttribute {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * @param schema
 	 * @param name
 	 */

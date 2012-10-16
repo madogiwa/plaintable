@@ -19,12 +19,11 @@
  */
 package org.madogiwa.plaintable.dialect;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import org.madogiwa.plaintable.util.JdbcUtils;
 
 import javax.sql.DataSource;
-
-import org.madogiwa.plaintable.util.JdbcUtils;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * @author Hidenori Sugiyama
@@ -53,7 +52,7 @@ public class DialectFactory {
 			} else if (productName.startsWith("H2")) {
 				return new H2Dialect();
 			} else {
-				throw new RuntimeException();
+				throw new RuntimeException("Unknown database type: " + productName);
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

@@ -29,11 +29,6 @@ import org.madogiwa.plaintable.schema.Schema;
 public class TimestampAttribute extends DateTimeAttribute {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * @param schema
 	 * @param name
 	 */

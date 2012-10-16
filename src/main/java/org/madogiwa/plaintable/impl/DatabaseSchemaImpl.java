@@ -22,21 +22,16 @@ package org.madogiwa.plaintable.impl;
 import org.madogiwa.plaintable.DatabaseSchema;
 import org.madogiwa.plaintable.dialect.Dialect;
 import org.madogiwa.plaintable.schema.*;
-import org.madogiwa.plaintable.schema.attr.BytesAttribute;
-import org.madogiwa.plaintable.schema.attr.LongAttribute;
+import org.madogiwa.plaintable.schema.attr.CharAttribute;
+import org.madogiwa.plaintable.schema.attr.IntegerAttribute;
 import org.madogiwa.plaintable.schema.attr.StringAttribute;
+import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
 import org.madogiwa.plaintable.util.JdbcUtils;
+import org.madogiwa.plaintable.util.StringUtils;
 
 import javax.sql.DataSource;
-import java.io.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -46,8 +41,6 @@ import java.util.logging.Logger;
 public class DatabaseSchemaImpl implements DatabaseSchema {
 
 	private static final String LOCK_TABLE = "PlaintableLock";
-
-	private static final String SCHEMA_TABLE = "PlaintableSchema";
 
 	private static Logger logger = Logger.getLogger(DatabaseSchemaImpl.class
 			.getName());
@@ -98,9 +91,6 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		if (!JdbcUtils.isTableExist(dataSource, getLockTableName())) {
 			initLockTable();
 		}
-		if (!JdbcUtils.isTableExist(dataSource, getSchemaTableName())) {
-			initSchemaTable();
-		}
 	}
 
 	/**
@@ -110,19 +100,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	private void initLockTable() throws SQLException {
 		Schema schema = getLockTableSchema();
 		String sql = buildCreateTableSql(schema);
-		JdbcUtils.executeUpdate(connection, sql, new Object[] {});
-		connection.commit();
-	}
-
-	/**
-	 * @throws SQLException
-	 * 
-	 */
-	private void initSchemaTable() throws SQLException {
-		Schema schema = getPlaintableSchema();
-		String sql = buildCreateTableSql(schema);
-		JdbcUtils.executeUpdate(connection, sql, new Object[] {});
-		addLock(schema);
+		JdbcUtils.executeUpdate(connection, sql, new Object[]{});
 		connection.commit();
 	}
 
@@ -134,7 +112,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		try {
 			statement = connection.prepareStatement(String.format(
 					"SELECT * FROM %s WHERE name = ? FOR UPDATE", getLockTableName()));
-			statement.setString(1, getSchemaTableName());
+			statement.setString(1, prefix + "lock");
 			statement.execute();
 		} finally {
 			JdbcUtils.closeStatement(statement);
@@ -160,10 +138,9 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	 */
 	public void createTable(Schema schema) throws SQLException {
 		String sql = buildCreateTableSql(schema);
-		JdbcUtils.executeUpdate(connection, sql, new Object[] {});
+		JdbcUtils.executeUpdate(connection, sql, new Object[]{});
 
 		createIndicies(schema);
-		addSchema(schema);
 		addLock(schema);
 	}
 
@@ -176,31 +153,19 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		query.append(String.format("CREATE TABLE %s ( ",
 				dialect.quote(schema.getFullName())));
 		query.append(String.format("%s %s PRIMARY KEY ",
-				dialect.quote(schema.getSyntheticKey().getName()),
+				dialect.quote(schema.getPrimaryKey().getName()),
 				dialect.getSQLType(SyntheticKey.class, -1)));
-
-		for (ReferenceKey ref : schema.getReferenceKeys()) {
-			query.append(String.format(", %s %s ",
-					dialect.quote(ref.getName()),
-					dialect.getSQLType(ReferenceKey.class, -1)));
-			query.append(ref.isNullable() ? "" : " NOT NULL ");
-			query.append(ref.isUnique() ? " UNIQUE " : "");
-
-			SchemaReference schemaRef = ref.getTarget();
-			query.append(String.format(
-					" REFERENCES %s(%s) ",
-					dialect.quote(schemaRef.getSchema().getFullName()),
-					dialect.quote(schemaRef.getSchema().getSyntheticKey()
-							.getName())));
-			query.append(ref.isCascade() ? " ON DELETE CASCADE " : "");
-		}
 
 		for (AttributeColumn attr : schema.getAttributes()) {
 			String type = dialect.getSQLType(attr.getClass(), attr.getLength());
 			query.append(String.format(", %s %s",
 					dialect.quote(attr.getName()), type));
 			query.append(attr.isNullable() ? "" : " NOT NULL ");
-			query.append(attr.isUnique() ? " UNIQUE " : "");
+		}
+
+		for (ReferenceKey ref : schema.getReferenceKeys()) {
+			query.append(", ");
+			query.append(dialect.buildForeignKeyConstraint(ref));
 		}
 
 		query.append(" )");
@@ -213,27 +178,21 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	 * @throws SQLException
 	 */
 	private void createIndicies(Schema schema) throws SQLException {
-		List<Column> indexedColumns = new ArrayList<Column>();
+		for (Index index : schema.getIndices()) {
+			List<String> list = new ArrayList<String>();
+			for(Column column : index.getColumns()) {
+				list.add(column.getName());
+			}
 
-		for (ReferenceKey ref : schema.getReferenceKeys()) {
-			if (ref.isIndexed()) {
-				indexedColumns.add(ref);
-			}
-		}
-		for (AttributeColumn attr : schema.getAttributes()) {
-			if (attr.isIndexed()) {
-				indexedColumns.add(attr);
-			}
-		}
+			String indexName = schema.getFullName() + "_" + StringUtils.join(list, "_");
+			String columnNameList = StringUtils.join(list, ",");
 
-		for (Column column : indexedColumns) {
-			if (!column.isUnique()) {
-				JdbcUtils.executeUpdate(connection, String.format(
-						"CREATE %s INDEX %s ON %s (%s)",
-						column.isUnique() ? "UNIQUE" : "", dialect.quote(schema.getFullName()
-								+ "_" + column.getName()), dialect.quote(schema.getFullName()),
-						dialect.quote(column.getName())), new Object[] {});
-			}
+			JdbcUtils.executeUpdate(connection, String.format(
+					"CREATE %s INDEX %s ON %s (%s)",
+					index.isUnique() ? "UNIQUE" : "",
+					dialect.quote(indexName),
+					dialect.quote(schema.getFullName()),
+					dialect.quote(columnNameList)), new Object[] {});
 		}
 	}
 
@@ -245,13 +204,14 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	 * .schema.Schema)
 	 */
 	public void dropTable(Schema schema) throws SQLException {
+		logger.info(String.format("drop table %s", schema.getFullName()));
+
 		StringBuilder query = new StringBuilder();
 		query.append(String.format("DROP TABLE %s",
 				dialect.quote(schema.getFullName())));
 		JdbcUtils.executeUpdate(connection, query.toString(), new Object[] {});
 
 		removeLock(schema.getFullName());
-		removeSchema(schema.getFullName());
 	}
 
 	/*
@@ -272,42 +232,215 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	public Map<String, Schema> retrieveSchemaMap() throws SQLException {
 		Map<String, Schema> map = new HashMap<String, Schema>();
 
-		String query = String.format("SELECT %s,%s,%s FROM %s",
-				dialect.quote("name"), dialect.quote("version"),
-				dialect.quote("schema"), dialect.quote(getSchemaTableName()));
-		logger.fine(query);
-
 		Connection connection = null;
-		PreparedStatement statement = null;
-		ResultSet resultSet = null;
 		try {
 			connection = dataSource.getConnection();
-			statement = connection.prepareStatement(query.toString());
-			resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				byte[] schemaBytes = resultSet.getBytes("schema");
-				Schema schema = schemaFromByteArray(schemaBytes);
-				map.put(schema.getFullName(), schema);
+			DatabaseMetaData metaData = connection.getMetaData();
+
+			String[] tableNames = getTableNames(metaData);
+			for(String name : tableNames) {
+				logger.fine("exist table %s".format(name));
+
+				Schema schema = getSchema(metaData, name);
+				map.put(name, schema);
 			}
+
+			resolveSchemaReference(map);
 		} finally {
-			JdbcUtils.closeResultSet(resultSet);
-			JdbcUtils.closeStatement(statement);
 			JdbcUtils.closeConnection(connection);
 		}
+
 		return map;
 	}
 
-	private Schema schemaFromByteArray(byte[] schemaBytes) {
+	private void resolveSchemaReference(Map<String, Schema> map) {
+		for(Schema schema : map.values()) {
+			logger.fine("schema " + schema.getFullName());
+			for(ReferenceKey key : schema.getReferenceKeys()) {
+				Schema target = map.get(key.getTarget().getSchema().getName());
+				logger.fine("reference " + target.getFullName());
+				key.setTarget(new SchemaReference(target));
+			}
+		}
+	}
+
+	private String[] getTableNames(DatabaseMetaData metaData) throws SQLException {
+		List<String> list = new ArrayList<String>();
+
+		ResultSet resultSet = null;
 		try {
-			ByteArrayInputStream bytesIn = new ByteArrayInputStream(schemaBytes);
-			ObjectInputStream objIn = new ObjectInputStream(bytesIn);
-			Schema schema = (Schema) objIn.readObject();
-			objIn.close();
-			return schema;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
+			resultSet = metaData.getTables(null, null, "%", new String[]{"TABLE"});
+			while(resultSet.next()) {
+				String tableName = resultSet.getString("TABLE_NAME");
+				if (!tableName.equals(getLockTableName())) {
+					// TODO: remove prefix
+					list.add(tableName);
+				}
+			}
+		} finally {
+			JdbcUtils.closeResultSet(resultSet);
+		}
+
+		return list.toArray(new String[]{});
+	}
+
+	private Schema getSchema(DatabaseMetaData metaData, String tableName) throws SQLException {
+		Schema schema = new Schema(tableName);
+		updateReference(metaData, schema);
+		updateSchemaColumn(metaData, schema);
+		updateSchemaIndex(metaData, schema);
+		return schema;
+	}
+
+	private void updateSchemaColumn(DatabaseMetaData metaData, Schema schema) throws SQLException {
+		List<String> primaryKeys = getPrimaryKeys(metaData, schema);
+		Set<ReferenceKey> referenceKeys = schema.getReferenceKeys();
+
+		ResultSet resultSet = null;
+		try {
+			resultSet = metaData.getColumns(null, null, schema.getFullName(), "%");
+			while(resultSet.next()) {
+				String columnName = resultSet.getString("COLUMN_NAME");
+				int dataType = resultSet.getInt("DATA_TYPE");
+
+				logger.fine(String.format("found %s(%d)", columnName, dataType));
+
+				if (primaryKeys.contains(columnName)) {
+					schema.setPrimaryKey(makePrimaryKeyColumn(schema, columnName, resultSet));
+				} else if (schema.hasReferenceKey(columnName)) {
+					// TODO: check nullable
+				} else {
+					switch(dataType) {
+						//case Types.BIGINT:
+						//	break;
+						case Types.INTEGER:
+							schema.addAttribute(makeIntegerColumn(schema, columnName, resultSet));
+							break;
+						case Types.CHAR:
+							schema.addAttribute(makeCharColumn(schema, columnName, resultSet));
+							break;
+						case Types.VARCHAR:
+							schema.addAttribute(makeCharColumn(schema, columnName, resultSet));
+							break;
+						case Types.LONGVARCHAR:
+							schema.addAttribute(makeTextColumn(schema, columnName, resultSet));
+							break;
+						case Types.TIMESTAMP:
+							schema.addAttribute(makeTimestampColumn(schema, columnName, resultSet));
+							break;
+						default:
+							logger.warning(String.format("table %s has unknown column type %s(%d)", schema.getName(), columnName, dataType));
+							break;
+					}
+				}
+			}
+		} finally {
+			JdbcUtils.closeResultSet(resultSet);
+		}
+	}
+
+	private List<String> getPrimaryKeys(DatabaseMetaData metaData, Schema schema) throws SQLException {
+		List<String> list = new ArrayList<String>();
+
+		ResultSet resultSet = null;
+		try {
+			resultSet = metaData.getPrimaryKeys(null, null, schema.getFullName());
+			while(resultSet.next()) {
+				list.add(resultSet.getString("COLUMN_NAME"));
+			}
+		} finally {
+			JdbcUtils.closeResultSet(resultSet);
+		}
+
+		return list;
+	}
+
+	private PrimaryKey makePrimaryKeyColumn(Schema schema, String columnName, ResultSet resultSet) throws SQLException {
+		PrimaryKey key = new SyntheticKey(schema, columnName);
+		return key;
+	}
+
+	private AttributeColumn makeIntegerColumn(Schema schema, String columnName, ResultSet resultSet) throws SQLException {
+		IntegerAttribute attr = new IntegerAttribute(schema, columnName);
+		attr.setLength(resultSet.getInt("COLUMN_SIZE"));
+		String nullable = resultSet.getString("NULLABLE");
+		attr.setNullable( nullable.equals("YES") ? true : false );
+		return attr;
+	}
+
+	private AttributeColumn makeCharColumn(Schema schema, String columnName, ResultSet resultSet) throws SQLException {
+		CharAttribute attr = new CharAttribute(schema, columnName);
+		attr.setLength(resultSet.getInt("CHAR_OCTET_LENGTH"));
+		String nullable = resultSet.getString("NULLABLE");
+		attr.setNullable( nullable.equals("YES") ? true : false );
+		return attr;
+	}
+
+	private AttributeColumn makeTextColumn(Schema schema, String columnName, ResultSet resultSet) throws SQLException {
+		StringAttribute attr = new StringAttribute(schema, columnName);
+		String nullable = resultSet.getString("NULLABLE");
+		attr.setNullable( nullable.equals("YES") ? true : false );
+		return attr;
+	}
+
+	private AttributeColumn makeTimestampColumn(Schema schema, String columnName, ResultSet resultSet) throws SQLException {
+		TimestampAttribute attr = new TimestampAttribute(schema, columnName);
+		String nullable = resultSet.getString("NULLABLE");
+		attr.setNullable( nullable.equals("YES") ? true : false );
+		return attr;
+	}
+
+	private void updateSchemaIndex(DatabaseMetaData metaData, Schema schema) throws SQLException {
+		// TODO: support multiple column
+		ResultSet resultSet = null;
+		try {
+			resultSet = metaData.getIndexInfo(null, null, schema.getFullName(), false, false);
+			while(resultSet.next()) {
+				String columnName = resultSet.getString("COLUMN_NAME");
+				if (columnName == null) {
+					continue;
+				}
+
+				String indexName = resultSet.getString("INDEX_NAME");
+
+				AttributeColumn attr = schema.getAttribute(columnName);
+				if (attr == null) {
+					logger.fine(String.format("%s is not attribute name", columnName));
+					continue;
+				}
+
+				Index index = new Index(schema, attr);
+				index.setUnique(!resultSet.getBoolean("NON_UNIQUE"));
+				schema.addIndex(index);
+			}
+		} finally {
+			JdbcUtils.closeResultSet(resultSet);
+		}
+	}
+
+	private void updateReference(DatabaseMetaData metaData, Schema schema) throws SQLException {
+		ResultSet resultSet = null;
+		try {
+			logger.fine(String.format("find %s reference", schema.getFullName()));
+			resultSet = metaData.getImportedKeys(null, null, schema.getFullName());
+			while(resultSet.next()) {
+				String columnName = resultSet.getString("FKCOLUMN_NAME");
+				String tableName = resultSet.getString("PKTABLE_NAME");
+
+				logger.fine(String.format("%s : %s", columnName, tableName));
+
+				Schema dummy = new Schema(tableName);
+				SchemaReference ref = new SchemaReference(dummy);
+				ReferenceKey key = new ReferenceKey(schema, columnName, ref);
+
+				// cascade
+				// resultSet.getShort("UPDATE_RULE");
+				// resultSet.getShort("DELETE_RULE");
+
+				schema.addReferenceKey(key);
+			}
+		} finally {
+			JdbcUtils.closeResultSet(resultSet);
 		}
 	}
 
@@ -325,49 +458,11 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	/**
 	 * @return
 	 */
-	private Schema getPlaintableSchema() {
-		Schema schema = new Schema(prefix, SCHEMA_TABLE, 1);
-		schema.setSyntheticKey(new SyntheticKey(schema, "id"));
-		schema.addAttribute(new StringAttribute(schema, "name"));
-		schema.addAttribute(new LongAttribute(schema, "version"));
-		schema.addAttribute(new BytesAttribute(schema, "schema"));
-		return schema;
-	}
-
-	/**
-	 * @return
-	 */
 	private Schema getLockTableSchema() {
-		Schema schema = new Schema(prefix, LOCK_TABLE, 1);
-		schema.setSyntheticKey(new SyntheticKey(schema, "id"));
+		Schema schema = new Schema(prefix, LOCK_TABLE);
+		schema.setPrimaryKey(new SyntheticKey(schema, "id"));
 		schema.addAttribute(new StringAttribute(schema, "name"));
 		return schema;
-	}
-
-	private void addSchema(Schema schema) throws SQLException {
-		JdbcUtils.executeUpdate(connection, String.format(
-				"INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", getSchemaTableName(),
-				dialect.quote("name"), dialect.quote("version"),
-				dialect.quote("schema")), new Object[] { schema.getFullName(),
-				schema.getVersion(), schemaToByteArray(schema) });
-	}
-
-	private byte[] schemaToByteArray(Schema schema) {
-		try {
-			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-			ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
-			objOut.writeObject(schema);
-			objOut.close();
-			return byteOut.toByteArray();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private void removeSchema(String name) throws SQLException {
-		JdbcUtils.executeUpdate(connection,
-				String.format("DELETE FROM %s WHERE name = ?", getSchemaTableName()),
-				new Object[] { name });
 	}
 
 	private void addLock(Schema schema) throws SQLException {
@@ -384,10 +479,6 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 
 	public String getLockTableName() {
 		return prefix + LOCK_TABLE;
-	}
-
-	public String getSchemaTableName() {
-		return prefix + SCHEMA_TABLE;
 	}
 
 }

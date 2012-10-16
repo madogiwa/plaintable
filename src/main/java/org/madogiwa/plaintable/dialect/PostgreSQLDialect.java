@@ -44,7 +44,7 @@ import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
  * @author Hidenori Sugiyama
  * 
  */
-public class PostgreSQLDialect implements Dialect {
+public class PostgreSQLDialect extends GenericDialect {
 
 	private Map<Type, String> typeMap = new HashMap<Type, String>();
 
