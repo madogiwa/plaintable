@@ -21,17 +21,42 @@ package org.madogiwa.plaintable.impl;
 
 import org.madogiwa.plaintable.DatabaseSchema;
 import org.madogiwa.plaintable.dialect.Dialect;
-import org.madogiwa.plaintable.schema.*;
-import org.madogiwa.plaintable.schema.attr.CharAttribute;
+import org.madogiwa.plaintable.schema.AttributeColumn;
+import org.madogiwa.plaintable.schema.Column;
+import org.madogiwa.plaintable.schema.Index;
+import org.madogiwa.plaintable.schema.PrimaryKey;
+import org.madogiwa.plaintable.schema.ReferenceKey;
+import org.madogiwa.plaintable.schema.Schema;
+import org.madogiwa.plaintable.schema.SchemaReference;
+import org.madogiwa.plaintable.schema.SyntheticKey;
+import org.madogiwa.plaintable.schema.TextAttribute;
+import org.madogiwa.plaintable.schema.attr.BignumAttribute;
+import org.madogiwa.plaintable.schema.attr.BooleanAttribute;
+import org.madogiwa.plaintable.schema.attr.BytesAttribute;
+import org.madogiwa.plaintable.schema.attr.DateAttribute;
+import org.madogiwa.plaintable.schema.attr.DoubleAttribute;
+import org.madogiwa.plaintable.schema.attr.FloatAttribute;
 import org.madogiwa.plaintable.schema.attr.IntegerAttribute;
+import org.madogiwa.plaintable.schema.attr.LongAttribute;
+import org.madogiwa.plaintable.schema.attr.ShortAttribute;
+import org.madogiwa.plaintable.schema.attr.StreamAttribute;
 import org.madogiwa.plaintable.schema.attr.StringAttribute;
+import org.madogiwa.plaintable.schema.attr.TimeAttribute;
 import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
 import org.madogiwa.plaintable.util.JdbcUtils;
 import org.madogiwa.plaintable.util.StringUtils;
 
 import javax.sql.DataSource;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -257,28 +282,19 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 				} else if (schema.hasReferenceKey(columnName)) {
 					// TODO: check nullable
 				} else {
-					switch(dataType) {
-						//case Types.BIGINT:
-						//	break;
-						case Types.INTEGER:
-							schema.addAttribute(makeIntegerColumn(schema, columnName, resultSet));
-							break;
-						case Types.CHAR:
-							schema.addAttribute(makeCharColumn(schema, columnName, resultSet));
-							break;
-						case Types.VARCHAR:
-							schema.addAttribute(makeCharColumn(schema, columnName, resultSet));
-							break;
-						case Types.LONGVARCHAR:
-							schema.addAttribute(makeTextColumn(schema, columnName, resultSet));
-							break;
-						case Types.TIMESTAMP:
-							schema.addAttribute(makeTimestampColumn(schema, columnName, resultSet));
-							break;
-						default:
-							logger.warning(String.format("table %s has unknown column type %s(%d)", schema.getName(), columnName, dataType));
-							break;
+					AttributeColumn attr = makeAttributeColumn(dataType, schema, columnName);
+					if (attr == null) {
+						continue;
 					}
+
+					if (attr instanceof TextAttribute) {
+						attr.setLength(resultSet.getInt("CHAR_OCTET_LENGTH"));
+					} else {
+						attr.setLength(resultSet.getInt("COLUMN_SIZE"));
+					}
+
+					String nullable = resultSet.getString("NULLABLE");
+					attr.setNullable( nullable.equals("YES") ? true : false );
 				}
 			}
 		} finally {
@@ -307,33 +323,63 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		return key;
 	}
 
-	private AttributeColumn makeIntegerColumn(Schema schema, String columnName, ResultSet resultSet) throws SQLException {
-		IntegerAttribute attr = new IntegerAttribute(schema, columnName);
-		attr.setLength(resultSet.getInt("COLUMN_SIZE"));
-		String nullable = resultSet.getString("NULLABLE");
-		attr.setNullable( nullable.equals("YES") ? true : false );
-		return attr;
-	}
+	private AttributeColumn makeAttributeColumn(int dataType, Schema schema, String columnName) {
+		AttributeColumn attr = null;
 
-	private AttributeColumn makeCharColumn(Schema schema, String columnName, ResultSet resultSet) throws SQLException {
-		CharAttribute attr = new CharAttribute(schema, columnName);
-		attr.setLength(resultSet.getInt("CHAR_OCTET_LENGTH"));
-		String nullable = resultSet.getString("NULLABLE");
-		attr.setNullable( nullable.equals("YES") ? true : false );
-		return attr;
-	}
+		switch(dataType) {
+			case Types.BOOLEAN:
+				attr = new BooleanAttribute(schema, columnName);
+				break;
+			case Types.SMALLINT:
+				attr = new ShortAttribute(schema, columnName);
+				break;
+			case Types.INTEGER:
+				attr = new IntegerAttribute(schema, columnName);
+				break;
+			case Types.BIGINT:
+				attr = new LongAttribute(schema, columnName);
+				break;
+			case Types.DECIMAL:
+				attr = new BignumAttribute(schema, columnName);
+				break;
+			case Types.REAL:
+				attr = new FloatAttribute(schema, columnName);
+				break;
+			case Types.FLOAT:
+				attr = new FloatAttribute(schema, columnName);
+				break;
+			case Types.DOUBLE:
+				attr = new DoubleAttribute(schema, columnName);
+				break;
+			case Types.TIME:
+				attr = new TimeAttribute(schema, columnName);
+				break;
+			case Types.DATE:
+				attr = new DateAttribute(schema, columnName);
+				break;
+			case Types.TIMESTAMP:
+				attr = new TimestampAttribute(schema, columnName);
+				break;
+			case Types.VARCHAR:
+				attr = new TimestampAttribute(schema, columnName);
+				break;
+			case Types.VARBINARY:
+				attr = new BytesAttribute(schema, columnName);
+				break;
+			case Types.CLOB:
+				attr = new StringAttribute(schema, columnName);
+				break;
+			case Types.BLOB:
+				attr = new StreamAttribute(schema, columnName);
+				break;
+			case Types.LONGVARCHAR:
+				attr = new StringAttribute(schema, columnName);
+				break;
+			default:
+				logger.warning(String.format("table %s has unknown column type %s(%d)", schema.getName(), columnName, dataType));
+				break;
+		}
 
-	private AttributeColumn makeTextColumn(Schema schema, String columnName, ResultSet resultSet) throws SQLException {
-		StringAttribute attr = new StringAttribute(schema, columnName);
-		String nullable = resultSet.getString("NULLABLE");
-		attr.setNullable( nullable.equals("YES") ? true : false );
-		return attr;
-	}
-
-	private AttributeColumn makeTimestampColumn(Schema schema, String columnName, ResultSet resultSet) throws SQLException {
-		TimestampAttribute attr = new TimestampAttribute(schema, columnName);
-		String nullable = resultSet.getString("NULLABLE");
-		attr.setNullable( nullable.equals("YES") ? true : false );
 		return attr;
 	}
 
