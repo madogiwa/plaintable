@@ -62,6 +62,10 @@ public class SchemaManagerImpl implements SchemaManager {
 		this.prefix = prefix;
 	}
 
+	public Schema getSchema(String schemaName) {
+		return schemaMap.get(schemaName);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

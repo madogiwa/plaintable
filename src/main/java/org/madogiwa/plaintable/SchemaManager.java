@@ -33,6 +33,12 @@ public interface SchemaManager {
 	}
 
 	/**
+	 * @param schemaName
+	 * @return
+	 */
+	public Schema getSchema(String schemaName);
+
+	/**
 	 * @param clazz
 	 * @throws PlainTableException
 	 */
