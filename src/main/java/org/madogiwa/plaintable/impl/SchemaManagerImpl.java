@@ -281,19 +281,26 @@ public class SchemaManagerImpl implements SchemaManager {
 				return false;
 			}
 
-			if (mode == SynchronizeMode.NONE) {
-				return true;
-			} else if (mode == SynchronizeMode.UPDATE_ONLY) {
-				throw new RuntimeException(
-						"update_only not implemented currently");
-			} else if (mode == SynchronizeMode.DROP_AND_CREATE) {
-				dropAll(buildSchemaMap(currentMap, dirtyNames));
-				createAll(buildSchemaMap(schemaMap, dirtyNames));
-			} else if (mode == SynchronizeMode.ALL_DROP_AND_CREATE) {
-				dropAll(currentMap);
-				createAll(schemaMap);
-			} else {
-				throw new RuntimeException();
+			switch(mode) {
+				case NONE:
+					return true;
+				case CHECK_COMPATIBILITY:
+					throw new RuntimeException(
+							"CHECK_COMPATIBILITY not implemented currently");
+				case UPDATE_ONLY:
+					throw new RuntimeException(
+							"UPDATE_ONLY not implemented currently");
+				case DROP_AND_CREATE:
+					dropAll(buildSchemaMap(currentMap, dirtyNames));
+					createAll(buildSchemaMap(schemaMap, dirtyNames));
+					break;
+				case ALL_DROP_AND_CREATE:
+					dropAll(currentMap);
+					createAll(schemaMap);
+					break;
+				default:
+					throw new RuntimeException(
+							String.format("mode %s is not supported", mode));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

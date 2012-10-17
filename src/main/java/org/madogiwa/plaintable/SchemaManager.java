@@ -29,7 +29,7 @@ import org.madogiwa.plaintable.schema.SchemaDefinition;
 public interface SchemaManager {
 
 	enum SynchronizeMode {
-		ALL_DROP_AND_CREATE, DROP_AND_CREATE, UPDATE_ONLY, NONE,
+		ALL_DROP_AND_CREATE, DROP_AND_CREATE, UPDATE_ONLY, NONE, CHECK_COMPATIBILITY,
 	}
 
 	/**
