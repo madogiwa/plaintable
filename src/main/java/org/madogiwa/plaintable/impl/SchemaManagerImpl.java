@@ -72,13 +72,13 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * @see org.madogiwa.plaintable.TableManager#manage(java.lang.Class)
 	 */
 	public void manage(Class<? extends SchemaDefinition> clazz) {
-		Class<? extends Serializable> implClazz = findImplClass(clazz);
+		Class<? extends SchemaDefinition> implClazz = findImplClass(clazz);
 		Schema schema = extractSchemaFromClass(implClazz);
 		updateClassFields(implClazz, schema);
 		manage(schema);
 	}
 
-	private Class<? extends Serializable> findImplClass(Class<? extends SchemaDefinition> clazz) {
+	private Class<? extends SchemaDefinition> findImplClass(Class<? extends SchemaDefinition> clazz) {
 		Table annot = (Table) clazz.getAnnotation(Table.class);
 		if (annot != null) {
 			return clazz;
@@ -97,7 +97,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * @param clazz
 	 * @return
 	 */
-	private Schema extractSchemaFromClass(Class<? extends Serializable> clazz) {
+	private Schema extractSchemaFromClass(Class<? extends SchemaDefinition> clazz) {
 		Table annot = (Table) clazz.getAnnotation(Table.class);
 		if (annot == null) {
 			throw new RuntimeException(String.format(
@@ -111,7 +111,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * @param clazz
 	 * @param name
 	 */
-	private Schema extractSchemaFromClass(Class<? extends Serializable> clazz,
+	private Schema extractSchemaFromClass(Class<? extends SchemaDefinition> clazz,
 			String name) {
 
 		Schema schema = new Schema(prefix, name);
@@ -189,7 +189,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * @param clazz
 	 * @param schema
 	 */
-	private void updateClassFields(Class<? extends Serializable> clazz,
+	private void updateClassFields(Class<? extends SchemaDefinition> clazz,
 			Schema schema) {
 		try {
 			Object instance = ReflectionUtils.findInstance(clazz);
