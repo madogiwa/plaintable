@@ -98,13 +98,20 @@ public class SchemaManagerImpl implements SchemaManager {
 	 * @return
 	 */
 	private Schema extractSchemaFromClass(Class<? extends SchemaDefinition> clazz) {
+		String tableName = clazz.getCanonicalName();
+
 		Table annot = (Table) clazz.getAnnotation(Table.class);
-		if (annot == null) {
-			throw new RuntimeException(String.format(
-					"%s is not a table schema", clazz));
+		if (annot != null) {
+			tableName = annot.name();
 		}
 
-		return extractSchemaFromClass(clazz, annot.name());
+		if (tableName == null || tableName.equals("")) {
+			throw new RuntimeException(String.format("can't detect schema name from ", clazz));
+		}
+
+		Schema schema = extractSchemaFromClass(clazz, tableName);
+		verifySchema(schema);
+		return schema;
 	}
 
 	/**
@@ -183,6 +190,12 @@ public class SchemaManagerImpl implements SchemaManager {
 		}
 
 		return schema;
+	}
+
+	private void verifySchema(Schema schema) {
+		if (schema.getPrimaryKey() == null) {
+			throw new RuntimeException(String.format("schema %s has not a primary key.", schema.getName()));
+		}
 	}
 
 	/**
