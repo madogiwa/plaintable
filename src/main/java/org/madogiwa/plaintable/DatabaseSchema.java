@@ -19,10 +19,10 @@
  */
 package org.madogiwa.plaintable;
 
+import org.madogiwa.plaintable.schema.Schema;
+
 import java.sql.SQLException;
 import java.util.Map;
-
-import org.madogiwa.plaintable.schema.Schema;
 
 /**
  * @author Hidenori Sugiyama
@@ -35,8 +35,6 @@ public interface DatabaseSchema {
 	public void close() throws SQLException;
 
 	public Map<String, Schema> retrieveSchemaMap() throws SQLException;
-
-	public Schema retrieveSchema(String name) throws SQLException;
 
 	public void createTable(Schema schema) throws SQLException;
 

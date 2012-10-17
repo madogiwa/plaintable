@@ -40,24 +40,11 @@ public class StatementBuilder {
 
 	private Dialect dialect;
 
-	private DatabaseSchemaImpl databaseSchema;
-
 	/**
 	 * @param dialect
-	 * @param databaseSchema
 	 */
-	public StatementBuilder(Dialect dialect, DatabaseSchemaImpl databaseSchema) {
+	public StatementBuilder(Dialect dialect) {
 		this.dialect = dialect;
-		this.databaseSchema = databaseSchema;
-	}
-
-	/**
-	 * @param schema
-	 * @throws PlainTableException
-	 */
-	public String buildLockSql(Schema schema) throws PlainTableException {
-		return String.format("SELECT * FROM %s WHERE name LIKE ? FOR UPDATE",
-				databaseSchema.getLockTableName());
 	}
 
 	/**
@@ -76,6 +63,19 @@ public class StatementBuilder {
 					+ dialect.getLimitFragment(window.getOffset(),
 							window.getLimit());
 		}
+		return context.replaceMarker(sql);
+	}
+
+	/**
+	 * @param context
+	 * @param query
+	 * @return
+	 * @throws PlainTableException
+	 */
+	protected String buildSelectForUpdateSql(Context context, IQuery query)
+			throws PlainTableException {
+		String sql = query.getSQLString(context);
+		sql = sql + " FOR UPDATE";
 		return context.replaceMarker(sql);
 	}
 

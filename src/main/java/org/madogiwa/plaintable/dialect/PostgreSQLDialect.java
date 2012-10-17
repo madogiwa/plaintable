@@ -19,10 +19,6 @@
  */
 package org.madogiwa.plaintable.dialect;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.madogiwa.plaintable.schema.ReferenceKey;
 import org.madogiwa.plaintable.schema.SyntheticKey;
 import org.madogiwa.plaintable.schema.attr.BignumAttribute;
@@ -39,6 +35,10 @@ import org.madogiwa.plaintable.schema.attr.StreamAttribute;
 import org.madogiwa.plaintable.schema.attr.StringAttribute;
 import org.madogiwa.plaintable.schema.attr.TimeAttribute;
 import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Hidenori Sugiyama

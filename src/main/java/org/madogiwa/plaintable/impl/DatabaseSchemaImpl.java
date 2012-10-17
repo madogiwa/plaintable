@@ -40,8 +40,6 @@ import java.util.logging.Logger;
  */
 public class DatabaseSchemaImpl implements DatabaseSchema {
 
-	private static final String LOCK_TABLE = "PlaintableLock";
-
 	private static Logger logger = Logger.getLogger(DatabaseSchemaImpl.class
 			.getName());
 
@@ -79,8 +77,6 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 			init();
 			initialized = true;
 		}
-
-		lock();
 	}
 
 	/**
@@ -88,35 +84,6 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	 * 
 	 */
 	private void init() throws SQLException {
-		if (!JdbcUtils.isTableExist(dataSource, getLockTableName())) {
-			initLockTable();
-		}
-	}
-
-	/**
-	 * @throws SQLException
-	 * 
-	 */
-	private void initLockTable() throws SQLException {
-		Schema schema = getLockTableSchema();
-		String sql = buildCreateTableSql(schema);
-		JdbcUtils.executeUpdate(connection, sql, new Object[]{});
-		connection.commit();
-	}
-
-	/**
-	 * @throws SQLException
-	 */
-	private void lock() throws SQLException {
-		PreparedStatement statement = null;
-		try {
-			statement = connection.prepareStatement(String.format(
-					"SELECT * FROM %s WHERE name = ? FOR UPDATE", getLockTableName()));
-			statement.setString(1, prefix + "lock");
-			statement.execute();
-		} finally {
-			JdbcUtils.closeStatement(statement);
-		}
 	}
 
 	/*
@@ -141,7 +108,6 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		JdbcUtils.executeUpdate(connection, sql, new Object[]{});
 
 		createIndicies(schema);
-		addLock(schema);
 	}
 
 	/**
@@ -210,25 +176,8 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		query.append(String.format("DROP TABLE %s",
 				dialect.quote(schema.getFullName())));
 		JdbcUtils.executeUpdate(connection, query.toString(), new Object[] {});
-
-		removeLock(schema.getFullName());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.madogiwa.plaintable.DatabaseManager#retrieveSchema(java.lang.String)
-	 */
-	public Schema retrieveSchema(String name) throws SQLException {
-		return retrieveSchemaMap().get(name);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.madogiwa.plaintable.DatabaseSchema#retrieveSchemaMap()
-	 */
 	public Map<String, Schema> retrieveSchemaMap() throws SQLException {
 		Map<String, Schema> map = new HashMap<String, Schema>();
 
@@ -272,10 +221,8 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 			resultSet = metaData.getTables(null, null, "%", new String[]{"TABLE"});
 			while(resultSet.next()) {
 				String tableName = resultSet.getString("TABLE_NAME");
-				if (!tableName.equals(getLockTableName())) {
-					// TODO: remove prefix
-					list.add(tableName);
-				}
+				// TODO: remove prefix
+				list.add(tableName);
 			}
 		} finally {
 			JdbcUtils.closeResultSet(resultSet);
@@ -453,32 +400,6 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 	 */
 	public void updateTable(Schema schema) throws SQLException {
 		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * @return
-	 */
-	private Schema getLockTableSchema() {
-		Schema schema = new Schema(prefix, LOCK_TABLE);
-		schema.setPrimaryKey(new SyntheticKey(schema, "id"));
-		schema.addAttribute(new StringAttribute(schema, "name"));
-		return schema;
-	}
-
-	private void addLock(Schema schema) throws SQLException {
-		JdbcUtils.executeUpdate(connection,
-				String.format("INSERT INTO %s (name) VALUES (?)", getLockTableName()),
-				new Object[] { schema.getFullName() });
-	}
-
-	private void removeLock(String name) throws SQLException {
-		JdbcUtils.executeUpdate(connection,
-				String.format("DELETE FROM %s WHERE name = ?", getLockTableName()),
-				new Object[] { name });
-	}
-
-	public String getLockTableName() {
-		return prefix + LOCK_TABLE;
 	}
 
 }

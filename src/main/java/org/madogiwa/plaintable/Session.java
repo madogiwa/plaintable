@@ -81,12 +81,6 @@ public interface Session {
 	public void rollback() throws PlainTableException;
 
 	/**
-	 * @param schema
-	 * @throws PlainTableException
-	 */
-	public void lock(Schema schema) throws PlainTableException;
-
-	/**
 	 * @param action
 	 * @throws PlainTableException
 	 */
@@ -107,6 +101,17 @@ public interface Session {
 	 * @throws PlainTableException
 	 */
 	public <T> T load(Schema schema, long id, RowMapper<T> mapper)
+			throws PlainTableException;
+
+	/**
+	 * @param <T>
+	 * @param schema
+	 * @param id
+	 * @param mapper
+	 * @return
+	 * @throws PlainTableException
+	 */
+	public <T> T loadForUpdate(Schema schema, long id, RowMapper<T> mapper)
 			throws PlainTableException;
 
 	/**

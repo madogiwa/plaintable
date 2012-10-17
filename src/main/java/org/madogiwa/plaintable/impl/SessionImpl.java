@@ -203,39 +203,6 @@ public class SessionImpl implements Session {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.madogiwa.plaintable.Session#lock(org.madogiwa.plaintable.schema.Schema
-	 * )
-	 */
-	public void lock(Schema schema) throws PlainTableException {
-		checkAndOpenSession();
-
-		StatementBuilder builder = databaseManager.createStatementBuilder();
-		String sql = builder.buildLockSql(schema);
-		doLock(sql, schema);
-	}
-
-	/**
-	 * @param sql
-	 * @param schema
-	 * @throws PlainTableException
-	 */
-	public void doLock(String sql, Schema schema) throws PlainTableException {
-		PreparedStatement statement = null;
-		try {
-			statement = connection.prepareStatement(sql);
-			statement.setString(1, dialect.escape(schema.getName()));
-			statement.execute();
-		} catch (SQLException e) {
-			throw new PlainTableException(e);
-		} finally {
-			JdbcUtils.closeStatement(statement);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
 	 * org.madogiwa.plaintable.Session#doAtomic(org.madogiwa.plaintable.AtomicAction
 	 * )
 	 */
@@ -304,6 +271,25 @@ public class SessionImpl implements Session {
 
 		SingleHandler<T> handler = new SingleHandler<T>(mapper);
 		select(criteria, handler);
+		return handler.getResult();
+	}
+
+	public <T> T loadForUpdate(org.madogiwa.plaintable.schema.Schema schema, long id,
+							   org.madogiwa.plaintable.mapper.RowMapper<T> mapper)
+			throws org.madogiwa.plaintable.PlainTableException {
+
+		checkAndOpenSession();
+
+		Query query = new Query(schema);
+		query.getRestriction().add(Bools.eq(schema.getPrimaryKey(), id));
+
+		Context context = new Context(dialect);
+		StatementBuilder builder = databaseManager.createStatementBuilder();
+		String sql = builder.buildSelectForUpdateSql(context, query);
+
+		SingleHandler<T> handler = new SingleHandler<T>(mapper);
+		doSelect(context, sql, handler, query.getProjection(), new Window());
+
 		return handler.getResult();
 	}
 

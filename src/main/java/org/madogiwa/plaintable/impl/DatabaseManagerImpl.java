@@ -108,7 +108,7 @@ public class DatabaseManagerImpl implements DatabaseManager {
 	}
 
 	public StatementBuilder createStatementBuilder() {
-		return new StatementBuilder(dialect, databaseSchema);
+		return new StatementBuilder(dialect);
 	}
 
 }
