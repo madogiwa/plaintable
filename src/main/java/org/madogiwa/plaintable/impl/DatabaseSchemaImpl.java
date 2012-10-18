@@ -33,6 +33,7 @@ import org.madogiwa.plaintable.schema.TextAttribute;
 import org.madogiwa.plaintable.schema.attr.BignumAttribute;
 import org.madogiwa.plaintable.schema.attr.BooleanAttribute;
 import org.madogiwa.plaintable.schema.attr.BytesAttribute;
+import org.madogiwa.plaintable.schema.attr.CharAttribute;
 import org.madogiwa.plaintable.schema.attr.DateAttribute;
 import org.madogiwa.plaintable.schema.attr.DoubleAttribute;
 import org.madogiwa.plaintable.schema.attr.FloatAttribute;
@@ -280,7 +281,9 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 				if (primaryKeys.contains(columnName)) {
 					schema.setPrimaryKey(makePrimaryKeyColumn(schema, columnName, resultSet));
 				} else if (schema.hasReferenceKey(columnName)) {
-					// TODO: check nullable
+					ReferenceKey key = schema.getReferenceKey(columnName);
+					String nullable = resultSet.getString("IS_NULLABLE");
+					key.setNullable(nullable.equals("YES") ? true : false);
 				} else {
 					AttributeColumn attr = makeAttributeColumn(dataType, schema, columnName);
 					if (attr == null) {
@@ -293,8 +296,10 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 						attr.setLength(resultSet.getInt("COLUMN_SIZE"));
 					}
 
-					String nullable = resultSet.getString("NULLABLE");
+					String nullable = resultSet.getString("IS_NULLABLE");
 					attr.setNullable( nullable.equals("YES") ? true : false );
+
+					schema.addAttribute(attr);
 				}
 			}
 		} finally {
@@ -361,7 +366,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 				attr = new TimestampAttribute(schema, columnName);
 				break;
 			case Types.VARCHAR:
-				attr = new TimestampAttribute(schema, columnName);
+				attr = new CharAttribute(schema, columnName);
 				break;
 			case Types.VARBINARY:
 				attr = new BytesAttribute(schema, columnName);
@@ -396,14 +401,19 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 
 				String indexName = resultSet.getString("INDEX_NAME");
 
-				AttributeColumn attr = schema.getAttribute(columnName);
-				if (attr == null) {
+				Column column = schema.getAttribute(columnName);
+				if (column == null) {
+					column = schema.getReferenceKey(columnName);
+				}
+
+				if (column == null) {
 					logger.fine(String.format("%s is not attribute name", columnName));
 					continue;
 				}
 
-				Index index = new Index(schema, attr);
+				Index index = new Index(schema, column);
 				index.setUnique(!resultSet.getBoolean("NON_UNIQUE"));
+
 				schema.addIndex(index);
 			}
 		} finally {

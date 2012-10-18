@@ -1,6 +1,10 @@
 package org.madogiwa.plaintable.schema;
 
+import org.madogiwa.plaintable.util.StringUtils;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,6 +32,14 @@ public class Index {
 		return columns;
 	}
 
+	public String getColumnsAsString() {
+		List<String> list = new ArrayList<String>();
+		for(Column column : columns) {
+			list.add(column.getName());
+		}
+		return StringUtils.join(list);
+	}
+
 	/**
 	 * @return the unique
 	 */
@@ -43,4 +55,26 @@ public class Index {
 		this.unique = unique;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Index index = (Index) o;
+
+		if (schema == null || index.schema == null) return false;
+		if (!schema.getFullName().equals(index.schema.getFullName())) return false;
+
+		if (unique != index.unique) return false;
+		if (columns != null ? !columns.equals(index.columns) : index.columns != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = (unique ? 1 : 0);
+		result = 31 * result + (columns != null ? columns.hashCode() : 0);
+		return result;
+	}
 }

@@ -69,4 +69,26 @@ public abstract class Column implements Serializable {
 		return schema.getFullName() + "." + name;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Column column = (Column) o;
+
+		if (schema == null || column.schema == null) return false;
+		if (!schema.getFullName().equals(column.schema.getFullName())) return false;
+
+		if (name != null ? !name.equals(column.name) : column.name != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = schema != null ? schema.getFullName().hashCode() : 0;
+		result = 31 * result + (name != null ? name.hashCode() : 0);
+		return result;
+	}
+
 }

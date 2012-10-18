@@ -22,10 +22,17 @@ package org.madogiwa.plaintable.impl;
 import org.madogiwa.plaintable.DatabaseSchema;
 import org.madogiwa.plaintable.PlainTableException;
 import org.madogiwa.plaintable.SchemaManager;
-import org.madogiwa.plaintable.schema.*;
+import org.madogiwa.plaintable.schema.AttributeColumn;
+import org.madogiwa.plaintable.schema.Index;
+import org.madogiwa.plaintable.schema.ReferenceKey;
+import org.madogiwa.plaintable.schema.Schema;
+import org.madogiwa.plaintable.schema.SchemaDefinition;
+import org.madogiwa.plaintable.schema.SchemaReference;
+import org.madogiwa.plaintable.schema.SyntheticKey;
 import org.madogiwa.plaintable.schema.annot.Attribute;
 import org.madogiwa.plaintable.schema.annot.Reference;
 import org.madogiwa.plaintable.schema.annot.Table;
+import org.madogiwa.plaintable.schema.attr.StringAttribute;
 import org.madogiwa.plaintable.util.ReflectionUtils;
 
 import java.io.Serializable;
@@ -166,6 +173,12 @@ public class SchemaManagerImpl implements SchemaManager {
 						attr.setNullable(false);
 						attr.setLength(-1);
 					}
+
+					if (attr instanceof StringAttribute && attr.getLength() != -1) {
+						logger.warning(String.format("%s: length is ignored", attr.getName()));
+						attr.setLength(-1);
+					}
+
 					schema.addAttribute(attr);
 
 					if (column != null && (column.indexed() || column.unique())) {
@@ -338,8 +351,7 @@ public class SchemaManagerImpl implements SchemaManager {
 	}
 
 	private boolean diffSchema(Schema s1, Schema s2) {
-		// FIX: implement
-		return false;
+		return !s1.equals(s2);
 	}
 
 	/**

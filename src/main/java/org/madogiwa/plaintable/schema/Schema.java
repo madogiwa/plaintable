@@ -20,9 +20,15 @@
 package org.madogiwa.plaintable.schema;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * @author Hidenori Sugiyama
@@ -36,11 +42,23 @@ public class Schema implements Serializable {
 
 	private PrimaryKey primaryKey;
 
-	private Set<ReferenceKey> referenceKeySet = new HashSet<ReferenceKey>();
+	private Set<ReferenceKey> referenceKeySet = new TreeSet<ReferenceKey>(new Comparator<ReferenceKey>() {
+		public int compare(ReferenceKey o1, ReferenceKey o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+	});
 
-	private HashMap<String, AttributeColumn> attributeSet = new HashMap<String, AttributeColumn>();
+	private Map<String, AttributeColumn> attributeSet = new TreeMap<String, AttributeColumn>(new Comparator<String>() {
+		public int compare(String o1, String o2) {
+			return o1.compareTo(o2);
+		}
+	});
 
-	private Set<Index> indexSet = new HashSet<Index>();
+	private Set<Index> indexSet = new TreeSet<Index>(new Comparator<Index>() {
+		public int compare(Index o1, Index o2) {
+			return o1.getColumnsAsString().compareTo(o2.getColumnsAsString());
+		}
+	});
 
 	/**
 	 * @param name
@@ -118,6 +136,15 @@ public class Schema implements Serializable {
 	 */
 	public void addReferenceKey(ReferenceKey key) {
 		referenceKeySet.add(key);
+
+		// sort
+		List<ReferenceKey> list = new ArrayList<ReferenceKey>(referenceKeySet);
+		Collections.sort(list, new Comparator<ReferenceKey>() {
+			public int compare(ReferenceKey o1, ReferenceKey o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		referenceKeySet = new HashSet<ReferenceKey>(list);
 	}
 
 	/**
@@ -125,6 +152,20 @@ public class Schema implements Serializable {
 	 */
 	public Set<ReferenceKey> getReferenceKeys() {
 		return referenceKeySet;
+	}
+
+	/**
+	 * @param name
+	 * @return
+	 */
+	public ReferenceKey getReferenceKey(String name) {
+		for(ReferenceKey key : referenceKeySet) {
+			if (key.getName().equals(name)) {
+				return key;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -190,4 +231,33 @@ public class Schema implements Serializable {
 		return indexSet;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Schema schema = (Schema) o;
+
+		if (attributeSet != null ? !attributeSet.equals(schema.attributeSet) : schema.attributeSet != null)
+			return false;
+		if (indexSet != null ? !indexSet.equals(schema.indexSet) : schema.indexSet != null) return false;
+		if (name != null ? !name.equals(schema.name) : schema.name != null) return false;
+		if (prefix != null ? !prefix.equals(schema.prefix) : schema.prefix != null) return false;
+		if (primaryKey != null ? !primaryKey.equals(schema.primaryKey) : schema.primaryKey != null) return false;
+		if (referenceKeySet != null ? !referenceKeySet.equals(schema.referenceKeySet) : schema.referenceKeySet != null)
+			return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = prefix != null ? prefix.hashCode() : 0;
+		result = 31 * result + (name != null ? name.hashCode() : 0);
+		result = 31 * result + (primaryKey != null ? primaryKey.hashCode() : 0);
+		result = 31 * result + (referenceKeySet != null ? referenceKeySet.hashCode() : 0);
+		result = 31 * result + (attributeSet != null ? attributeSet.hashCode() : 0);
+		result = 31 * result + (indexSet != null ? indexSet.hashCode() : 0);
+		return result;
+	}
 }

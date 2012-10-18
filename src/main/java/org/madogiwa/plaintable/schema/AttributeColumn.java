@@ -63,4 +63,26 @@ public abstract class AttributeColumn extends Column {
 		this.nullable = nullable;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		AttributeColumn that = (AttributeColumn) o;
+
+		if (length != -1 && that.length != -1 && length != that.length) return false;
+		if (nullable != that.nullable) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + length;
+		result = 31 * result + (nullable ? 1 : 0);
+		return result;
+	}
+
 }
