@@ -92,8 +92,8 @@ public class SchemaManagerImpl implements SchemaManager {
 
 		// find Scala object
 		Class<?> implClass = ReflectionUtils.findClass(clazz.getCanonicalName() + "$");
-		if (implClass != null && SchemaDefinition.class.isAssignableFrom(implClass)) {
-			return findImplClass((Class<SchemaDefinition>)implClass);
+		if (implClass != null && implClass.getAnnotation(Table.class) != null) {
+				return findImplClass((Class<SchemaDefinition>)implClass);
 		}
 
 		throw new RuntimeException(String.format(
