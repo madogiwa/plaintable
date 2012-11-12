@@ -35,7 +35,6 @@ import org.madogiwa.plaintable.schema.annot.Table;
 import org.madogiwa.plaintable.schema.attr.StringAttribute;
 import org.madogiwa.plaintable.util.ReflectionUtils;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -91,8 +90,9 @@ public class SchemaManagerImpl implements SchemaManager {
 			return clazz;
 		}
 
+		// find Scala object
 		Class<?> implClass = ReflectionUtils.findClass(clazz.getCanonicalName() + "$");
-		if (implClass != null && Serializable.class.isAssignableFrom(implClass)) {
+		if (implClass != null && SchemaDefinition.class.isAssignableFrom(implClass)) {
 			return findImplClass((Class<SchemaDefinition>)implClass);
 		}
 
