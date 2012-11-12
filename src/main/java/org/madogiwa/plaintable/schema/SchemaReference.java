@@ -19,6 +19,7 @@
  */
 package org.madogiwa.plaintable.schema;
 
+import org.madogiwa.plaintable.schema.annot.Table;
 import org.madogiwa.plaintable.util.ReflectionUtils;
 
 import java.io.Serializable;
@@ -87,7 +88,7 @@ public class SchemaReference implements Serializable {
 		}
 
 		Class<?> implClazz = ReflectionUtils.findClass(clazz.getCanonicalName() + "$");
-		if (implClazz != null && Serializable.class.isAssignableFrom(implClazz)) {
+		if (implClazz != null && implClazz.getAnnotation(Table.class) != null) {
 			return getSchemaFromClass(implClazz);
 		}
 
