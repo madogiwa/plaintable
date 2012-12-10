@@ -81,6 +81,7 @@ public class DatabaseManagerImpl implements DatabaseManager {
 		Session session = new SessionImpl(this, dataSource, dialect);
 		session.setDelayedOpen(delayedOpen);
 		session.setReadOnly(readOnly);
+        session.setAutoCommit(autoCommit);
 		session.setTransactionMode(transactionMode);
 		return session;
 	}
