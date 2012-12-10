@@ -19,16 +19,17 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import org.madogiwa.plaintable.schema.Column;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.madogiwa.plaintable.schema.Column;
 
 /**
  * @author Hidenori Sugiyama
  * 
  */
-public class Order {
+public class Order implements Serializable, Cloneable {
 
 	private List<OrderItem> orderList = new ArrayList<OrderItem>();
 
@@ -97,11 +98,12 @@ public class Order {
 		return sql.toString();
 	}
 
-	/**
-	 * @return
-	 */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();    //To change body of overridden methods use File | Settings | File Templates.
+    }
 
-	private class OrderItem {
+	private class OrderItem implements Serializable, Cloneable {
 
 		private Source source;
 

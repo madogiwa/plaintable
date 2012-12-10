@@ -19,11 +19,13 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import java.io.Serializable;
+
 /**
  * @author Hidenori Sugiyama
  * 
  */
-public interface IExpression {
+public interface IExpression extends Serializable, Cloneable {
 
 	/**
 	 * @param context

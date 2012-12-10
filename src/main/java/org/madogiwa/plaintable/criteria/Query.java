@@ -19,12 +19,12 @@
  */
 package org.madogiwa.plaintable.criteria;
 
-import java.io.Serializable;
-
 import org.madogiwa.plaintable.criteria.bool.BooleanExpression;
 import org.madogiwa.plaintable.criteria.value.ValueExpression;
 import org.madogiwa.plaintable.schema.Column;
 import org.madogiwa.plaintable.schema.Schema;
+
+import java.io.Serializable;
 
 /**
  * @author Hidenori Sugiyama
@@ -64,6 +64,13 @@ public class Query implements IQuery, Cloneable, Serializable {
 	public ISource getSource() {
 		return source;
 	}
+
+    /**
+     * @return
+     */
+    public void setSource(ISource source) {
+        this.source = source;
+    }
 
 	/**
 	 * @return
@@ -197,5 +204,10 @@ public class Query implements IQuery, Cloneable, Serializable {
 
 		return sql.toString();
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();    //To change body of overridden methods use File | Settings | File Templates.
+    }
 
 }

@@ -19,9 +19,9 @@
  */
 package org.madogiwa.plaintable.criteria;
 
-import java.util.List;
-
 import org.madogiwa.plaintable.Path;
+
+import java.util.List;
 
 /**
  * @author Hidenori Sugiyama

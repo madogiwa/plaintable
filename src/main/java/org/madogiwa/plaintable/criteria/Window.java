@@ -19,11 +19,13 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import java.io.Serializable;
+
 /**
  * @author Hidenori Sugiyama
  * 
  */
-public class Window implements Cloneable {
+public class Window implements Serializable, Cloneable {
 
 	public static long UNLIMITED = -1;
 
@@ -73,5 +75,10 @@ public class Window implements Cloneable {
 	public long getLimit() {
 		return limit;
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();    //To change body of overridden methods use File | Settings | File Templates.
+    }
 
 }

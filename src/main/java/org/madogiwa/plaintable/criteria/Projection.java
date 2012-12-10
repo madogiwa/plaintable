@@ -19,29 +19,19 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import org.madogiwa.plaintable.Path;
+import org.madogiwa.plaintable.criteria.value.*;
+import org.madogiwa.plaintable.schema.*;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.madogiwa.plaintable.Path;
-import org.madogiwa.plaintable.criteria.value.BinaryColumnReference;
-import org.madogiwa.plaintable.criteria.value.DateTimeColumnReference;
-import org.madogiwa.plaintable.criteria.value.KeyColumnReference;
-import org.madogiwa.plaintable.criteria.value.NumericColumnReference;
-import org.madogiwa.plaintable.criteria.value.StringColumnReference;
-import org.madogiwa.plaintable.criteria.value.ValueExpression;
-import org.madogiwa.plaintable.schema.BinaryAttribute;
-import org.madogiwa.plaintable.schema.Column;
-import org.madogiwa.plaintable.schema.DateTimeAttribute;
-import org.madogiwa.plaintable.schema.KeyColumn;
-import org.madogiwa.plaintable.schema.NumericAttribute;
-import org.madogiwa.plaintable.schema.Schema;
-import org.madogiwa.plaintable.schema.TextAttribute;
 
 /**
  * @author Hidenori Sugiyama
  * 
  */
-public class Projection implements Cloneable {
+public class Projection implements Serializable, Cloneable {
 
 	private List<ProjectionItem> columnList = new ArrayList<ProjectionItem>();
 
@@ -160,7 +150,12 @@ public class Projection implements Cloneable {
 		return sql.toString();
 	}
 
-	private class ProjectionItem {
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    private class ProjectionItem {
 
 		public ValueExpression expr;
 
