@@ -19,6 +19,7 @@
  */
 package org.madogiwa.plaintable.dialect;
 
+import org.madogiwa.plaintable.criteria.Window;
 import org.madogiwa.plaintable.schema.ReferenceKey;
 import org.madogiwa.plaintable.schema.SyntheticKey;
 import org.madogiwa.plaintable.schema.attr.BignumAttribute;
@@ -114,7 +115,15 @@ public class PostgreSQLDialect extends GenericDialect {
 	 * @see org.madogiwa.plaintable.dialect.Dialect#getLimitFragment(long, long)
 	 */
 	public String getLimitFragment(long offset, long count) {
-		return String.format("OFFSET %d LIMIT %d", offset, count);
+        if (offset == 0 && count == Window.UNLIMITED) {
+            return "";
+        }
+
+        if (count == Window.UNLIMITED) {
+            return String.format("OFFSET %d", offset);
+        } else {
+            return String.format("OFFSET %d LIMIT %d", offset, count);
+        }
 	}
 
 	/*

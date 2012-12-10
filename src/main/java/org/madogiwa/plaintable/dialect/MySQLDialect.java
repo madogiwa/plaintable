@@ -19,6 +19,7 @@
  */
 package org.madogiwa.plaintable.dialect;
 
+import org.madogiwa.plaintable.criteria.Window;
 import org.madogiwa.plaintable.schema.ReferenceKey;
 import org.madogiwa.plaintable.schema.SchemaReference;
 import org.madogiwa.plaintable.schema.SyntheticKey;
@@ -127,14 +128,14 @@ public class MySQLDialect implements Dialect {
 	 * @see org.madogiwa.plaintable.dialect.Dialect#getLimitFragment(long, long)
 	 */
 	public String getLimitFragment(long offset, long count) {
-		if (offset == 0 && count == -1) {
+		if (offset == 0 && count == Window.UNLIMITED) {
 			return "";
 		}
 
-		if (count != -1) {
-			return String.format("LIMIT %d,%d", offset, count);
+		if (count == Window.UNLIMITED) {
+            return String.format("LIMIT %d,%d", offset, Long.MAX_VALUE);
 		} else {
-			return String.format("LIMIT %d,%d", offset, Long.MAX_VALUE);
+            return String.format("LIMIT %d,%d", offset, count);
 		}
 	}
 

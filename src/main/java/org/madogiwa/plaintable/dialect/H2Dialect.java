@@ -19,6 +19,7 @@
  */
 package org.madogiwa.plaintable.dialect;
 
+import org.madogiwa.plaintable.criteria.Window;
 import org.madogiwa.plaintable.schema.ReferenceKey;
 import org.madogiwa.plaintable.schema.SyntheticKey;
 import org.madogiwa.plaintable.schema.attr.BignumAttribute;
@@ -115,7 +116,15 @@ public class H2Dialect extends GenericDialect {
 	 * @see org.madogiwa.plaintable.dialect.Dialect#getLimitFragment(long, long)
 	 */
 	public String getLimitFragment(long offset, long count) {
-		return String.format("LIMIT %d OFFSET %d", count, offset);
+        if (offset == 0 && count == Window.UNLIMITED) {
+            return "";
+        }
+
+        if (count == Window.UNLIMITED) {
+            return String.format("LIMIT %d", offset);
+        } else {
+            return String.format("LIMIT %d OFFSET %d", count, offset);
+        }
 	}
 
 	public String quote(String identifier) {
