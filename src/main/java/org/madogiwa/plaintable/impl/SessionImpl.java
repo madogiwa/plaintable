@@ -64,6 +64,8 @@ public class SessionImpl implements Session {
 
 	private boolean readOnly = false;
 
+    private boolean autoCommit = false;
+
 	private TransactionMode transactionMode;
 
 	/**
@@ -116,7 +118,7 @@ public class SessionImpl implements Session {
 						.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			}
 
-			connection.setAutoCommit(false);
+			connection.setAutoCommit(autoCommit);
 		} catch (SQLException e) {
 			connection = null;
 			throw new PlainTableException(e);
@@ -200,11 +202,30 @@ public class SessionImpl implements Session {
         return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.madogiwa.plaintable.Session#commit()
-	 */
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.madogiwa.plaintable.Session#getAutoCommit()
+     */
+    public boolean getAutoCommit() {
+        return autoCommit;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.madogiwa.plaintable.Session#setAutoCommit(boolean)
+     */
+    public Session setAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
+        return this;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.madogiwa.plaintable.Session#commit()
+     */
 	public void commit() throws PlainTableException {
 		checkAndOpenSession();
 

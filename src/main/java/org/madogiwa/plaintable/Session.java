@@ -88,6 +88,19 @@ public interface Session {
 	 */
 	public Session setReadOnly(boolean readOnly);
 
+    /**
+     *
+     * @return
+     */
+    public boolean getAutoCommit();
+
+    /**
+     *
+     * @param autoCommit
+     * @return
+     */
+    public Session setAutoCommit(boolean autoCommit);
+
 	/**
 	 * @throws PlainTableException
 	 */

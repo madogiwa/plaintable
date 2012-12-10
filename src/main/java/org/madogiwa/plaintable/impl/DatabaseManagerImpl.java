@@ -44,6 +44,8 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
 	private boolean readOnly = false;
 
+    private boolean autoCommit = false;
+
 	private Session.TransactionMode transactionMode = Session.TransactionMode.READ_COMMITTED;
 
 	private String prefix;
@@ -107,7 +109,15 @@ public class DatabaseManagerImpl implements DatabaseManager {
 		this.transactionMode = mode;
 	}
 
-	public StatementBuilder createStatementBuilder() {
+    public boolean getDefaultAutoCommit() {
+        return autoCommit;
+    }
+
+    public void setDefaultAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
+    }
+
+    public StatementBuilder createStatementBuilder() {
 		return new StatementBuilder(dialect);
 	}
 
