@@ -65,4 +65,16 @@ public interface DatabaseManager {
      */
 	public void setDefaultDelayedOpen(boolean delayedOpen);
 
+    /**
+     *
+     * @return
+     */
+    public boolean getDefaultAutoCommit();
+
+    /**
+     *
+     * @param autoCommit
+     */
+    public void setDefaultAutoCommit(boolean autoCommit);
+
 }
