@@ -70,6 +70,7 @@ public class Query implements IQuery, Cloneable, Serializable {
      */
     public void setSource(ISource source) {
         this.source = source;
+        this.projection = new Projection(source);
     }
 
 	/**
