@@ -41,14 +41,28 @@ public class Rows implements Cloneable {
         }
 
         Session session = finder.getSession();
-        return session.count(query);
+        boolean opened = session.isOpened();
+        try {
+            return session.count(query);
+        } finally {
+            if (!opened && session.getAutoCommit()) {
+                session.close();
+            }
+        }
     }
 
     public <T> List<T> toList(RowMapper<T> mapper) throws PlainTableException {
         ListHandler<T> handler = new ListHandler<T>(mapper);
         Session session = finder.getSession();
-        session.select(query, handler);
-        return handler.getList();
+        boolean opened = session.isOpened();
+        try {
+            session.select(query, handler);
+            return handler.getList();
+        } finally {
+            if (!opened && session.getAutoCommit()) {
+                session.close();
+            }
+        }
     }
 
     public long update(RowProvider rowProvider) throws PlainTableException {
@@ -66,7 +80,14 @@ public class Rows implements Cloneable {
 
         Finder finder = getFinder();
         Session session = finder.getSession();
-        return session.update(rowProvider, query.getRestriction());
+        boolean opened = session.isOpened();
+        try {
+            return session.update(rowProvider, query.getRestriction());
+        } finally {
+            if (!opened && session.getAutoCommit()) {
+                session.close();
+            }
+        }
     }
 
     public long delete() throws PlainTableException {
@@ -84,7 +105,14 @@ public class Rows implements Cloneable {
 
         Finder finder = getFinder();
         Session session = finder.getSession();
-        return session.delete(schema, query.getRestriction());
+        boolean opened = session.isOpened();
+        try {
+            return session.delete(schema, query.getRestriction());
+        } finally {
+            if (!opened && session.getAutoCommit()) {
+                session.close();
+            }
+        }
     }
 
     public Rows between(NumericColumnReference column,
