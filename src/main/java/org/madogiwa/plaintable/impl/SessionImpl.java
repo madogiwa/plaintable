@@ -68,6 +68,8 @@ public class SessionImpl implements Session {
 
 	private TransactionMode transactionMode;
 
+    private boolean isDirty = false;
+
 	/**
 	 * @param databaseManager
 	 * @param dataSource
@@ -119,6 +121,8 @@ public class SessionImpl implements Session {
 			}
 
 			connection.setAutoCommit(autoCommit);
+
+            this.isDirty = false;
 		} catch (SQLException e) {
 			connection = null;
 			throw new PlainTableException(e);
@@ -131,6 +135,16 @@ public class SessionImpl implements Session {
 	 * @see org.madogiwa.plaintable.Session#close()
 	 */
 	public void close() throws PlainTableException {
+        try {
+            if (!getAutoCommit() && this.isDirty) {
+                logger.warning("autoCommit is disabled and session is dirty. trying automatic rollback...");
+                connection.rollback();
+                logger.warning("automatic rollback successful");
+            }
+        } catch (SQLException e) {
+            logger.severe("automatic rollback failed: " + e.getMessage());
+        }
+
 		try {
 			if (connection != null) {
 				connection.close();
@@ -152,12 +166,12 @@ public class SessionImpl implements Session {
     }
 
     /*
-         * (non-Javadoc)
-         *
-         * @see
-         * org.madogiwa.plaintable.Session#setTransactionMode(org.madogiwa.plaintable
-         * .Session.TransactionMode)
-         */
+     * (non-Javadoc)
+     *
+     * @see
+     * org.madogiwa.plaintable.Session#setTransactionMode(org.madogiwa.plaintable
+     * .Session.TransactionMode)
+     */
 	public Session setTransactionMode(TransactionMode mode) {
 		this.transactionMode = mode;
         return this;
@@ -231,6 +245,7 @@ public class SessionImpl implements Session {
 
 		try {
 			connection.commit();
+            this.isDirty = false;
 		} catch (SQLException e) {
 			throw new PlainTableException(e);
 		}
@@ -246,7 +261,8 @@ public class SessionImpl implements Session {
 
 		try {
 			connection.rollback();
-		} catch (SQLException e) {
+            this.isDirty = false;
+        } catch (SQLException e) {
 			throw new PlainTableException(e);
 		}
 	}
@@ -545,6 +561,8 @@ public class SessionImpl implements Session {
 					Statement.RETURN_GENERATED_KEYS);
 			context.resolveParameters(statement);
 			statement.executeUpdate();
+            this.isDirty = true;
+
 			resultSet = statement.getGeneratedKeys();
 			resultSet.next();
 			return resultSet.getLong(1);
@@ -585,7 +603,9 @@ public class SessionImpl implements Session {
 		try {
 			statement = connection.prepareStatement(sql);
 			context.resolveParameters(statement);
-			return statement.executeUpdate();
+			long count = statement.executeUpdate();
+            this.isDirty = true;
+            return count;
 		} catch (SQLException e) {
 			throw new PlainTableException(e);
 		} finally {
@@ -653,7 +673,9 @@ public class SessionImpl implements Session {
 		try {
 			statement = connection.prepareStatement(sql);
 			context.resolveParameters(statement);
-			return statement.executeUpdate();
+			long count = statement.executeUpdate();
+            this.isDirty = true;
+            return count;
 		} catch (SQLException e) {
 			throw new PlainTableException(e);
 		} finally {
