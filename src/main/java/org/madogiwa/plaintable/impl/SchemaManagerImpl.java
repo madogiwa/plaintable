@@ -394,7 +394,7 @@ public class SchemaManagerImpl implements SchemaManager {
 
 		logger.info("drop table " + schema.getFullName());
 
-		for(String schemaName : map.keySet()) {
+		for(String schemaName : new HashSet<String>(map.keySet())) {
 			Schema s = map.get(schemaName);
 			for (ReferenceKey key : s.getReferenceKeys()) {
 				if (key.getTarget().getSchemaName().equals(schema.getName())) {
