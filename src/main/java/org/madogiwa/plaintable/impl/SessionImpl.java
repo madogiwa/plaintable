@@ -405,7 +405,7 @@ public class SessionImpl implements Session {
 			throws PlainTableException {
 
 		Query countQuery = new Query(new QuerySource(query, "query"));
-		query.getProjection().add(
+		countQuery.getProjection().add(
 				new NumericExpression() {
 					public String getSQLString(Context context) {
 						return "count(*)";
@@ -424,7 +424,7 @@ public class SessionImpl implements Session {
 					}
 
 				});
-		select(query, handler);
+		select(countQuery, handler);
 		return handler.getResult();
 	}
 
