@@ -19,9 +19,9 @@
  */
 package org.madogiwa.plaintable.criteria;
 
-import java.util.List;
-
 import org.madogiwa.plaintable.Path;
+
+import java.util.List;
 
 /**
  * @author Hidenori Sugiyama
@@ -59,7 +59,7 @@ public class QuerySource extends Source {
 	 * .plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
-		return "(" + query.getSQLString(context) + ")";
+        return String.format("((%s) AS %s)", query.getSQLString(context), getAlias());
 	}
 
 	/*
