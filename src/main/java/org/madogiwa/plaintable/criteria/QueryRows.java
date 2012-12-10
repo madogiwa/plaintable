@@ -23,15 +23,15 @@ package org.madogiwa.plaintable.criteria;
  * @author Hidenori Sugiyama
  * 
  */
-public class RowsCriteria implements Rows {
+public class QueryRows implements RowsExpression {
 
-	private Query criteria;
+	private Query query;
 
 	/**
-	 * @param criteria
+	 * @param query
 	 */
-	public RowsCriteria(Query criteria) {
-		this.criteria = criteria;
+	public QueryRows(Query query) {
+		this.query = query;
 	}
 
 	/*
@@ -42,7 +42,7 @@ public class RowsCriteria implements Rows {
 	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return criteria.getSQLString(context);
+		return query.getSQLString(context);
 	}
 
 }

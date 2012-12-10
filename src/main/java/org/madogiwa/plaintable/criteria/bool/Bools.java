@@ -22,7 +22,7 @@ package org.madogiwa.plaintable.criteria.bool;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.madogiwa.plaintable.criteria.Rows;
+import org.madogiwa.plaintable.criteria.RowsExpression;
 import org.madogiwa.plaintable.criteria.bool.BetweenPredicate.BetweenType;
 import org.madogiwa.plaintable.criteria.bool.ComparisonPredicate.Operator;
 import org.madogiwa.plaintable.criteria.bool.NullPredicate.Type;
@@ -195,7 +195,7 @@ public class Bools {
 				ComparisonPredicate.Operator.EQUAL);
 	}
 
-	public static ExistsPredicate exists(Rows rows) {
+	public static ExistsPredicate exists(RowsExpression rows) {
 		return new ExistsPredicate(rows);
 	}
 

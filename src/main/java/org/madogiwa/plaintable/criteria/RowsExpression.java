@@ -23,6 +23,6 @@ package org.madogiwa.plaintable.criteria;
  * @author Hidenori Sugiyama
  * 
  */
-public interface Rows extends IExpression {
+public interface RowsExpression extends IExpression {
 
 }

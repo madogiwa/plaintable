@@ -20,7 +20,7 @@
 package org.madogiwa.plaintable.criteria.bool;
 
 import org.madogiwa.plaintable.criteria.Context;
-import org.madogiwa.plaintable.criteria.Rows;
+import org.madogiwa.plaintable.criteria.RowsExpression;
 
 /**
  * @author Hidenori Sugiyama
@@ -28,7 +28,7 @@ import org.madogiwa.plaintable.criteria.Rows;
  */
 public class ExistsPredicate implements BooleanExpression {
 
-	public ExistsPredicate(Rows rows) {
+	public ExistsPredicate(RowsExpression rows) {
 
 	}
 
