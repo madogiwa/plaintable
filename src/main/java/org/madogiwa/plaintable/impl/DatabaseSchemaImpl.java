@@ -365,6 +365,9 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 			case Types.TIMESTAMP:
 				attr = new TimestampAttribute(schema, columnName);
 				break;
+            case Types.CHAR:
+                attr = new CharAttribute(schema, columnName);
+                break;
 			case Types.VARCHAR:
 				attr = new CharAttribute(schema, columnName);
 				break;

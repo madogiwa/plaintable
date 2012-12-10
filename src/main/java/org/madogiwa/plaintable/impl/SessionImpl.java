@@ -500,7 +500,7 @@ public class SessionImpl implements Session {
 		ResultSet resultSet = null;
 		try {
 			statement = connection.prepareStatement(sql);
-			if (!dialect.isLimitSupported()) {
+			if (!dialect.isLimitSupported() && window.getLimit() != Window.UNLIMITED) {
 				statement.setFetchSize((int) window.getLimit());
 			}
 			context.resolveParameters(statement);

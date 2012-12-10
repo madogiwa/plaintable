@@ -25,9 +25,7 @@ import org.madogiwa.plaintable.criteria.Projection;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Date;
 import java.util.List;
 
@@ -327,7 +325,8 @@ public class RowImpl implements Row {
 	 */
 	public Object getObject(int index) throws PlainTableException {
 		try {
-			return resultSet.getObject(index + 1);
+			Object object = resultSet.getObject(index + 1);
+            return toJavaType(object);
 		} catch (SQLException e) {
 			throw new PlainTableException(e);
 		}
@@ -340,11 +339,24 @@ public class RowImpl implements Row {
 	 */
 	public Object getObject(String alias) throws PlainTableException {
 		try {
-			return resultSet.getObject(alias);
+			Object object = resultSet.getObject(alias);
+            return toJavaType(object);
 		} catch (SQLException e) {
 			throw new PlainTableException(e);
 		}
 	}
+
+    private Object toJavaType(Object object) throws SQLException {
+        Object javaObj = object;
+
+        if (object instanceof Clob) {
+            javaObj = ((Clob)object).getSubString(1, (int)((Clob)object).length());
+        } else if (object instanceof Blob) {
+            javaObj = ((Blob)object).getBytes(1, (int)((Blob)object).length());
+        }
+
+        return javaObj;
+    }
 
 	/*
 	 * (non-Javadoc)
