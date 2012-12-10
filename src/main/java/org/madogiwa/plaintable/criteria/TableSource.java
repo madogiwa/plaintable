@@ -52,6 +52,10 @@ public class TableSource extends Source {
 		this.alias = alias;
 	}
 
+    public Schema getSchema() {
+        return schema;
+    }
+
 	/*
 	 * (non-Javadoc)
 	 * 
