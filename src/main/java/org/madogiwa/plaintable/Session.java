@@ -50,6 +50,12 @@ public interface Session {
 	 */
 	public void open() throws PlainTableException;
 
+    /**
+     *
+     * @return
+     */
+    public TransactionMode getTransactionMode();
+
 	/**
 	 * @param mode
 	 */
@@ -60,10 +66,22 @@ public interface Session {
 	 */
 	public void close() throws PlainTableException;
 
+    /**
+     *
+     * @return
+     */
+    public boolean getDelayedOpen();
+
 	/**
 	 * @param delayedOpen
 	 */
 	public Session setDelayedOpen(boolean delayedOpen);
+
+    /**
+     *
+     * @return
+     */
+    public boolean getReadOnly();
 
 	/**
 	 * @param readOnly

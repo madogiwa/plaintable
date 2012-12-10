@@ -140,19 +140,38 @@ public class SessionImpl implements Session {
 		}
 	}
 
-	/*
+    /*
 	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.madogiwa.plaintable.Session#setTransactionMode(org.madogiwa.plaintable
-	 * .Session.TransactionMode)
+	 *
+	 * @see org.madogiwa.plaintable.Session#getTransactionMode()
 	 */
+    public TransactionMode getTransactionMode() {
+        return transactionMode;
+    }
+
+    /*
+         * (non-Javadoc)
+         *
+         * @see
+         * org.madogiwa.plaintable.Session#setTransactionMode(org.madogiwa.plaintable
+         * .Session.TransactionMode)
+         */
 	public Session setTransactionMode(TransactionMode mode) {
 		this.transactionMode = mode;
         return this;
 	}
 
-	/*
+    /*
+	 * (non-Javadoc)
+	 *
+	 * @see org.madogiwa.plaintable.Session#getDelayedOpen()
+	 */
+    public boolean getDelayedOpen() {
+        return delayedOpen;
+    }
+
+
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.madogiwa.plaintable.Session#setDelayedOpen(boolean)
@@ -161,6 +180,15 @@ public class SessionImpl implements Session {
 		this.delayedOpen = delayedOpen;
         return this;
 	}
+
+    /*
+	 * (non-Javadoc)
+	 *
+	 * @see org.madogiwa.plaintable.Session#getReadOnly()
+	 */
+    public boolean getReadOnly() {
+        return readOnly;
+    }
 
 	/*
 	 * (non-Javadoc)
