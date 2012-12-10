@@ -43,7 +43,7 @@ public interface Session {
 
 	public enum TransactionMode {
 		READ_COMMITTED, SERIALIZABLE, CONNECTOR_DEFAULT
-	};
+	}
 
 	/**
 	 * @throws PlainTableException
