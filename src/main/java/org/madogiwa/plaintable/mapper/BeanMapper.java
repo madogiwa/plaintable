@@ -22,6 +22,7 @@ package org.madogiwa.plaintable.mapper;
 import org.madogiwa.plaintable.PlainTableException;
 import org.madogiwa.plaintable.Row;
 import org.madogiwa.plaintable.schema.Schema;
+import org.madogiwa.plaintable.util.BeanUtils;
 import org.madogiwa.plaintable.util.ReflectionUtils;
 
 import java.beans.BeanInfo;
@@ -107,7 +108,7 @@ public class BeanMapper<T> implements RowMapper<T> {
 			} else {
 				funcs.put(path, new MappingFunction<T>() {
 					public void map(Row row, T bean) throws Exception {
-						method.invoke(bean, row.getObject(path));
+                        BeanUtils.setBeanProperty(bean, method, row.getObject(path));
 					}
 				});
 			}

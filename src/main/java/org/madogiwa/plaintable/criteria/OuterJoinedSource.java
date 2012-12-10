@@ -19,11 +19,11 @@
  */
 package org.madogiwa.plaintable.criteria;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.madogiwa.plaintable.Path;
 import org.madogiwa.plaintable.schema.Column;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Hidenori Sugiyama
@@ -93,9 +93,9 @@ public class OuterJoinedSource extends JoinedSource {
 	 * .plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("(%s LEFT OUTER JOIN %s ON %s = %s)",
+		return String.format("%s LEFT OUTER JOIN %s ON %s = %s",
 				left.getSQLString(context), right.getSQLString(context),
-				leftColumn.getPathString(), rightColumn.getPathString());
+				context.quotePath(leftColumn.getPathString()), context.quotePath(rightColumn.getPathString()));
 	}
 
 	/*

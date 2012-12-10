@@ -19,18 +19,17 @@
  */
 package org.madogiwa.plaintable.impl;
 
+import org.madogiwa.plaintable.PlainTableException;
+import org.madogiwa.plaintable.Row;
+import org.madogiwa.plaintable.criteria.Projection;
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.madogiwa.plaintable.PlainTableException;
-import org.madogiwa.plaintable.Row;
-import org.madogiwa.plaintable.criteria.Projection;
 
 /**
  * @author Hidenori Sugiyama
@@ -75,17 +74,7 @@ public class RowImpl implements Row {
 	 * @see org.madogiwa.plaintable.Row#getAlias(int)
 	 */
 	public String getAlias(int index) throws PlainTableException {
-		try {
-			ResultSetMetaData metaData = resultSet.getMetaData();
-			String alias = metaData.getColumnLabel(index + 1);
-			if (alias.equals(metaData.getColumnName(index + 1))) {
-				String tableName = metaData.getTableName(index + 1);
-				alias = (tableName != null) ? tableName + "." + alias : alias;
-			}
-			return alias.toLowerCase();
-		} catch (SQLException e) {
-			throw new PlainTableException(e);
-		}
+        return getAliasList().get(index);
 	}
 
 	/*
@@ -94,13 +83,7 @@ public class RowImpl implements Row {
 	 * @see org.madogiwa.plaintable.Row#getAliasList()
 	 */
 	public List<String> getAliasList() throws PlainTableException {
-		List<String> aliasList = new ArrayList<String>();
-
-		for (int i = 0; i < size(); i++) {
-			aliasList.add(getAlias(i));
-		}
-
-		return aliasList;
+        return projection.getPathList();
 	}
 
 	/*

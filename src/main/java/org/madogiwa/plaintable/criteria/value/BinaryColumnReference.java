@@ -49,7 +49,7 @@ public class BinaryColumnReference implements BinaryExpression {
 	 * plaintable.criteria.CriteriaContext)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("(%s.%s)", source.getAlias(), column);
+		return String.format("(%s.%s)", context.quote(source.getAlias()), context.quote(column));
 	}
 
 }

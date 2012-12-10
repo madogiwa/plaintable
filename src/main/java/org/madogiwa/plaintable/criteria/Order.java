@@ -19,6 +19,7 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import org.madogiwa.plaintable.dialect.Dialect;
 import org.madogiwa.plaintable.schema.Column;
 
 import java.io.Serializable;
@@ -118,8 +119,8 @@ public class Order implements Serializable, Cloneable {
 		}
 
 		public String getSQLString(Context context) {
-			return String.format("%s.%s %s", source.getAlias(),
-					column.getName(), getOrderString());
+			return String.format("%s.%s %s", context.quote(source.getAlias()),
+					context.quote(column.getName()), getOrderString());
 		}
 
 		private String getOrderString() {

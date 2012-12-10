@@ -73,7 +73,7 @@ public class TableSource extends Source {
 	 * .plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
-		return String.format("%s AS %s", schema.getFullName(), getAlias());
+		return String.format("%s AS %s", context.quote(schema.getFullName()), context.quote(getAlias()));
 	}
 
 	/*

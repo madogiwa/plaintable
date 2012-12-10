@@ -65,7 +65,7 @@ public class PostgreSQLDialect extends GenericDialect {
 		typeMap.put(BytesAttribute.class, "BYTEA");
 		typeMap.put(StreamAttribute.class, "BYTEA");
 		typeMap.put(ReferenceKey.class, "INT8");
-		typeMap.put(SyntheticKey.class, "SERIAL");
+		typeMap.put(SyntheticKey.class, "BIGSERIAL");
 	}
 
 	/*

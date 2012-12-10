@@ -351,7 +351,7 @@ public class SessionImpl implements Session {
 		Query query = new Query(schema);
 		query.getRestriction().add(Bools.eq(schema.getPrimaryKey(), id));
 
-		Context context = new Context(dialect);
+		Context context = new Context(dialect, Context.Mode.SELECT);
 		StatementBuilder builder = databaseManager.createStatementBuilder();
 		String sql = builder.buildSelectForUpdateSql(context, query);
 
@@ -479,7 +479,7 @@ public class SessionImpl implements Session {
 		checkAndOpenSession();
 
 		StatementBuilder builder = databaseManager.createStatementBuilder();
-		Context context = new Context(dialect);
+		Context context = new Context(dialect, Context.Mode.SELECT);
 		String sql = builder.buildSelectSql(context, query, window);
 		doSelect(context, sql, handler, query.getProjection(), window);
 	}
@@ -544,7 +544,7 @@ public class SessionImpl implements Session {
 		checkAndOpenSession();
 
 		StatementBuilder builder = databaseManager.createStatementBuilder();
-		Context context = new Context(dialect);
+		Context context = new Context(dialect, Context.Mode.INSERT);
 		String sql = builder.buildInsertSql(context, provider.getSchema(),
 				provider);
 		return doInsert(context, sql);
@@ -589,7 +589,7 @@ public class SessionImpl implements Session {
 		checkAndOpenSession();
 
 		StatementBuilder builder = databaseManager.createStatementBuilder();
-		Context context = new Context(dialect);
+		Context context = new Context(dialect, Context.Mode.UPDATE);
 		String sql = builder.buildUpdateSql(context, provider.getSchema(),
 				restriction, provider);
 		return doUpdate(context, sql);
@@ -654,7 +654,7 @@ public class SessionImpl implements Session {
 		checkAndOpenSession();
 
 		StatementBuilder builder = databaseManager.createStatementBuilder();
-		Context context = new Context(dialect);
+		Context context = new Context(dialect, Context.Mode.DELETE);
 		String sql = builder.buildDeleteSql(context, schema, restriction);
 		return doDelete(context, sql);
 	}

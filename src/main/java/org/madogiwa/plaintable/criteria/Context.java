@@ -19,6 +19,9 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import org.madogiwa.plaintable.dialect.Dialect;
+import org.madogiwa.plaintable.util.StringUtils;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -28,13 +31,18 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.madogiwa.plaintable.dialect.Dialect;
-
 /**
  * @author Hidenori Sugiyama
  * 
  */
 public class Context {
+
+    public enum Mode {
+        SELECT,
+        INSERT,
+        UPDATE,
+        DELETE
+    }
 
 	private Map<String, Resolver> resolverMap = new HashMap<String, Resolver>();
 
@@ -42,11 +50,14 @@ public class Context {
 
 	private Dialect dialect;
 
+    private Mode mode;
+
 	/**
 	 * @param dialect
 	 */
-	public Context(Dialect dialect) {
+	public Context(Dialect dialect, Mode mode) {
 		this.dialect = dialect;
+        this.mode = mode;
 	}
 
 	/**
@@ -103,5 +114,22 @@ public class Context {
 			resolverList.get(i).resolve(statement, i + 1);
 		}
 	}
+
+    public String quote(String sql) {
+        return dialect.quote(sql);
+    }
+
+    public String quotePath(String path) {
+        List<String> pathList = new ArrayList<String>();
+        for(String item : path.split("\\.")) {
+            pathList.add(dialect.quote(item));
+        }
+
+        if (mode == Mode.SELECT) {
+            return StringUtils.join(pathList, ".");
+        } else {
+            return pathList.get(pathList.size() - 1);
+        }
+    }
 
 }

@@ -89,12 +89,12 @@ public class StatementBuilder {
 			RowProvider provider) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(String.format("INSERT INTO %s ",
-				dialect.quote(schema.getFullName())));
+				context.quote(schema.getFullName())));
 
 		sql.append(" ( ");
 		Map<Column, ValueExpression> map = provider.getMap();
 		for (Column column : map.keySet()) {
-			sql.append(String.format(" %s,", dialect.quote(column.getName())));
+			sql.append(String.format(" %s,", context.quote(column.getName())));
 		}
 		sql.deleteCharAt(sql.lastIndexOf(","));
 		sql.append(" ) ");
@@ -120,12 +120,12 @@ public class StatementBuilder {
 			Restriction restriction, RowProvider provider) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(String.format("UPDATE %s ",
-				dialect.quote(schema.getFullName())));
+				context.quote(schema.getFullName())));
 		sql.append(" SET ");
 
 		Map<Column, ValueExpression> map = provider.getMap();
 		for (Column column : map.keySet()) {
-			sql.append(String.format(" %s = %s,", column.getPath(),
+			sql.append(String.format(" %s = %s,", context.quotePath(column.getPath()),
 					map.get(column).getSQLString(context)));
 		}
 		sql.deleteCharAt(sql.lastIndexOf(","));
@@ -146,7 +146,7 @@ public class StatementBuilder {
 	public String buildDeleteSql(Context context, Schema schema,
 			Restriction restriction) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(String.format("DELETE FROM %s ", schema.getFullName()));
+		sql.append(String.format("DELETE FROM %s ", context.quote(schema.getFullName())));
 
 		if (restriction.notEmpty()) {
 			sql.append(String.format(" WHERE %s ",

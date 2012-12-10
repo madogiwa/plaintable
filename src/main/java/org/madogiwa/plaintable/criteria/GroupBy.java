@@ -19,11 +19,12 @@
  */
 package org.madogiwa.plaintable.criteria;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.madogiwa.plaintable.dialect.Dialect;
 import org.madogiwa.plaintable.schema.Column;
 import org.madogiwa.plaintable.schema.NumericAttribute;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Hidenori Sugiyama
@@ -52,7 +53,7 @@ public class GroupBy {
 	public String getSQLString(Context context) {
 		StringBuilder sql = new StringBuilder();
 		for (Column column : groupByList) {
-			sql.append(String.format(" %s, ", column.getName()));
+			sql.append(String.format(" %s, ", context.quote(column.getName())));
 		}
 		sql.deleteCharAt(sql.lastIndexOf(","));
 		return sql.toString();

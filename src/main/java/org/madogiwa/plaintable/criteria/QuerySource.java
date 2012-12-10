@@ -59,7 +59,7 @@ public class QuerySource extends Source {
 	 * .plaintable.criteria.Context)
 	 */
 	public String getSQLString(Context context) {
-        return String.format("((%s) AS %s)", query.getSQLString(context), getAlias());
+        return String.format("(%s) AS %s", query.getSQLString(context), context.quote(getAlias()));
 	}
 
 	/*

@@ -137,18 +137,35 @@ public class Projection implements Serializable, Cloneable {
 			for (ProjectionItem item : columnList) {
 				sql.append(String.format(" %s AS %s,", item.expr
 						.getSQLString(context),
-						context.getDialect().quote(item.alias)));
+						context.quote(item.alias)));
 			}
 			sql.deleteCharAt(sql.lastIndexOf(","));
 		} else {
 			for (Path path : source.getPathList()) {
-				sql.append(String.format(" %s AS %s,", path.getPathString(),
-						context.getDialect().quote(path.getPathString())));
+				sql.append(String.format(" %s AS %s,", context.quotePath(path.getPathString()),
+						context.quote(path.getPathString())));
 			}
 			sql.deleteCharAt(sql.lastIndexOf(","));
 		}
+
 		return sql.toString();
 	}
+
+    public List<String> getPathList() {
+        List<String> pathList = new ArrayList<String>();
+
+        if (columnList.size() != 0) {
+            for (ProjectionItem item : columnList) {
+                pathList.add(item.alias.toLowerCase());
+            }
+        } else {
+            for (Path path : source.getPathList()) {
+                pathList.add(path.getPathString().toLowerCase());
+            }
+        }
+
+        return pathList;
+    }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
