@@ -147,8 +147,9 @@ public class SessionImpl implements Session {
 	 * org.madogiwa.plaintable.Session#setTransactionMode(org.madogiwa.plaintable
 	 * .Session.TransactionMode)
 	 */
-	public void setTransactionMode(TransactionMode mode) {
+	public Session setTransactionMode(TransactionMode mode) {
 		this.transactionMode = mode;
+        return this;
 	}
 
 	/*
@@ -156,8 +157,9 @@ public class SessionImpl implements Session {
 	 * 
 	 * @see org.madogiwa.plaintable.Session#setDelayedOpen(boolean)
 	 */
-	public void setDelayedOpen(boolean delayedOpen) {
+	public Session setDelayedOpen(boolean delayedOpen) {
 		this.delayedOpen = delayedOpen;
+        return this;
 	}
 
 	/*
@@ -165,8 +167,9 @@ public class SessionImpl implements Session {
 	 * 
 	 * @see org.madogiwa.plaintable.Session#setReadOnly(boolean)
 	 */
-	public void setReadOnly(boolean readOnly) {
+	public Session setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
+        return this;
 	}
 
 	/*

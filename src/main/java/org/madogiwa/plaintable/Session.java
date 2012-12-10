@@ -53,7 +53,7 @@ public interface Session {
 	/**
 	 * @param mode
 	 */
-	public void setTransactionMode(TransactionMode mode);
+	public Session setTransactionMode(TransactionMode mode);
 
 	/**
 	 * @throws PlainTableException
@@ -63,12 +63,12 @@ public interface Session {
 	/**
 	 * @param delayedOpen
 	 */
-	public void setDelayedOpen(boolean delayedOpen);
+	public Session setDelayedOpen(boolean delayedOpen);
 
 	/**
 	 * @param readOnly
 	 */
-	public void setReadOnly(boolean readOnly);
+	public Session setReadOnly(boolean readOnly);
 
 	/**
 	 * @throws PlainTableException
