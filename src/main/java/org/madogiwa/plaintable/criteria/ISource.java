@@ -20,6 +20,7 @@
 package org.madogiwa.plaintable.criteria;
 
 import org.madogiwa.plaintable.Path;
+import org.madogiwa.plaintable.schema.Schema;
 
 import java.util.List;
 
@@ -30,5 +31,7 @@ import java.util.List;
 public interface ISource extends IExpression {
 
 	public List<Path> getPathList();
+
+    public Schema getBaseSchema();
 
 }

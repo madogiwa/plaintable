@@ -20,6 +20,7 @@
 package org.madogiwa.plaintable.criteria;
 
 import org.madogiwa.plaintable.criteria.value.ValueExpression;
+import org.madogiwa.plaintable.schema.Schema;
 
 /**
  * @author Hidenori Sugiyama
@@ -65,5 +66,9 @@ public class ScalarQuery implements IQuery {
 	public ISource getSource() {
 		return query.getSource();
 	}
+
+    public Schema getBaseSchema() {
+        return query.getBaseSchema();
+    }
 
 }

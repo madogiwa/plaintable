@@ -20,6 +20,7 @@
 package org.madogiwa.plaintable.criteria;
 
 import org.madogiwa.plaintable.Path;
+import org.madogiwa.plaintable.schema.Schema;
 
 import java.util.List;
 
@@ -70,5 +71,9 @@ public class QuerySource extends Source {
 	public List<Path> getPathList() {
 		return query.getSource().getPathList();
 	}
+
+    public Schema getBaseSchema() {
+        return query.getBaseSchema();
+    }
 
 }

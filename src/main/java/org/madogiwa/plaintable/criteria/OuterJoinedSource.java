@@ -21,6 +21,7 @@ package org.madogiwa.plaintable.criteria;
 
 import org.madogiwa.plaintable.Path;
 import org.madogiwa.plaintable.schema.Column;
+import org.madogiwa.plaintable.schema.Schema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,5 +110,9 @@ public class OuterJoinedSource extends JoinedSource {
 		list.addAll(right.getPathList());
 		return list;
 	}
+
+    public Schema getBaseSchema() {
+        return left.getBaseSchema();
+    }
 
 }

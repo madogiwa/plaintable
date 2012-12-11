@@ -121,7 +121,7 @@ public class Context {
 
     public String quotePath(String path) {
         List<String> pathList = new ArrayList<String>();
-        for(String item : path.split("\\.")) {
+        for(String item : path.split("\\.", 2)) {
             pathList.add(dialect.quote(item));
         }
 

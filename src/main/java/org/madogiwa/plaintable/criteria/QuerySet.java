@@ -19,9 +19,10 @@
  */
 package org.madogiwa.plaintable.criteria;
 
-import java.util.List;
-
 import org.madogiwa.plaintable.Path;
+import org.madogiwa.plaintable.schema.Schema;
+
+import java.util.List;
 
 /**
  * @author Hidenori Sugiyama
@@ -73,11 +74,15 @@ public class QuerySet implements IQuery, ISource {
 		return c1.getSource();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.madogiwa.plaintable.criteria.ISource#getPathList()
-	 */
+    public Schema getBaseSchema() {
+        return c1.getBaseSchema();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.madogiwa.plaintable.criteria.ISource#getPathList()
+     */
 	public List<Path> getPathList() {
 		return getSource().getPathList();
 	}

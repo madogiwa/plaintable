@@ -19,6 +19,8 @@
  */
 package org.madogiwa.plaintable.criteria;
 
+import org.madogiwa.plaintable.schema.Schema;
+
 /**
  * @author Hidenori Sugiyama
  * 
@@ -30,5 +32,7 @@ public interface IQuery {
 	public String getSQLString(Context context);
 
 	public ISource getSource();
+
+    public Schema getBaseSchema();
 
 }

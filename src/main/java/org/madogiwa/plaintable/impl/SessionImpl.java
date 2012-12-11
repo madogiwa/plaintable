@@ -420,11 +420,12 @@ public class SessionImpl implements Session {
 	public long count(IQuery query)
 			throws PlainTableException {
 
-		Query countQuery = new Query(new QuerySource(query, "query"));
+        final Column primaryKey = query.getBaseSchema().getPrimaryKey();
+		Query countQuery = new Query(new QuerySource(query, "source"));
 		countQuery.getProjection().add(
 				new NumericExpression() {
 					public String getSQLString(Context context) {
-						return "count(*)";
+						return String.format("COUNT(DISTINCT %s)", context.quotePath("source."+primaryKey.getPath()));
 					}
 				}, "count");
 

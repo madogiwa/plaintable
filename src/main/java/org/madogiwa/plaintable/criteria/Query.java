@@ -65,6 +65,10 @@ public class Query implements IQuery, Cloneable, Serializable {
 		return source;
 	}
 
+    public Schema getBaseSchema() {
+        return source.getBaseSchema();
+    }
+
     /**
      * @return
      */

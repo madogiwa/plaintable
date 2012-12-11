@@ -89,4 +89,8 @@ public class TableSource extends Source {
 		return list;
 	}
 
+    public Schema getBaseSchema() {
+        return schema;
+    }
+
 }
