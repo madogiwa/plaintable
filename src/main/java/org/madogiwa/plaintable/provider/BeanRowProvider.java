@@ -19,30 +19,19 @@
  */
 package org.madogiwa.plaintable.provider;
 
+import com.sun.javafx.Logging;
+import org.madogiwa.plaintable.criteria.value.*;
+import org.madogiwa.plaintable.mapper.Mapped;
+import org.madogiwa.plaintable.schema.*;
+import org.madogiwa.plaintable.schema.attr.*;
+import org.madogiwa.plaintable.util.ReflectionUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.madogiwa.plaintable.criteria.value.DateTimeRaw;
-import org.madogiwa.plaintable.criteria.value.KeyRaw;
-import org.madogiwa.plaintable.criteria.value.NullRaw;
-import org.madogiwa.plaintable.criteria.value.NumericRaw;
-import org.madogiwa.plaintable.criteria.value.StringRaw;
-import org.madogiwa.plaintable.criteria.value.ValueExpression;
-import org.madogiwa.plaintable.mapper.Mapped;
-import org.madogiwa.plaintable.schema.Column;
-import org.madogiwa.plaintable.schema.ReferenceKey;
-import org.madogiwa.plaintable.schema.Schema;
-import org.madogiwa.plaintable.schema.SchemaReference;
-import org.madogiwa.plaintable.schema.SyntheticKey;
-import org.madogiwa.plaintable.schema.attr.CharAttribute;
-import org.madogiwa.plaintable.schema.attr.IntegerAttribute;
-import org.madogiwa.plaintable.schema.attr.LongAttribute;
-import org.madogiwa.plaintable.schema.attr.StringAttribute;
-import org.madogiwa.plaintable.schema.attr.TimestampAttribute;
-import org.madogiwa.plaintable.util.ReflectionUtils;
+import java.util.logging.Logger;
 
 /**
  * @author Hidenori Sugiyama
@@ -56,6 +45,8 @@ public class BeanRowProvider<T> implements RowProvider {
 
 	private Map<Column, String> mapping;
 
+	private static final Logger logger = Logger.getLogger(BeanRowProvider.class.getName());
+
 	/**
 	 * @param bean
 	 */
@@ -66,7 +57,8 @@ public class BeanRowProvider<T> implements RowProvider {
 		}
 
 		this.schema = ReflectionUtils.findSchema(mapping.schema());
-		System.out.println(bean + " : " + mapping.schema() + " : " + schema.getName());
+		logger.finest(bean + " : " + mapping.schema() + " : " + schema.getName());
+
 		this.bean = bean;
 		this.mapping = new HashMap<Column, String>();
 	}
