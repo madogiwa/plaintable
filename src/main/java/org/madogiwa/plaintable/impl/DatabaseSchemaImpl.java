@@ -161,7 +161,7 @@ public class DatabaseSchemaImpl implements DatabaseSchema {
 		}
 
 		query.append(" )");
-		System.out.print(query);
+		logger.fine(query.toString());
 		return query.toString();
 	}
 
