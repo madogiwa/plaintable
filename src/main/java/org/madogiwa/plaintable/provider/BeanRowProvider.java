@@ -19,7 +19,6 @@
  */
 package org.madogiwa.plaintable.provider;
 
-import com.sun.javafx.Logging;
 import org.madogiwa.plaintable.criteria.value.*;
 import org.madogiwa.plaintable.mapper.Mapped;
 import org.madogiwa.plaintable.schema.*;
