@@ -19,10 +19,10 @@
  */
 package org.madogiwa.plaintable.util;
 
+import org.madogiwa.plaintable.schema.Schema;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
-import org.madogiwa.plaintable.schema.Schema;
 
 /**
  * @author Hidenori Sugiyama
@@ -85,9 +85,17 @@ public class ReflectionUtils {
 		return null;
 	}
 
-	public static Class<?> findClass(String className) {
+	public static Class<?> findClassByName(String className) {
 		try {
-			return ReflectionUtils.class.getClassLoader().loadClass(className);
+			return Thread.currentThread().getContextClassLoader().loadClass(className);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+	}
+
+	public static Class<?> findScalaObject(Class<?> clazz) {
+		try {
+			return clazz.getClassLoader().loadClass(clazz.getCanonicalName() + "$");
 		} catch (ClassNotFoundException e) {
 			return null;
 		}

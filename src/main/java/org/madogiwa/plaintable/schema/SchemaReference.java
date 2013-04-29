@@ -74,7 +74,7 @@ public class SchemaReference implements Serializable {
 	 */
 	public Schema getSchema() {
 		if (schema == null) {
-			Class<?> clazz = ReflectionUtils.findClass(className);
+			Class<?> clazz = ReflectionUtils.findClassByName(className);
 			schema = getSchemaFromClass(clazz);
 		}
 
@@ -87,7 +87,7 @@ public class SchemaReference implements Serializable {
 			return foundSchema;
 		}
 
-		Class<?> implClazz = ReflectionUtils.findClass(clazz.getCanonicalName() + "$");
+		Class<?> implClazz = ReflectionUtils.findScalaObject(clazz);
 		if (implClazz != null && implClazz.getAnnotation(Table.class) != null) {
 			return getSchemaFromClass(implClazz);
 		}
