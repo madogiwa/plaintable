@@ -39,11 +39,11 @@ public class ReflectionUtils {
 
 			Object instance = findInstance(clazz);
 			if (instance == null) {
-				Class scalaObject = findScalaObject(clazz);
-				if (scalaObject == null) {
+				clazz = findScalaObject(clazz);
+				if (clazz == null) {
 					return null;
 				}
-				instance = findInstance(scalaObject);
+				instance = findInstance(clazz);
 				if (instance == null) {
 					return null;
 				}
