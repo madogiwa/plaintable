@@ -120,6 +120,34 @@ public class Rows implements Cloneable {
         }
     }
 
+	public long insert(RowProvider rowProvider) throws PlainTableException {
+		Window window = getWindow();
+		if (window.getOffset() != 0 || window.getLimit() != Window.UNLIMITED) {
+			throw new PlainTableException("offset() or limit() is not supported.");
+		}
+
+		Query query = getQuery();
+		ISource source = query.getSource();
+		if (!(source instanceof TableSource)) {
+			throw new PlainTableException("insert() only support calling for TableSource.");
+		}
+		Schema schema = ((TableSource)source).getSchema();
+		if (rowProvider.getSchema() != schema) {
+			throw new RuntimeException("RowProvider has different schema.");
+		}
+
+		Finder finder = getFinder();
+		Session session = finder.getSession();
+		boolean opened = session.isOpened();
+		try {
+			return session.insert(rowProvider);
+		} finally {
+			if (!opened && session.getAutoCommit()) {
+				session.close();
+			}
+		}
+	}
+
     public Rows between(NumericColumnReference column,
                         Number low, Number high) {
         return addRestrictionWithClone(Bools.between(column, low, high));
