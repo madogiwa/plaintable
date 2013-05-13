@@ -52,13 +52,17 @@ public class DialectFactory {
 	}
 
 	public Dialect getDialect(String productName) {
-		if (productName.startsWith("MySQL")) {
+		return getDialectByProductName(productName.toLowerCase());
+	}
+
+	private Dialect getDialectByProductName(String productName) {
+		if (productName.startsWith("mysql")) {
 			return new MySQLDialect();
-		} else if (productName.startsWith("PostgreSQL")) {
+		} else if (productName.startsWith("postgresql")) {
 			return new PostgreSQLDialect();
-		} else if (productName.startsWith("Apache Derby")) {
+		} else if (productName.startsWith("apache derby") || productName.startsWith("javadb")) {
 			return new DerbyDialect();
-		} else if (productName.startsWith("H2")) {
+		} else if (productName.startsWith("h2")) {
 			return new H2Dialect();
 		} else {
 			throw new RuntimeException("Unknown database type: " + productName);
