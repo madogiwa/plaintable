@@ -33,13 +33,23 @@ public class DatabaseManagerFactory {
 
 	private DataSource dataSource;
 
+	private String productName;
+
 	private String prefix = "";
 
 	/**
 	 * @param dataSource
 	 */
 	public DatabaseManagerFactory(DataSource dataSource) {
+		this(dataSource, "");
+	}
+
+	/**
+	 * @param dataSource
+	 */
+	public DatabaseManagerFactory(DataSource dataSource, String productName) {
 		this.dataSource = dataSource;
+		this.productName = productName;
 	}
 
 	public String getPrefix() {
@@ -55,7 +65,13 @@ public class DatabaseManagerFactory {
 	 */
 	public DatabaseManager getDatabaseManager() {
 		DialectFactory dialectFactory = new DialectFactory(dataSource);
-		Dialect dialect = dialectFactory.getDialect();
+
+		Dialect dialect = null;
+		if (this.productName.length() == 0) {
+			dialect = dialectFactory.getDialect();
+		} else {
+			dialect = dialectFactory.getDialect(this.productName);
+		}
 
 		return new DatabaseManagerImpl(dataSource, dialect, prefix);
 	}
