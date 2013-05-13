@@ -43,21 +43,25 @@ public class DialectFactory {
 			connection = dataSource.getConnection();
 			String productName = connection.getMetaData()
 					.getDatabaseProductName();
-			if (productName.startsWith("MySQL")) {
-				return new MySQLDialect();
-			} else if (productName.startsWith("PostgreSQL")) {
-				return new PostgreSQLDialect();
-			} else if (productName.startsWith("Apache Derby")) {
-				return new DerbyDialect();
-			} else if (productName.startsWith("H2")) {
-				return new H2Dialect();
-			} else {
-				throw new RuntimeException("Unknown database type: " + productName);
-			}
+			return getDialect(productName);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
 			JdbcUtils.closeConnection(connection);
+		}
+	}
+
+	public Dialect getDialect(String productName) {
+		if (productName.startsWith("MySQL")) {
+			return new MySQLDialect();
+		} else if (productName.startsWith("PostgreSQL")) {
+			return new PostgreSQLDialect();
+		} else if (productName.startsWith("Apache Derby")) {
+			return new DerbyDialect();
+		} else if (productName.startsWith("H2")) {
+			return new H2Dialect();
+		} else {
+			throw new RuntimeException("Unknown database type: " + productName);
 		}
 	}
 
