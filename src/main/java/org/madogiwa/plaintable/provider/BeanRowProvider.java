@@ -25,8 +25,13 @@ import org.madogiwa.plaintable.schema.*;
 import org.madogiwa.plaintable.schema.attr.*;
 import org.madogiwa.plaintable.util.ReflectionUtils;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -128,6 +133,10 @@ public class BeanRowProvider<T> implements RowProvider {
 				property = column.getName();
 			}
 			Object value = getPropertyValue(bean, property);
+
+			if (column.getClass().equals(ReferenceKey.class) && !value.getClass().equals(Long.class)) {
+				value = getPrimaryKey(value);
+			}
 			ValueExpression expr = objectToValueExpression(column, value);
 			map.put(column, expr);
 		}
@@ -210,6 +219,25 @@ public class BeanRowProvider<T> implements RowProvider {
 	 */
 	private String getGetterMethodName(String name) {
 		return "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
+	}
+
+	private Long getPrimaryKey(Object object) {
+		try {
+			BeanInfo beanInfo = Introspector.getBeanInfo(object.getClass());
+			PropertyDescriptor[] descs = beanInfo.getPropertyDescriptors();
+			for (PropertyDescriptor desc : descs) {
+				if ("id".equals(desc.getName())) {
+					return (Long)desc.getReadMethod().invoke(object);
+				}
+			}
+			return null;
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException(e);
+		} catch (IntrospectionException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
