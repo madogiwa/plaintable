@@ -30,10 +30,9 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * @author Hidenori Sugiyama
@@ -44,6 +43,12 @@ public class BeanMapper<T> implements RowMapper<T> {
 	private String sourceAlias;
 
 	private Class<T> beanClass;
+
+	private boolean recursive = true;
+
+	private boolean initialized = false;
+
+	private Map<String, String> mapping = new HashMap<String, String>();
 
 	private Map<String, MappingFunction<T>> funcs = new HashMap<String, MappingFunction<T>>();
 
@@ -58,8 +63,6 @@ public class BeanMapper<T> implements RowMapper<T> {
 		this.beanClass = clazz;
 		this.sourceAlias = ReflectionUtils.findSchema(mapped.schema())
 				.getFullName();
-
-		init();
 	}
 
 	/**
@@ -77,8 +80,21 @@ public class BeanMapper<T> implements RowMapper<T> {
 	public BeanMapper(Class<T> clazz, String sourceAlias) {
 		this.beanClass = clazz;
 		this.sourceAlias = sourceAlias;
+	}
 
-		init();
+	/**
+	 * @param clazz
+	 * @param sourceAlias
+	 */
+	public BeanMapper(Class<T> clazz, String sourceAlias, boolean recursive) {
+		this.beanClass = clazz;
+		this.sourceAlias = sourceAlias;
+		this.recursive = recursive;
+	}
+
+	public BeanMapper add(String property, String path) {
+		mapping.put(property, path);
+		return this;
 	}
 
 	/**
@@ -87,32 +103,85 @@ public class BeanMapper<T> implements RowMapper<T> {
 	private void init() {
 		List<PropertyDescriptor> properties = getProperties(beanClass);
 		for (PropertyDescriptor property : properties) {
-			final Method method = property.getWriteMethod();
+			final Method writeMethod = property.getWriteMethod();
+			final Method readMethod = property.getReadMethod();
 			final String path = (sourceAlias + "." + property.getName())
 					.toLowerCase();
 
-			Mapped mapped = property.getPropertyType().getAnnotation(
-					Mapped.class);
-			if (mapped != null) {
+			if (readMethod == null || writeMethod == null) {
+				continue;
+			}
+
+			Type returnType = readMethod.getReturnType();
+			Type genericReturnType = readMethod.getGenericReturnType();
+			if (List.class.isAssignableFrom((Class)returnType) && genericReturnType instanceof ParameterizedType) {
+				ParameterizedType parameterizedType = (ParameterizedType)genericReturnType;
+				if (parameterizedType.getActualTypeArguments().length != 1) {
+					continue;
+				}
+				Type listType = parameterizedType.getActualTypeArguments()[0];
+				Mapped mapped = ((Class<?>)listType).getAnnotation(Mapped.class);
+				if (mapped == null) {
+					continue;
+				}
+
+				if (!recursive) {
+					continue;
+				}
+
+				String newAlias = property.getName() + "_" + ReflectionUtils.findSchema(mapped.schema()).getName();
 				final BeanMapper mapper = new BeanMapper(
-						property.getPropertyType(), property.getName()
-								+ "_"
-								+ ReflectionUtils.findSchema(mapped.schema())
-										.getName());
-				funcs.put(path, new MappingFunction<T>() {
+					(Class)listType, newAlias, false);
+
+				if (mapping.containsKey(property.getName())) {
+					newAlias = mapping.get(property.getName());
+				}
+
+				funcs.put("<N>" + newAlias, new MappingFunction<T>() {
 					public void map(Row row, T bean) throws Exception {
-						Object value = mapper.map(row);
-						method.invoke(bean, value);
+						List list = (List)readMethod.invoke(bean);
+						if (list == null) {
+							list = new ArrayList();
+							writeMethod.invoke(bean, list);
+						}
+						list.add(mapper.map(row));
 					}
 				});
 			} else {
-				funcs.put(path, new MappingFunction<T>() {
-					public void map(Row row, T bean) throws Exception {
-                        BeanUtils.setBeanProperty(bean, method, row.getObject(path));
+				Mapped mapped = property.getPropertyType().getAnnotation(
+						Mapped.class);
+				if (mapped != null) {
+					if (!recursive) {
+						continue;
 					}
-				});
+
+					String newAlias = property.getName() + "_" + ReflectionUtils.findSchema(mapped.schema()).getName();
+					final BeanMapper mapper = new BeanMapper(
+							property.getPropertyType(), newAlias, false);
+
+					if (mapping.containsKey(property.getName())) {
+						newAlias = mapping.get(property.getName());
+					}
+
+					funcs.put("<N>" + newAlias, new MappingFunction<T>() {
+						public void map(Row row, T bean) throws Exception {
+							Object value = mapper.map(row);
+							writeMethod.invoke(bean, value);
+						}
+					});
+				} else {
+					funcs.put(path, new MappingFunction<T>() {
+						public void map(Row row, T bean) throws Exception {
+							BeanUtils.setBeanProperty(bean, writeMethod, row.getObject(path));
+						}
+					});
+				}
 			}
 		}
+	}
+
+	public String getSourceAlias() {
+		return sourceAlias;
 	}
 
 	/*
@@ -122,6 +191,11 @@ public class BeanMapper<T> implements RowMapper<T> {
 	 * org.madogiwa.plaintable.mapper.Mapper#map(org.madogiwa.plaintable.Row)
 	 */
 	public T map(Row row) throws PlainTableException {
+		if (!initialized) {
+			init();
+			initialized = true;
+		}
+
 		T bean;
 
 		try {
@@ -132,12 +206,38 @@ public class BeanMapper<T> implements RowMapper<T> {
 			throw new RuntimeException(e);
 		}
 
+		return map(row, bean);
+	}
+
+	public T map(Row row, T bean) throws PlainTableException {
+		if (!initialized) {
+			init();
+			initialized = true;
+		}
+
 		for (String path : row.getAliasList()) {
 			if (funcs.containsKey(path)) {
 				try {
 					funcs.get(path).map(row, bean);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
+				}
+			}
+		}
+
+		for (String key : funcs.keySet()) {
+			if (key.startsWith("<N>")) {
+				String actualKey = key.replaceFirst("<N>", "").toLowerCase();
+				for (String path : row.getAliasList()) {
+					if (path.startsWith(actualKey + ".")) {
+						try {
+							funcs.get(key).map(row, bean);
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}
+
+						break;
+					}
 				}
 			}
 		}

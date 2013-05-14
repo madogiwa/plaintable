@@ -9,6 +9,7 @@ import org.madogiwa.plaintable.criteria.list.NumericListExpression;
 import org.madogiwa.plaintable.criteria.list.StringListExpression;
 import org.madogiwa.plaintable.criteria.list.ValueListExpression;
 import org.madogiwa.plaintable.criteria.value.*;
+import org.madogiwa.plaintable.handler.BeanListHandler;
 import org.madogiwa.plaintable.handler.ListHandler;
 import org.madogiwa.plaintable.mapper.BeanMapper;
 import org.madogiwa.plaintable.mapper.RowMapper;
@@ -69,6 +70,20 @@ public class Rows implements Cloneable {
             }
         }
     }
+
+	public <T> List<T> toList(BeanMapper<T> mapper) throws PlainTableException {
+		BeanListHandler<T> handler = new BeanListHandler<T>(mapper);
+		Session session = finder.getSession();
+		boolean opened = session.isOpened();
+		try {
+			session.select(query, handler);
+			return handler.getList();
+		} finally {
+			if (!opened && session.getAutoCommit()) {
+				session.close();
+			}
+		}
+	}
 
     public long update(RowProvider rowProvider) throws PlainTableException {
         Window window = getWindow();

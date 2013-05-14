@@ -45,8 +45,7 @@ public class InnerJoinedSource extends JoinedSource {
 	 * @param right
 	 */
 	public InnerJoinedSource(Column left, Column right) {
-		this(new TableSource(left.getSchema()), left, new TableSource(
-				right.getSchema()), right);
+		this(new TableSource(left.getSchema()), left, right);
 	}
 
 	/**
@@ -55,8 +54,11 @@ public class InnerJoinedSource extends JoinedSource {
 	 * @param rightColumn
 	 */
 	public InnerJoinedSource(ISource left, Column leftColumn, Column rightColumn) {
-		this(left, leftColumn, new TableSource(rightColumn.getSchema()),
-				rightColumn);
+		this(left, new Path(leftColumn), new TableSource(
+			rightColumn.getSchema(), leftColumn.getName() + "_"
+			+ rightColumn.getSchema().getName()), new Path(
+			leftColumn.getName() + "_" + rightColumn.getSchema().getName(),
+			rightColumn.getName()));
 	}
 
 	/**
