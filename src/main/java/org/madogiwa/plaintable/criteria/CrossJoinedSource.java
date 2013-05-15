@@ -17,12 +17,9 @@
 /**
  * 
  */
-package org.madogiwa.plaintable.criteria.value;
+package org.madogiwa.plaintable.criteria;
 
 import org.madogiwa.plaintable.Path;
-import org.madogiwa.plaintable.criteria.Context;
-import org.madogiwa.plaintable.criteria.ISource;
-import org.madogiwa.plaintable.criteria.JoinedSource;
 import org.madogiwa.plaintable.schema.Schema;
 
 import java.util.ArrayList;
