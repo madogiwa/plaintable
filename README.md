@@ -71,7 +71,7 @@
     try {
         Finder finder = new Finder(databaseManager.newSession());
         List<User> users = finder.from(UserTable.schema).exact(UserTable.username, "user1")
-                .toList(new BeanMapper<User>(User.class)); // SQL: WHERE username LIKE "user1"
+                .toList(User.class); // SQL: WHERE username LIKE "user1"
     } catch (PlainTableException e) {
         // error handling
     }
@@ -116,37 +116,26 @@
 ## Insert and Update ##
 ### insert ###
 
-	Session session = null;
-	try {
-		session = databaseManager.newSession();
-		session.open();
+    try {
+        User user = new User();
+        user.setUsername("user1");
+        user.setPassword("newpasswd");
 
-		User user = new User();
-		user.setUsername("user1");
-		user.setPassword("passwd");
-
-		BeanRowProvider<User> provider = new BeanRowProvider<User>(user);
-		long id = session.insert(provider);  // return auto-generated key
-
-		session.commit();
-	} catch (PlainTableException e) {
-		// error handling
-	} finally {
-		if (session != null) {
-			session.close();
-		}
-	}
+        Finder finder = new Finder(session);
+        long id = finder.insert(user).getId();
+    } catch (PlainTableException e) {
+        // error handling
+    }
 
 ### update ###
 
     try {
-		User user = new User();
-		user.setUsername("user1");
-		user.setPassword("newpasswd");
-		BeanRowProvider<User> provider = new BeanRowProvider<User>(user);
+        User user = new User();
+        user.setUsername("user1");
+        user.setPassword("newpasswd");
 
         Finder finder = new Finder(session);
-        long count = finder.from(UserTable.schema).eq(UserTable.id, 2).update(provider);
+        long count = finder.from(UserTable.schema).eq(UserTable.id, 2).update(user);
     } catch (PlainTableException e) {
         // error handling
     }
