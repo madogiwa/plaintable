@@ -66,60 +66,43 @@
 	}
 
 
-## Select Query ##
+## SELECT ##
 
-    try {
-        Finder finder = new Finder(databaseManager.newSession());
-
-        // SQL: SELECT * FROM User WHERE username LIKE 'user1';
-        List<User> users = finder.from(UserTable.schema).exact(UserTable.username, "user1")
-                .toList(User.class);
-
-        // SQL: SELECT COUNT(DISTINCT Message.id) FROM Message LEFT OUTER JOIN User ON Message.src = User.id LEFT OUTER JOIN User ON Message.dest = User.id
-        Rows rows = finder.from(MessageTable.schema).outerJoin(MessageTable.src, UserTable.id).outerJoin(MessageTable.dest, UserTable.id);
-        long count = rows.count();
-
-        // SQL: SELECT * FROM Message LEFT OUTER JOIN User ON Message.src = User.id LEFT OUTER JOIN User ON Message.dest = User.id
-        List<Message> msgList = rows.toList(Message.class);
-    } catch (PlainTableException e) {
-        // error handling
-    }
-
-### bean for mapping ###
+### bean for SELECT ###
 
 	@Mapped(schema=UserTable.class)  // specify Table Definition class
 	public class User {
-	
+
 		private Long id;
-	
+
 		private String username;
-	
+
 		private String password;
-	
+
 		public Long getId() {
 			return id;
 		}
-	
+
 		public void setId(Long id) {
 			this.id = id;
 		}
-	
+
 		public String getUsername() {
 			return username;
 		}
-	
+
 		public void setUsername(String username) {
 			this.username = username;
 		}
-	
+
 		public String getPassword() {
 			return password;
 		}
-	
+
 		public void setPassword(String password) {
 			this.password = password;
 		}
-	
+
 	}
 
 
@@ -188,8 +171,41 @@
 
     }
 
-## Insert and Update ##
-### insert ###
+### SELECT(SELECT *, COUNT, JOIN...) ###
+
+    try {
+        Finder finder = new Finder(databaseManager.newSession());
+
+        // SQL: SELECT * FROM User WHERE username LIKE 'user1';
+        List<User> users = finder.from(UserTable.schema).exact(UserTable.username, "user1")
+                .toList(User.class);
+
+        // SQL: SELECT COUNT(DISTINCT Message.id) FROM Message LEFT OUTER JOIN User ON Message.src = User.id LEFT OUTER JOIN User ON Message.dest = User.id
+        Rows rows = finder.from(MessageTable.schema).outerJoin(MessageTable.src, UserTable.id).outerJoin(MessageTable.dest, UserTable.id);
+        long count = rows.count();
+
+        // SQL: SELECT * FROM Message LEFT OUTER JOIN User ON Message.src = User.id LEFT OUTER JOIN User ON Message.dest = User.id
+        List<Message> msgList = rows.toList(Message.class);
+    } catch (PlainTableException e) {
+        // error handling
+    }
+
+## INSERT and UPDATE ##
+### bean for INSERT and UPDATE ###
+
+	@Mapped(schema=UserTable.class)
+	@Provided(schema=UserTable.class)  // mark as provider
+	public class User {
+		...
+
+
+	@Mapped(schema=MessageTable.class)
+	@Provided(schema=MessageTable.class)  // mark as provider
+	public class Message {
+	    ...
+
+
+### INSERT ###
 
     try {
         User user = new User();
@@ -203,7 +219,7 @@
         // error handling
     }
 
-### update ###
+### UPDATE ###
 
     try {
         User user = new User();
@@ -218,70 +234,7 @@
     }
 
 
-### bean for insert and update ###
-
-	@Mapped(schema=UserTable.class)
-	@Provided(schema=UserTable.class)  // mark as provider
-	public class User {
-	
-		private Long id;
-	
-		private String username;
-	
-		private String password;
-	
-		/**
-		 * @return the id
-		 */
-		public Long getId() {
-			return id;
-		}
-	
-		/**
-		 * @param id the id to set
-		 */
-		public void setId(Long id) {
-			this.id = id;
-		}
-	
-		/**
-		 * @return the username
-		 */
-		public String getUsername() {
-			return username;
-		}
-	
-		/**
-		 * @param username the username to set
-		 */
-		public void setUsername(String username) {
-			this.username = username;
-		}
-	
-		/**
-		 * @return the password
-		 */
-		public String getPassword() {
-			return password;
-		}
-	
-		/**
-		 * @param password the password to set
-		 */
-		public void setPassword(String password) {
-			this.password = password;
-		}
-	
-	}
-
-
-	@Mapped(schema=MessageTable.class)
-	@Provided(schema=MessageTable.class)  // mark as provider
-	public class Message {
-	    ...
-
-
-## Delete ##
+## DELETE ##
 
     try {
         Finder finder = new Finder(session);
