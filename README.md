@@ -70,8 +70,17 @@
 
     try {
         Finder finder = new Finder(databaseManager.newSession());
+
+        // SQL: SELECT * FROM User WHERE username LIKE 'user1';
         List<User> users = finder.from(UserTable.schema).exact(UserTable.username, "user1")
-                .toList(User.class); // SQL: WHERE username LIKE "user1"
+                .toList(User.class);
+
+        // SQL: SELECT COUNT(DISTINCT Message.id) FROM Message LEFT OUTER JOIN User ON Message.src = User.id LEFT OUTER JOIN User ON Message.dest = User.id
+        Rows rows = finder.from(MessageTable.schema).outerJoin(MessageTable.src, UserTable.id).outerJoin(MessageTable.dest, UserTable.id);
+        long count = rows.count();
+
+        // SQL: SELECT * FROM Message LEFT OUTER JOIN User ON Message.src = User.id LEFT OUTER JOIN User ON Message.dest = User.id
+        List<Message> msgList = rows.toList(Message.class);
     } catch (PlainTableException e) {
         // error handling
     }
@@ -113,6 +122,72 @@
 	
 	}
 
+
+    @Mapped(schema=MessageTable.class)  // specify Table Definition class
+    public class Message {
+
+        private Long id;
+
+        private User src;
+
+        private User dest;
+
+        private Date created;
+
+        private String subject;
+
+        private String body;
+
+        public Long getId() {
+          return id;
+        }
+
+        public void setId(Long id) {
+          this.id = id;
+        }
+
+        public User getSrc() {
+          return src;
+        }
+
+        public void setSrc(User src) {
+          this.src = src;
+        }
+
+        public User getDest() {
+          return dest;
+        }
+
+        public void setDest(User dest) {
+          this.dest = dest;
+        }
+
+        public Date getCreated() {
+          return created;
+        }
+
+        public void setCreated(Date created) {
+          this.created = created;
+        }
+
+        public String getSubject() {
+          return subject;
+        }
+
+        public void setSubject(String subject) {
+          this.subject = subject;
+        }
+
+        public String getBody() {
+          return body;
+        }
+
+        public void setBody(String body) {
+          this.body = body;
+        }
+
+    }
+
 ## Insert and Update ##
 ### insert ###
 
@@ -122,7 +197,8 @@
         user.setPassword("newpasswd");
 
         Finder finder = new Finder(session);
-        long id = finder.insert(user).getId();
+        // SQL: INSERT INTO User(username, password) VALUES('user1', 'newpassword')
+        Long id = finder.insert(user).getId();
     } catch (PlainTableException e) {
         // error handling
     }
@@ -135,6 +211,7 @@
         user.setPassword("newpasswd");
 
         Finder finder = new Finder(session);
+        // SQL: UPDATE User SET username='user1', password='newpassword' WHERE id = 2
         long count = finder.from(UserTable.schema).eq(UserTable.id, 2).update(user);
     } catch (PlainTableException e) {
         // error handling
@@ -198,10 +275,17 @@
 	}
 
 
+	@Mapped(schema=MessageTable.class)
+	@Provided(schema=MessageTable.class)  // mark as provider
+	public class Message {
+	    ...
+
+
 ## Delete ##
 
     try {
         Finder finder = new Finder(session);
+        // SQL: DELETE FROM User WHERE username LIKE '%user1%'
         long count = finder.from(UserTable.schema).contain(UserTable.username, "user1").delete();
     } catch (PlainTableException e) {
         // error handling
