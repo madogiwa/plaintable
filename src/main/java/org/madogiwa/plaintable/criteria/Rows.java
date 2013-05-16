@@ -13,6 +13,7 @@ import org.madogiwa.plaintable.handler.BeanListHandler;
 import org.madogiwa.plaintable.handler.ListHandler;
 import org.madogiwa.plaintable.mapper.BeanMapper;
 import org.madogiwa.plaintable.mapper.RowMapper;
+import org.madogiwa.plaintable.provider.BeanRowProvider;
 import org.madogiwa.plaintable.provider.RowProvider;
 import org.madogiwa.plaintable.schema.*;
 
@@ -83,6 +84,10 @@ public class Rows implements Cloneable {
 				session.close();
 			}
 		}
+	}
+
+	public <T> long update(T bean) throws PlainTableException {
+		return update(new BeanRowProvider<T>(bean));
 	}
 
     public long update(RowProvider rowProvider) throws PlainTableException {
