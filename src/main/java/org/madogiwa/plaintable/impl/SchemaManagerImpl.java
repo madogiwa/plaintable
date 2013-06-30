@@ -296,10 +296,10 @@ public class SchemaManagerImpl implements SchemaManager {
 
 			switch(mode) {
 				case NONE:
-					return true;
+					break;
 				case CHECK_COMPATIBILITY:
-					throw new RuntimeException(
-							"CHECK_COMPATIBILITY not implemented currently");
+					// TODO: check compatibility
+					break;
 				case UPDATE_ONLY:
 					throw new RuntimeException(
 							"UPDATE_ONLY not implemented currently");
