@@ -55,13 +55,13 @@ public class BeanRowProvider<T> implements RowProvider {
 	 * @param bean
 	 */
 	public BeanRowProvider(T bean) {
-		Mapped mapping = bean.getClass().getAnnotation(Mapped.class);
-		if (mapping == null) {
+		Provided provided = bean.getClass().getAnnotation(Provided.class);
+		if (provided == null) {
 			throw new RuntimeException();
 		}
 
-		this.schema = ReflectionUtils.findSchema(mapping.schema());
-		logger.finest(bean + " : " + mapping.schema() + " : " + schema.getName());
+		this.schema = ReflectionUtils.findSchema(provided.schema());
+		logger.finest(bean + " : " + provided.schema() + " : " + schema.getName());
 
 		this.bean = bean;
 		this.mapping = new HashMap<Column, String>();
