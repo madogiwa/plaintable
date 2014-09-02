@@ -18,6 +18,7 @@ import org.madogiwa.plaintable.provider.RowProvider;
 import org.madogiwa.plaintable.schema.*;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -84,6 +85,10 @@ public class Rows implements Cloneable {
 				session.close();
 			}
 		}
+	}
+
+	public <T> Iterator<T> iterator(Class<T> clazz) throws PlainTableException {
+		return toList(clazz).iterator();
 	}
 
 	public <T> long update(T bean) throws PlainTableException {
